@@ -21,6 +21,7 @@ import {
   ProfilePage,
   AccountPage,
   AccountReservationsPage,
+  ReviewPage,
   HostDashboardPage,
   HostExperienceDashboardPage,
   HostExperienceListPage,
@@ -546,6 +547,7 @@ function AppContent() {
       {route.name === 'profile' && <ProfilePage onNavigate={navigate} />}
       {route.name === 'account' && <AccountPage onNavigate={navigate} />}
       {route.name === 'account-reservations' && <AccountReservationsPage onNavigate={navigate} />}
+      {route.name === 'review' && <ReviewPage onNavigate={navigate} id={route.id} bookingData={route.bookingData} />}
       {route.name === 'host-dashboard' && <HostDashboardPage onNavigate={navigate} />}
       
       {/* ✅ ROUTES EXPÉRIENCES - AJOUTÉES */}

@@ -39,6 +39,7 @@ import adminService from '../services/admin.service';
 import { PageSection } from './components/PageSection';
 import hostService, { type HostExperience, type HostExperienceConversation, type HostExperienceFormData } from '../services/host.service';
 import bookingService from '../services/booking.service';
+import reviewService from '../services/review.service';
 import temporaryBookingService from '../services/temporaryBooking.service';
 
 import { toast } from 'react-hot-toast';
@@ -8404,7 +8405,7 @@ export function AccountReservationsPage({ onNavigate }: PageProps) {
                       
                       {booking.status === 'completed' && !booking.has_review && (
                         <button
-                          onClick={() => onNavigate?.({ name: 'reviews', id: booking.property?.id?.toString() })}
+                          onClick={() => onNavigate?.({ name: 'review', id: booking.id?.toString(), bookingData: booking })}
                           className="flex-1 bg-yellow-500 text-white py-2 rounded-xl text-xs sm:text-sm hover:bg-yellow-600 transition"
                         >
                           Laisser un avis
@@ -8601,6 +8602,236 @@ const getSafeImageUrl = (photo: any, propertyId: number): string => {
   
   return (imageUrl && typeof imageUrl === 'string') ? imageUrl : '/placeholder.jpg';
 };
+
+// ==================== REVIEW PAGE ====================
+
+interface ReviewPageProps {
+  onNavigate?: (route: any) => void;
+  id?: string;
+  bookingData?: any;
+}
+
+function StarRatingInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const [hovered, setHovered] = useState(0);
+
+  return (
+    <div className="flex items-center justify-between py-2.5 gap-3">
+      <span className="text-sm text-gray-700">{label}</span>
+      <div className="flex items-center gap-1" onMouseLeave={() => setHovered(0)}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onChange(star)}
+            onMouseEnter={() => setHovered(star)}
+            className="p-0.5"
+            aria-label={`${star} étoile${star > 1 ? 's' : ''}`}
+          >
+            <Star
+              className={`w-6 h-6 transition ${
+                star <= (hovered || value)
+                  ? 'fill-yellow-500 text-yellow-500'
+                  : 'text-gray-300'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ReviewPage({ onNavigate, id, bookingData }: ReviewPageProps) {
+  const queryClient = useQueryClient();
+  const bookingId = id ? parseInt(id, 10) : undefined;
+
+  const [ratings, setRatings] = useState({
+    rating: 0,
+    cleanliness_rating: 0,
+    communication_rating: 0,
+    checkin_rating: 0,
+    accuracy_rating: 0,
+    location_rating: 0,
+    value_rating: 0,
+  });
+  const [comment, setComment] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const createReviewMutation = useMutation({
+    mutationFn: () =>
+      reviewService.create({
+        booking_id: bookingId!,
+        ...ratings,
+        comment: comment.trim(),
+      }),
+    onSuccess: () => {
+      toast.success('Merci pour votre avis !');
+      queryClient.invalidateQueries({ queryKey: ['account-reservations'] });
+      onNavigate?.({ name: 'account-reservations' });
+    },
+    onError: (error: any) => {
+      const errors = error?.response?.data?.errors;
+      let message = error?.response?.data?.message || 'Impossible d\'envoyer votre avis. Veuillez réessayer.';
+      if (errors && typeof errors === 'object') {
+        message = Object.values(errors).flat().join(', ');
+      }
+      setFormError(message);
+      toast.error(message);
+    },
+  });
+
+  const ratingFields: { key: keyof typeof ratings; label: string }[] = [
+    { key: 'cleanliness_rating', label: 'Propreté' },
+    { key: 'communication_rating', label: 'Communication avec l\'hôte' },
+    { key: 'checkin_rating', label: 'Arrivée / check-in' },
+    { key: 'accuracy_rating', label: 'Conformité à l\'annonce' },
+    { key: 'location_rating', label: 'Emplacement' },
+    { key: 'value_rating', label: 'Rapport qualité-prix' },
+  ];
+
+  const allRatingsSet = Object.values(ratings).every((v) => v >= 1 && v <= 5);
+  const commentValid = comment.trim().length >= 10 && comment.trim().length <= 2000;
+  const canSubmit = !!bookingId && allRatingsSet && commentValid && !createReviewMutation.isPending;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError(null);
+
+    if (!bookingId) {
+      setFormError('Réservation introuvable.');
+      return;
+    }
+    if (!allRatingsSet) {
+      setFormError('Merci de donner une note à chaque critère.');
+      return;
+    }
+    if (!commentValid) {
+      setFormError('Votre commentaire doit contenir entre 10 et 2000 caractères.');
+      return;
+    }
+
+    createReviewMutation.mutate();
+  };
+
+  if (!bookingId) {
+    return (
+      <div className="bg-white min-h-screen py-10">
+        <div className="max-w-[640px] mx-auto px-4 sm:px-6 text-center py-20">
+          <p className="text-gray-500 mb-4">Réservation introuvable.</p>
+          <button
+            onClick={() => onNavigate?.({ name: 'account-reservations' })}
+            className="text-[#00c9a7] font-medium"
+          >
+            Retour à mes réservations
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white min-h-screen py-8 pb-24 md:pb-10">
+      <Seo
+        title="Laisser un avis — Bluefin Immo"
+        description="Partagez votre expérience de séjour sur Bluefin Immo."
+        path={`/avis/${bookingId}`}
+      />
+      <div className="max-w-[640px] mx-auto px-4 sm:px-6">
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={() => onNavigate?.({ name: 'account-reservations' })}
+            className="p-2 rounded-full hover:bg-gray-100"
+            aria-label="Retour"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0F2940]">Laisser un avis</h1>
+        </div>
+
+        {bookingData?.property?.title && (
+          <div className="bg-gray-50 rounded-xl p-4 mb-6 flex items-center gap-3">
+            {bookingData.property.photo && (
+              <img
+                src={bookingData.property.photo}
+                alt={bookingData.property.title}
+                className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+              />
+            )}
+            <div className="min-w-0">
+              <p className="font-semibold text-[#0F2940] truncate">{bookingData.property.title}</p>
+              {bookingData.dates?.check_in && bookingData.dates?.check_out && (
+                <p className="text-sm text-gray-500">
+                  {bookingData.dates.check_in} — {bookingData.dates.check_out}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="border border-gray-200 rounded-xl p-4">
+            <StarRatingInput
+              label="Note globale"
+              value={ratings.rating}
+              onChange={(v) => setRatings((r) => ({ ...r, rating: v }))}
+            />
+          </div>
+
+          <div className="border border-gray-200 rounded-xl p-4 divide-y divide-gray-100">
+            {ratingFields.map(({ key, label }) => (
+              <StarRatingInput
+                key={key}
+                label={label}
+                value={ratings[key]}
+                onChange={(v) => setRatings((r) => ({ ...r, [key]: v }))}
+              />
+            ))}
+          </div>
+
+          <div>
+            <label htmlFor="review-comment" className="block text-sm font-medium text-gray-700 mb-2">
+              Votre commentaire
+            </label>
+            <textarea
+              id="review-comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              rows={5}
+              maxLength={2000}
+              placeholder="Décrivez votre séjour : ce que vous avez aimé, l'accueil de l'hôte, l'état du logement..."
+              className="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] resize-none"
+            />
+            <p className={`text-xs mt-1 ${comment.trim().length > 0 && comment.trim().length < 10 ? 'text-red-500' : 'text-gray-400'}`}>
+              {comment.trim().length}/2000 caractères (minimum 10)
+            </p>
+          </div>
+
+          {formError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+              {formError}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="w-full bg-[#00c9a7] text-white py-3 rounded-xl font-semibold hover:bg-[#00b596] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {createReviewMutation.isPending ? 'Envoi en cours...' : 'Publier mon avis'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export function HostDashboardPage({ onNavigate }: HostDashboardPageProps) {
   const { data, isLoading, error, refetch } = useQuery({

@@ -13,6 +13,7 @@ export type Page =
   | 'account'
   | 'become-host'
   | 'account-reservations'
+  | 'review'
   | 'host-dashboard'
   | 'host-experience-dashboard'
   | 'host-experiences-list'
@@ -154,6 +155,11 @@ export function parseRoute(path: string): Route {
     return { name: segments[1] === 'reservations' ? 'account-reservations' : 'account', search };
   }
 
+  // Avis
+  if (segments[0] === 'avis') {
+    return { name: 'review', id: segments[1], search };
+  }
+
   // ✅ ROUTES EXPÉRIENCES HÔTE
   if (segments[0] === 'host' && segments[1] === 'experience' && segments[2] === 'messages') {
     return { name: 'host-experience-messages', id: segments[3], search };
@@ -275,6 +281,7 @@ export function routeToPath(route: Route): string {
     case 'profile': path = `/profil/${route.id ?? 'me'}`; break;
     case 'account': path = '/mon-compte'; break;
     case 'account-reservations': path = '/mon-compte/reservations'; break;
+    case 'review': path = `/avis/${route.id ?? ''}`; break;
     case 'host-dashboard': path = '/hote/tableau-de-bord'; break;
     
     // ✅ ROUTES EXPÉRIENCES
@@ -379,7 +386,7 @@ export function tabFromPage(page: Page): 'explore' | 'favorites' | 'trips' | 'me
   }
   
   // Trips (Voyages/Réservations)
-  if (page === 'account-reservations' || page === 'account') {
+  if (page === 'account-reservations' || page === 'account' || page === 'review') {
     return 'trips';
   }
   

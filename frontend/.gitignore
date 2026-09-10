@@ -23,6 +23,7 @@
 /out
 /.vercel
 /vercel
+*.zip
 
 # Environment variables — tout est ignoré sauf le modèle documenté
 .env*

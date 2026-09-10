@@ -19,7 +19,7 @@ export function CitySection({
   return (
     <section className="py-4">
       <div className="flex items-center justify-between px-4 mb-3">
-        <h3 className="text-lg font-semibold text-[#0f2940]">{title}</h3>
+        <h3 className="text-[19px] font-bold text-[#0f2940] tracking-tight">{title}</h3>
         {seeAllRoute && (
           <button
             onClick={() => onNavigate?.(seeAllRoute)}

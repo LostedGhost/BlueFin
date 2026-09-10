@@ -182,10 +182,10 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
             cursor = 'cursor-not-allowed';
             bgColor = 'bg-gray-50';
           } else if (isSelected) {
-            bgColor = 'bg-[#00c9a7] text-white';
+            bgColor = 'bg-[#12b8c9] text-white';
             textColor = 'text-white';
           } else if (isInRange) {
-            bgColor = 'bg-[#00c9a7]/20';
+            bgColor = 'bg-[#12b8c9]/20';
           }
           
           return (
@@ -195,8 +195,8 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
               className={`
                 relative aspect-square rounded-lg flex items-center justify-center text-sm font-medium transition-all duration-200
                 ${bgColor} ${textColor} ${cursor}
-                ${isSelected ? 'shadow-lg shadow-[#00c9a7]/30 scale-105' : ''}
-                ${isInRange && !isSelected ? 'border border-[#00c9a7]/30' : ''}
+                ${isSelected ? 'shadow-lg shadow-[#12b8c9]/30 scale-105' : ''}
+                ${isInRange && !isSelected ? 'border border-[#12b8c9]/30' : ''}
               `}
             >
               <span>{date.getDate()}</span>
@@ -207,11 +207,11 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
 
       <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-[#00c9a7]"></div>
+          <div className="w-3 h-3 rounded bg-[#12b8c9]"></div>
           <span className="text-gray-600">Sélectionné</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-[#00c9a7]/20"></div>
+          <div className="w-3 h-3 rounded bg-[#12b8c9]/20"></div>
           <span className="text-gray-600">Plage</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -421,7 +421,7 @@ const formatImageUrl = (path: any): string => {
     ? `${experience.host.first_name} ${experience.host.last_name || ''}` 
     : 'Hôte vérifié';
   
-  const hostAvatarUrl = `https://ui-avatars.com/api/?background=00c9a7&color=fff&name=${encodeURIComponent(host)}&bold=true&size=128`;
+  const hostAvatarUrl = `https://ui-avatars.com/api/?background=12b8c9&color=fff&name=${encodeURIComponent(host)}&bold=true&size=128`;
   const price = experience.price || 0;
   const maxParticipants = experience.total_places || 10;
   const availablePlaces = experience.available_places || maxParticipants;
@@ -651,7 +651,7 @@ const formatImageUrl = (path: any): string => {
 
                 {/* Hôte */}
                 <div className="flex gap-4 items-start">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#00c9a7] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#12b8c9] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                     {host.charAt(0).toUpperCase()}
                   </div>
                   <div>
@@ -692,7 +692,7 @@ const formatImageUrl = (path: any): string => {
                         )}
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="w-7 h-7 rounded-full bg-[#00c9a7] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+                            <span className="w-7 h-7 rounded-full bg-[#12b8c9] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
                               {index + 1}
                             </span>
                             <span className="text-sm font-semibold text-[#0F2940]">Étape {index + 1}</span>
@@ -706,7 +706,7 @@ const formatImageUrl = (path: any): string => {
                   {steps.length > 3 && (
                     <button 
                       onClick={() => setShowAllSteps(!showAllSteps)}
-                      className="text-sm text-[#00c9a7] font-semibold hover:underline mt-3"
+                      className="text-sm text-[#12b8c9] font-semibold hover:underline mt-3"
                     >
                       {showAllSteps ? 'Voir moins' : `Voir tout (${steps.length} étapes)`}
                     </button>
@@ -793,14 +793,14 @@ const formatImageUrl = (path: any): string => {
                         <div className="flex gap-3">
                           <button 
                             onClick={() => setParticipants(Math.max(1, participants - 1))} 
-                            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:border-[#00c9a7] transition-colors"
+                            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:border-[#12b8c9] transition-colors"
                           >
                             -
                           </button>
                           <span className="min-w-[20px] text-center">{participants}</span>
                           <button 
                             onClick={() => setParticipants(Math.min(maxParticipants, participants + 1))} 
-                            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:border-[#00c9a7] transition-colors"
+                            className="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center hover:border-[#12b8c9] transition-colors"
                           >
                             +
                           </button>
@@ -830,7 +830,7 @@ const formatImageUrl = (path: any): string => {
                     <div className="flex justify-between font-bold pt-2 border-t border-gray-200">
                       <span className="text-[#0F2940]">Total</span>
                       <div className="text-right">
-                        <div className="text-[#00c9a7]">{totalFormatted.fCFA}</div>
+                        <div className="text-[#12b8c9]">{totalFormatted.fCFA}</div>
                         <div className="text-xs font-normal text-gray-400">{totalFormatted.euro}</div>
                       </div>
                     </div>
@@ -842,7 +842,7 @@ const formatImageUrl = (path: any): string => {
                     disabled={availabilityStatus !== 'available'} 
                     className={`w-full py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all ${
                       availabilityStatus === 'available' 
-                        ? 'bg-[#00c9a7] text-white hover:bg-[#00b892] shadow-lg hover:shadow-xl' 
+                        ? 'bg-[#12b8c9] text-white hover:bg-[#00b892] shadow-lg hover:shadow-xl' 
                         : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                     }`}
                   >
@@ -868,7 +868,7 @@ const formatImageUrl = (path: any): string => {
                         window.location.href = `/messages/inquiry?${params.toString()}`;
                       }
                     }}
-                    className="w-full mt-3 py-3 rounded-xl border-2 border-[#00c9a7] text-[#00c9a7] font-medium hover:bg-[#00c9a7]/5 transition flex items-center justify-center gap-2"
+                    className="w-full mt-3 py-3 rounded-xl border-2 border-[#12b8c9] text-[#12b8c9] font-medium hover:bg-[#12b8c9]/5 transition flex items-center justify-center gap-2"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Contacter l'hôte

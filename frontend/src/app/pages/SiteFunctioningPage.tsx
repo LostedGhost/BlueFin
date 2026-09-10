@@ -73,7 +73,7 @@ export function SiteFunctioningPage({ onNavigate }: PageProps) {
                 <div key={idx} className={`${step.color} rounded-2xl p-6 relative overflow-hidden`}>
                   <div className="text-6xl font-bold text-gray-300/30 absolute top-4 right-4">{step.number}</div>
                   <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mb-4">
-                    <Icon className="w-7 h-7 text-[#00c9a7]" />
+                    <Icon className="w-7 h-7 text-[#12b8c9]" />
                   </div>
                   <h3 className="text-xl font-semibold text-[#0F2940] mb-2">{step.title}</h3>
                   <p className="text-gray-600 text-sm">{step.description}</p>
@@ -94,22 +94,22 @@ export function SiteFunctioningPage({ onNavigate }: PageProps) {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-20 h-20 bg-[#00c9a7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-[#00c9a7]">1</span>
+              <div className="w-20 h-20 bg-[#12b8c9]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-[#12b8c9]">1</span>
               </div>
               <h3 className="font-semibold text-[#0F2940] mb-2">Créez votre annonce</h3>
               <p className="text-gray-500 text-sm">Décrivez votre logement, ajoutez des photos et fixez vos tarifs</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-[#00c9a7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-[#00c9a7]">2</span>
+              <div className="w-20 h-20 bg-[#12b8c9]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-[#12b8c9]">2</span>
               </div>
               <h3 className="font-semibold text-[#0F2940] mb-2">Recevez des réservations</h3>
               <p className="text-gray-500 text-sm">Les voyageurs réservent votre logement directement</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-[#00c9a7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-[#00c9a7]">3</span>
+              <div className="w-20 h-20 bg-[#12b8c9]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-[#12b8c9]">3</span>
               </div>
               <h3 className="font-semibold text-[#0F2940] mb-2">Recevez vos paiements</h3>
               <p className="text-gray-500 text-sm">Virements vers Mobile Money ou compte bancaire</p>
@@ -127,8 +127,8 @@ export function SiteFunctioningPage({ onNavigate }: PageProps) {
               const Icon = feature.icon;
               return (
                 <div key={idx} className="text-center p-4">
-                  <div className="w-14 h-14 bg-[#00c9a7]/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Icon className="w-7 h-7 text-[#00c9a7]" />
+                  <div className="w-14 h-14 bg-[#12b8c9]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Icon className="w-7 h-7 text-[#12b8c9]" />
                   </div>
                   <h3 className="font-semibold text-[#0F2940] mb-1">{feature.title}</h3>
                   <p className="text-gray-500 text-sm">{feature.desc}</p>

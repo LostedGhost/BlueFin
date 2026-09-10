@@ -3,15 +3,23 @@
 :root {
   --font-size: 16px;
 
-  /* Bluefin-Immo Brand Colors */
-  --bluefin-teal: #00c9a7;
-  --bluefin-teal-hover: #00b396;
+  /* Bluefin-Immo Brand Colors — palette « Lagune vive » */
+  --bluefin-teal: #12b8c9;
+  --bluefin-teal-hover: #0fa0b0;
   --bluefin-navy: #0f2940;
-  --bluefin-mint: #f4fffe;
+  --bluefin-mint: #eefbfd;
   --bluefin-white: #ffffff;
   --bluefin-text-body: #0f2940;
   --bluefin-text-muted: #6b7280;
-  --bluefin-border: #e2f5f2;
+  --bluefin-border: #d5eef2;
+
+  /* Citron : couleur d'éclat, réservée aux signaux forts (badge Certifié,
+     accroche d'un bandeau de ville). Ne jamais l'utiliser comme fond de
+     surface large — elle perd son rôle si elle est partout. */
+  --bluefin-citron: #ffc93c;
+  --bluefin-citron-ink: #4a3400;
+  /* Bleu profond des bandeaux (promo, bandeau de ville sans photo) */
+  --bluefin-deep: #0c3f53;
 
   --background: #ffffff;
   --foreground: #0f2940;
@@ -19,23 +27,23 @@
   --card-foreground: #0f2940;
   --popover: #ffffff;
   --popover-foreground: #0f2940;
-  --primary: #00c9a7;
+  --primary: #12b8c9;
   --primary-foreground: #ffffff;
   --secondary: #0f2940;
   --secondary-foreground: #ffffff;
-  --muted: #f4fffe;
+  --muted: #eefbfd;
   --muted-foreground: #6b7280;
-  --accent: #00c9a7;
+  --accent: #12b8c9;
   --accent-foreground: #ffffff;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: #e2f5f2;
+  --border: #d5eef2;
   --input: transparent;
-  --input-background: #f4fffe;
+  --input-background: #eefbfd;
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #00c9a7;
+  --ring: #12b8c9;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -138,6 +146,22 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* Police d'affichage — noms de ville et titres de section uniquement.
+     La graisse reste 400 : Instrument Serif n'a pas de gras, un font-bold
+     déclencherait une graisse synthétique baveuse. */
+  .font-display {
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+  }
+
+  /* Repasse un titre en police de corps. Nécessaire sur les h1-h6 qui ne sont
+     pas des titres d'affichage — un nom de logement en serif 15px partirait
+     en graisse synthétique et brouillerait la hiérarchie voulue :
+     serif = ville et section, sans = contenu. */
+  .font-body {
+    font-family: var(--font-primary);
   }
 
   /**

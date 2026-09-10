@@ -142,7 +142,7 @@ export function AdminUsersPage() {
     <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* En-tête */}
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent">
           Gestion des utilisateurs
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">Gérez et modérez les utilisateurs de la plateforme</p>
@@ -177,14 +177,14 @@ export function AdminUsersPage() {
               placeholder="Rechercher par nom, email ou téléphone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
             />
           </div>
           <div className="flex flex-wrap gap-2">
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
             >
               <option value="all">Tous les rôles</option>
               <option value="voyageur">Voyageurs</option>
@@ -196,7 +196,7 @@ export function AdminUsersPage() {
             <select
               value={hostTypeFilter}
               onChange={(e) => setHostTypeFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
             >
               <option value="all">Tous les hôtes</option>
               <option value="logement">🏠 Logement</option>
@@ -207,7 +207,7 @@ export function AdminUsersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
             >
               <option value="all">Tous statuts</option>
               <option value="active">Actifs</option>
@@ -298,7 +298,7 @@ const UserCard = ({ user, onView, onSuspend, onActivate }: { user: User; onView:
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Avatar */}
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00c9a7] to-[#0f2940] flex items-center justify-center text-white font-bold text-lg shrink-0">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#12b8c9] to-[#0f2940] flex items-center justify-center text-white font-bold text-lg shrink-0">
             {getInitials()}
           </div>
           <div className="sm:hidden">
@@ -431,7 +431,7 @@ const UserDetailModal = ({ user, onClose }: { user: User; onClose: () => void })
         <div className="p-5 space-y-5">
           {/* En-tête avec avatar */}
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00c9a7] to-[#0f2940] flex items-center justify-center text-white font-bold text-2xl">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#12b8c9] to-[#0f2940] flex items-center justify-center text-white font-bold text-2xl">
               {getInitials()}
             </div>
             <div>
@@ -507,19 +507,19 @@ const UserDetailModal = ({ user, onClose }: { user: User; onClose: () => void })
             <p className="font-semibold text-sm mb-3">📊 Statistiques</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
               <div className="bg-white rounded-lg p-2">
-                <p className="text-lg font-bold text-[#00c9a7]">{user.total_properties || 0}</p>
+                <p className="text-lg font-bold text-[#12b8c9]">{user.total_properties || 0}</p>
                 <p className="text-xs text-gray-500">Propriétés</p>
               </div>
               <div className="bg-white rounded-lg p-2">
-                <p className="text-lg font-bold text-[#00c9a7]">{user.total_bookings || 0}</p>
+                <p className="text-lg font-bold text-[#12b8c9]">{user.total_bookings || 0}</p>
                 <p className="text-xs text-gray-500">Réservations</p>
               </div>
               <div className="bg-white rounded-lg p-2">
-                <p className="text-lg font-bold text-[#00c9a7]">{user.total_reviews || 0}</p>
+                <p className="text-lg font-bold text-[#12b8c9]">{user.total_reviews || 0}</p>
                 <p className="text-xs text-gray-500">Avis</p>
               </div>
               <div className="bg-white rounded-lg p-2">
-                <p className="text-lg font-bold text-[#00c9a7]">{user.average_rating || 0}★</p>
+                <p className="text-lg font-bold text-[#12b8c9]">{user.average_rating || 0}★</p>
                 <p className="text-xs text-gray-500">Note moyenne</p>
               </div>
             </div>

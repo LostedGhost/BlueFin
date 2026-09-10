@@ -57,16 +57,16 @@ export const CheckoutModal = ({ propertyId, propertyTitle, checkIn, checkOut, gu
         <div className="border rounded-2xl p-4 mb-4">
           <h3 className="font-medium mb-2">Moyen de paiement</h3>
           <div className="flex gap-2 mb-3">
-            <button onClick={() => setPaymentMethod('mobile_money')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='mobile_money'?'border-[#00c9a7] bg-[#f4fffe]':''}`}>Mobile Money</button>
-            <button onClick={() => setPaymentMethod('card')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='card'?'border-[#00c9a7] bg-[#f4fffe]':''}`}>Carte</button>
-            <button onClick={() => setPaymentMethod('bank_transfer')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='bank_transfer'?'border-[#00c9a7] bg-[#f4fffe]':''}`}>Virement</button>
+            <button onClick={() => setPaymentMethod('mobile_money')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='mobile_money'?'border-[#12b8c9] bg-[#eefbfd]':''}`}>Mobile Money</button>
+            <button onClick={() => setPaymentMethod('card')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='card'?'border-[#12b8c9] bg-[#eefbfd]':''}`}>Carte</button>
+            <button onClick={() => setPaymentMethod('bank_transfer')} className={`flex-1 p-2 rounded-lg border ${paymentMethod==='bank_transfer'?'border-[#12b8c9] bg-[#eefbfd]':''}`}>Virement</button>
           </div>
           {paymentMethod === 'mobile_money' && (
             <div>
               <div className="text-xs text-gray-500 mb-2">Choisissez un opérateur</div>
               <div className="flex gap-2 mb-2">
                 {['MTN','Moov','Orange'].map(op => (
-                  <button key={op} onClick={() => setMobileProvider(op as any)} className={`flex-1 p-2 rounded-lg border ${mobileProvider===op?'border-[#00c9a7] bg-[#f4fffe]':''}`}>{op}</button>
+                  <button key={op} onClick={() => setMobileProvider(op as any)} className={`flex-1 p-2 rounded-lg border ${mobileProvider===op?'border-[#12b8c9] bg-[#eefbfd]':''}`}>{op}</button>
                 ))}
               </div>
               <div className="text-xs text-gray-500">Paiement demandé sur : {user?.phone}</div>
@@ -76,7 +76,7 @@ export const CheckoutModal = ({ propertyId, propertyTitle, checkIn, checkOut, gu
         {error && <div className="text-red-600 text-sm mb-3">{error}</div>}
         <div className="flex gap-2">
           <button onClick={onClose} className="flex-1 border rounded-lg py-2">Annuler</button>
-          <button onClick={handleConfirm} disabled={loading} className="flex-1 bg-[#00c9a7] text-[#0F2940] font-semibold py-2 rounded-lg">{loading ? 'Traitement...' : `Payer ${totalPrice?.toLocaleString()} FCFA`}</button>
+          <button onClick={handleConfirm} disabled={loading} className="flex-1 bg-[#12b8c9] text-[#0F2940] font-semibold py-2 rounded-lg">{loading ? 'Traitement...' : `Payer ${totalPrice?.toLocaleString()} FCFA`}</button>
         </div>
       </div>
     </div>

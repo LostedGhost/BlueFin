@@ -655,7 +655,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
     if (status === 'processing') {
       return (
         <div className="text-center py-8">
-          <Loader2 className="w-16 h-16 text-[#00c9a7] animate-spin mx-auto mb-4" />
+          <Loader2 className="w-16 h-16 text-[#12b8c9] animate-spin mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-[#0F2940] mb-2">Préparation du paiement...</h3>
           <p className="text-gray-500 text-sm">Nous sécurisons votre transaction</p>
         </div>
@@ -665,7 +665,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
     if (status === 'pending') {
       return (
         <div className="text-center py-8">
-          <Loader2 className="w-16 h-16 text-[#00c9a7] animate-spin mx-auto mb-4" />
+          <Loader2 className="w-16 h-16 text-[#12b8c9] animate-spin mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-[#0F2940] mb-2">Redirection vers Fedapay...</h3>
           <p className="text-gray-500 text-sm">Vous allez être redirigé vers la page de paiement sécurisée</p>
         </div>
@@ -689,7 +689,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
                 navigate('/');
               }
             }}
-            className="mt-4 px-6 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2 mx-auto"
+            className="mt-4 px-6 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2 mx-auto"
           >
             <Home className="w-4 h-4" />
             Accueil
@@ -711,7 +711,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
               setStatus('idle');
               setError('');
             }}
-            className="px-6 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b892] transition"
+            className="px-6 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b892] transition"
           >
             Réessayer
           </button>
@@ -758,14 +758,14 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
             </div>
             <div className="border-t pt-2 flex justify-between font-bold text-[#0F2940]">
               <span>Total</span>
-              <span className="text-[#00c9a7] text-lg">{totalAmount.toLocaleString()} FCFA</span>
+              <span className="text-[#12b8c9] text-lg">{totalAmount.toLocaleString()} FCFA</span>
             </div>
           </div>
         </div>
 
         {/* Indicateur de disponibilité */}
         <div className="flex items-center gap-2 text-sm bg-gray-50 p-3 rounded-xl">
-          <Calendar className="w-4 h-4 text-[#00c9a7]" />
+          <Calendar className="w-4 h-4 text-[#12b8c9]" />
           <span className="text-gray-600">Dates sélectionnées :</span>
           <span className="font-medium">
             {localBookingData?.check_in ? new Date(localBookingData.check_in).toLocaleDateString('fr-FR') : '-'}
@@ -802,12 +802,12 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
               }}
               className={`p-3 rounded-xl border-2 transition ${
                 paymentMethod === 'mobile_money'
-                  ? 'border-[#00c9a7] bg-[#00c9a7]/5'
+                  ? 'border-[#12b8c9] bg-[#12b8c9]/5'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
-                <Smartphone className={`w-5 h-5 ${paymentMethod === 'mobile_money' ? 'text-[#00c9a7]' : 'text-gray-400'}`} />
+                <Smartphone className={`w-5 h-5 ${paymentMethod === 'mobile_money' ? 'text-[#12b8c9]' : 'text-gray-400'}`} />
                 <span className="text-sm font-medium">Mobile Money</span>
               </div>
             </button>
@@ -818,12 +818,12 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
               }}
               className={`p-3 rounded-xl border-2 transition ${
                 paymentMethod === 'card'
-                  ? 'border-[#00c9a7] bg-[#00c9a7]/5'
+                  ? 'border-[#12b8c9] bg-[#12b8c9]/5'
                   : 'border-gray-200 hover:border-gray-300'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
-                <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#00c9a7]' : 'text-gray-400'}`} />
+                <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#12b8c9]' : 'text-gray-400'}`} />
                 <span className="text-sm font-medium">Carte bancaire</span>
               </div>
             </button>
@@ -846,7 +846,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
                   setError('');
                 }}
                 placeholder="90 00 00 00"
-                className="w-full pl-14 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent text-sm"
+                className="w-full pl-14 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent text-sm"
               />
             </div>
             <p className="text-xs text-gray-400 mt-1">
@@ -870,7 +870,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
           className={`w-full py-3 rounded-xl font-semibold transition transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
             availabilityStatus === 'unavailable' || propertyPrice <= 0 || !isAuthenticated
               ? 'bg-gray-300 text-gray-500' 
-              : 'bg-gradient-to-r from-[#00c9a7] to-[#00a887] text-white hover:shadow-lg'
+              : 'bg-gradient-to-r from-[#12b8c9] to-[#00a887] text-white hover:shadow-lg'
           }`}
         >
           {loading ? (
@@ -903,7 +903,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
   // ✅ RENDU PRINCIPAL
   // ============================================
   return (
-    <div className="min-h-screen bg-[#f4fffe] py-10">
+    <div className="min-h-screen bg-[#eefbfd] py-10">
       <div className="max-w-lg mx-auto px-4">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
@@ -922,13 +922,13 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
           <h1 className="text-2xl font-bold text-[#0F2940]">Paiement sécurisé</h1>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-[#e2f5f2]">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-[#d5eef2]">
           {/* Sécurité */}
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-6 bg-gray-50 px-4 py-2 rounded-lg">
-            <Lock className="w-4 h-4 text-[#00c9a7]" />
+            <Lock className="w-4 h-4 text-[#12b8c9]" />
             <span>Paiement sécurisé par Fedapay</span>
             <span className="mx-1">·</span>
-            <Shield className="w-4 h-4 text-[#00c9a7]" />
+            <Shield className="w-4 h-4 text-[#12b8c9]" />
             <span>Transaction cryptée</span>
           </div>
 
@@ -958,7 +958,7 @@ export function FedapayPaymentPage({ onNavigate, bookingData }: FedapayPaymentPa
                   navigate('/');
                 }
               }}
-              className="flex items-center gap-1 hover:text-[#00c9a7] transition"
+              className="flex items-center gap-1 hover:text-[#12b8c9] transition"
             >
               <Home className="w-3 h-3" />
               Accueil

@@ -46,7 +46,11 @@ export default defineConfig({
         changeOrigin: true,
         cookieDomainRewrite: '',
         secure: false,
-        rewrite: (path) => path,
+        // Le préfixe /index.php est requis tant que la réécriture d'URL
+        // (.htaccess) n'est pas appliquée par LiteSpeed sur le sous-domaine
+        // api.bluefin-immo.com : sans lui, toutes les routes renvoient 404.
+        // À retirer en même temps que le contournement dans .env.example.
+        rewrite: (path) => `/index.php${path}`,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
             // ✅ Récupérer TOUS les cookies
@@ -139,7 +143,8 @@ export default defineConfig({
         changeOrigin: true,
         cookieDomainRewrite: '',
         secure: false,
-        rewrite: (path) => path,
+        // Même contournement /index.php que pour /api ci-dessus.
+        rewrite: (path) => `/index.php${path}`,
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
             const cookies = req.headers.cookie;

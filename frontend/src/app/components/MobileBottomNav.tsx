@@ -191,21 +191,24 @@ const handleNavigate = (tabId: Tab) => {
 };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e2f5f2] h-16 sm:h-20 px-2 flex items-center justify-around z-50 safe-area-pb">
+    // min-h + padding de zone sûre : `safe-area-pb` était utilisée ici mais
+    // n'a jamais été définie dans le CSS — la barre collait donc la zone
+    // gestuelle du système. Une hauteur fixe écraserait le contenu, d'où min-h.
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#d5eef2] min-h-16 sm:min-h-20 pb-[env(safe-area-inset-bottom)] px-2 flex items-center justify-around z-50">
       {tabs.map(({ id, icon: Icon, label }) => (
         <button
           key={id}
           onClick={() => handleNavigate(id)}
           className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition-all duration-200 ${
             activeTab === id 
-              ? 'text-[#00c9a7] scale-105' 
+              ? 'text-[#12b8c9] scale-105' 
               : 'text-[#9ca3af] hover:text-[#0f2940] hover:scale-105'
           }`}
         >
           <Icon 
             className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${
               activeTab === id && id !== 'auth' && id !== 'admin-dashboard' && id !== 'admin-users' && id !== 'admin-properties' && id !== 'admin-settings'
-                ? 'fill-[#00c9a7] stroke-[#00c9a7]' 
+                ? 'fill-[#12b8c9] stroke-[#12b8c9]' 
                 : ''
             }`} 
           />

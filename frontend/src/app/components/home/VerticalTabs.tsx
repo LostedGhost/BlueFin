@@ -17,8 +17,10 @@ export function VerticalTabs({
   onChange: (v: HomeVertical) => void;
 }) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      <div className="w-4 flex-shrink-0" aria-hidden="true" />
+    // pl-4 (et non un élément espaceur) pour l'inset de gauche : un espaceur
+    // s'additionnerait au `gap` et décalerait la première pilule de 24px au
+    // lieu de 16px, la désalignant des cartes et des titres de section.
+    <div className="flex gap-2 overflow-x-auto pl-4 pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {VERTICALS.map(({ id, label, icon: Icon }) => {
         const isActive = active === id;
         return (
@@ -27,16 +29,16 @@ export function VerticalTabs({
             onClick={() => onChange(id)}
             className={`flex-shrink-0 flex items-center gap-1.5 pl-1 pr-3 h-8 rounded-full border transition-all ${
               isActive
-                ? 'bg-[#00c9a7] border-[#00c9a7] text-white'
-                : 'bg-transparent border-gray-200 text-[#0f2940]/80 hover:border-[#00c9a7]/50'
+                ? 'bg-[#12b8c9] border-[#12b8c9] text-white'
+                : 'bg-transparent border-gray-200 text-[#0f2940]/80 hover:border-[#12b8c9]/50'
             }`}
           >
             <span
               className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                isActive ? 'bg-white/20' : 'bg-[#f4fffe]'
+                isActive ? 'bg-white/20' : 'bg-[#eefbfd]'
               }`}
             >
-              <Icon className={`w-3 h-3 ${isActive ? 'text-white' : 'text-[#00c9a7]'}`} />
+              <Icon className={`w-3 h-3 ${isActive ? 'text-white' : 'text-[#12b8c9]'}`} />
             </span>
             <span className="text-[13px] font-medium whitespace-nowrap">{label}</span>
           </button>

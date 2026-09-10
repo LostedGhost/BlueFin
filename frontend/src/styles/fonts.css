@@ -1,32 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Didot:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&display=swap');
+/**
+ * Polices de Bluefin-Immo — deux familles, pas plus.
+ *
+ * Plus Jakarta Sans (corps) et Instrument Serif (affichage) sont chargées via
+ * un <link> dans index.html, pas par @import ici : un @import CSS bloque le
+ * rendu et s'exécute plus tard qu'un <link> dans le <head>.
+ *
+ * Historique : ce fichier importait aussi « Didot » (qui n'existe pas sur
+ * Google Fonts — la requête échouait à chaque chargement) et « Bodoni Moda »
+ * (jamais utilisée nulle part). Les deux ont été retirées.
+ */
 
-:root {
-  --font-primary: 'Plus Jakarta Sans', sans-serif;
-  --font-didot: 'Didot', serif;
-  --font-bodoni: 'Bodoni Moda', serif;
-  --font-garamond: 'EB Garamond', serif;
-}
+@layer base {
+  :root {
+    --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  }
 
-body {
-  font-family: var(--font-primary);
-}
+  body {
+    font-family: var(--font-primary);
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-garamond);
-  font-weight: 600;
-}
+  /* Instrument Serif n'existe qu'en graisse 400 : demander 600 déclenchait une
+     graisse synthétique, épaissie par le navigateur et sale à l'écran. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
 
-@media (max-width: 640px) {
-  h1 { font-size: 1.5rem; line-height: 1.8; }
-  h2 { font-size: 1.25rem; line-height: 1.6; }
-  h3 { font-size: 1.125rem; line-height: 1.5; }
-  h4 { font-size: 1rem; line-height: 1.5; }
-  p { font-size: 0.875rem; line-height: 1.6; }
-  .text-sm { font-size: 0.75rem; line-height: 1.4; }
-  .text-xs { font-size: 0.65rem; line-height: 1.3; }
-  span { font-size: 0.875rem; }
-  button { font-size: 0.875rem; }
+  /* Tailles de repli sur mobile, pour les éléments qui ne portent aucune
+     classe de taille explicite.
+     Ces règles étaient auparavant hors @layer : elles écrasaient donc TOUTES
+     les classes Tailwind (`text-[26px]`, `text-lg`…) sur mobile, quelle que
+     soit leur spécificité — les tailles écrites dans les composants étaient
+     silencieusement ignorées en dessous de 640px. Dans @layer base, elles
+     redeviennent ce qu'elles auraient toujours dû être : un défaut. */
+  @media (max-width: 640px) {
+    h1 { font-size: 1.5rem; line-height: 1.8; }
+    h2 { font-size: 1.25rem; line-height: 1.6; }
+    h3 { font-size: 1.125rem; line-height: 1.5; }
+    h4 { font-size: 1rem; line-height: 1.5; }
+    p { font-size: 0.875rem; line-height: 1.6; }
+    span { font-size: 0.875rem; }
+    button { font-size: 0.875rem; }
+  }
 }

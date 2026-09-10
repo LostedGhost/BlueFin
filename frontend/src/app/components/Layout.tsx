@@ -17,14 +17,14 @@ export function Layout({ onNavigate, children, currentPage }: PageProps) {
           onClick={(e) => { e.preventDefault(); onNavigate?.({ name: 'home' }); }}
           className="text-lg font-semibold text-white tracking-wide"
         >
-          BLUEFIN <span className="text-[#00C9A7]">IMMO</span>
+          BLUEFIN <span className="text-[#12B8C9]">IMMO</span>
         </a>
         <div className="hidden md:flex gap-6">
           <a 
             href="#" 
             onClick={(e) => { e.preventDefault(); onNavigate?.({ name: 'listings' }); }}
-            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#00C9A7] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
-              currentPage === 'listings' ? 'text-[#00C9A7] after:w-full' : 'text-white/50'
+            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#12B8C9] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
+              currentPage === 'listings' ? 'text-[#12B8C9] after:w-full' : 'text-white/50'
             }`}
           >
             Logements
@@ -32,8 +32,8 @@ export function Layout({ onNavigate, children, currentPage }: PageProps) {
           <a 
             href="#" 
             onClick={(e) => { e.preventDefault(); onNavigate?.({ name: 'about' }); }}
-            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#00C9A7] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
-              currentPage === 'about' ? 'text-[#00C9A7] after:w-full' : 'text-white/50'
+            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#12B8C9] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
+              currentPage === 'about' ? 'text-[#12B8C9] after:w-full' : 'text-white/50'
             }`}
           >
             À propos
@@ -41,8 +41,8 @@ export function Layout({ onNavigate, children, currentPage }: PageProps) {
           <a 
             href="#" 
             onClick={(e) => { e.preventDefault(); onNavigate?.({ name: 'contact' }); }}
-            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#00C9A7] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
-              currentPage === 'contact' ? 'text-[#00C9A7] after:w-full' : 'text-white/50'
+            className={`text-sm transition-colors duration-300 relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-[#12B8C9] after:transition-all after:duration-300 hover:after:w-full hover:text-white ${
+              currentPage === 'contact' ? 'text-[#12B8C9] after:w-full' : 'text-white/50'
             }`}
           >
             Contact
@@ -50,7 +50,7 @@ export function Layout({ onNavigate, children, currentPage }: PageProps) {
         </div>
         <button 
           onClick={() => onNavigate?.({ name: 'listings' })}
-          className="bg-[#00C9A7] text-[#0F2940] border-none rounded-md px-5 py-2 text-sm font-medium cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-[1.02] hover:shadow-[0_4px_12px_rgba(0,201,167,0.3)]"
+          className="bg-[#12B8C9] text-[#0F2940] border-none rounded-md px-5 py-2 text-sm font-medium cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-[1.02] hover:shadow-[0_4px_12px_rgba(0,201,167,0.3)]"
         >
           Voir les logements →
         </button>
@@ -68,7 +68,7 @@ export function Layout({ onNavigate, children, currentPage }: PageProps) {
           <a 
             href="#" 
             onClick={(e) => { e.preventDefault(); onNavigate?.({ name: 'contact' }); }}
-            className="text-[#00C9A7] no-underline transition-opacity duration-300 hover:opacity-80"
+            className="text-[#12B8C9] no-underline transition-opacity duration-300 hover:opacity-80"
           >
             contact@bluefinimmo.bj
           </a>

@@ -56,7 +56,7 @@ const StatCard = ({ icon: Icon, label, value, subValue, color, isDark }: any) =>
 // ============================================
 const LoadingSkeleton = ({ isDark }: { isDark: boolean }) => (
   <div className="flex items-center justify-center min-h-[400px]">
-    <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${isDark ? 'border-emerald-400' : 'border-[#00c9a7]'}`}></div>
+    <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${isDark ? 'border-emerald-400' : 'border-[#12b8c9]'}`}></div>
   </div>
 );
 

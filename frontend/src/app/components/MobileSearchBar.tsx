@@ -19,8 +19,8 @@ export function MobileSearchBar() {
 
   return (
     <div className="px-4 py-3">
-      <form onSubmit={handleSearch} className="bg-[#f4fffe] border border-[#e2f5f2] rounded-full shadow-md p-4 flex items-center gap-3">
-        <Search className="w-5 h-5 text-[#00c9a7]" />
+      <form onSubmit={handleSearch} className="bg-[#eefbfd] border border-[#d5eef2] rounded-full shadow-md p-4 flex items-center gap-3">
+        <Search className="w-5 h-5 text-[#12b8c9]" />
         <input
           type="text"
           value={destination}
@@ -45,7 +45,7 @@ export function MobileSearchBar() {
             {/* Ajoutez ici les filtres mobiles simples (prix, voyageurs, etc.) */}
             <button
               onClick={() => setShowFilters(false)}
-              className="w-full bg-[#00c9a7] text-white py-3 rounded-full mt-4"
+              className="w-full bg-[#12b8c9] text-white py-3 rounded-full mt-4"
             >
               Appliquer
             </button>

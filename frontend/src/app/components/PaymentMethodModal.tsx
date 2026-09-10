@@ -78,7 +78,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
       case 'BANK_TRANSFER':
         return (
           <div className="space-y-4">
-            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#00c9a7]/20">
+            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#12b8c9]/20">
               <label className="block text-sm font-medium text-[#0f2940] mb-1">
                 Nom du bénéficiaire <span className="text-red-500">*</span>
               </label>
@@ -89,7 +89,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] bg-white"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] bg-white"
                 placeholder="Ex: Jean Dupont"
                 required
               />
@@ -103,7 +103,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.bankName}
                 onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
                 placeholder="Ex: Société Générale"
                 required
               />
@@ -116,7 +116,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.accountHolder}
                 onChange={(e) => setFormData({ ...formData, accountHolder: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
                 placeholder="Nom complet du titulaire"
                 required
               />
@@ -129,7 +129,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.iban}
                 onChange={(e) => setFormData({ ...formData, iban: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] uppercase"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] uppercase"
                 placeholder="FR76 1234 5678 9012 3456 7890 123"
                 required
               />
@@ -142,7 +142,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.bic}
                 onChange={(e) => setFormData({ ...formData, bic: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] uppercase"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] uppercase"
                 placeholder="Ex: SOGEFRPP"
                 required
               />
@@ -153,7 +153,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
       case 'MOBILE_MONEY':
         return (
           <div className="space-y-4">
-            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#00c9a7]/20">
+            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#12b8c9]/20">
               <label className="block text-sm font-medium text-[#0f2940] mb-1">
                 Nom du bénéficiaire <span className="text-red-500">*</span>
               </label>
@@ -164,7 +164,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] bg-white"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] bg-white"
                 placeholder="Ex: Jean Dupont"
                 required
               />
@@ -178,7 +178,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="tel"
                 value={formData.phoneNumber}
                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
                 placeholder="+229 61 12 34 56"
                 required
               />
@@ -190,7 +190,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
               <select
                 value={formData.mobileProvider}
                 onChange={(e) => setFormData({ ...formData, mobileProvider: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] bg-white"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] bg-white"
                 required
               >
                 <option value="">Sélectionnez un opérateur</option>
@@ -206,7 +206,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
       case 'PAYPAL':
         return (
           <div className="space-y-4">
-            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#00c9a7]/20">
+            <div className="bg-[#f0fdfb] p-4 rounded-xl border border-[#12b8c9]/20">
               <label className="block text-sm font-medium text-[#0f2940] mb-1">
                 Nom du bénéficiaire <span className="text-red-500">*</span>
               </label>
@@ -217,7 +217,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="text"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] bg-white"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] bg-white"
                 placeholder="Ex: Jean Dupont"
                 required
               />
@@ -231,7 +231,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                 type="email"
                 value={formData.paypalEmail}
                 onChange={(e) => setFormData({ ...formData, paypalEmail: e.target.value })}
-                className="w-full px-4 py-2 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+                className="w-full px-4 py-2 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
                 placeholder="exemple@paypal.com"
                 required
               />
@@ -297,8 +297,8 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
                     onClick={() => setPaymentMethod(option.value as any)}
                     className={`p-3 rounded-xl border-2 text-center transition-all ${
                       paymentMethod === option.value
-                        ? 'border-[#00c9a7] bg-[#f0fdfb] shadow-sm'
-                        : 'border-[#e2f5f2] hover:border-[#00c9a7]'
+                        ? 'border-[#12b8c9] bg-[#f0fdfb] shadow-sm'
+                        : 'border-[#d5eef2] hover:border-[#12b8c9]'
                     }`}
                   >
                     <div className="text-2xl mb-1">{option.icon}</div>
@@ -314,7 +314,7 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
             {renderPaymentForm()}
 
             {/* Résumé des infos */}
-            <div className="mt-4 p-3 bg-[#f0fdfb] rounded-xl border border-[#00c9a7]/20">
+            <div className="mt-4 p-3 bg-[#f0fdfb] rounded-xl border border-[#12b8c9]/20">
               <p className="text-xs text-[#6b7280]">
                 <span className="font-semibold">💡 Information :</span> Vous recevrez le transfert de vos réservations 
                 <span className="font-medium text-[#0f2940]"> chaque lundi</span> sur le moyen de paiement sélectionné.
@@ -326,14 +326,14 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-[#e2f5f2] rounded-xl text-[#6b7280] hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-[#d5eef2] rounded-xl text-[#6b7280] hover:bg-gray-50 transition-colors"
               >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !formData.fullName}
-                className="flex-1 px-4 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b898] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b898] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

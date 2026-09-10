@@ -6,6 +6,7 @@ import { HomeMobileHeader } from '../components/home/HomeMobileHeader';
 import { PromoCarousel } from '../components/home/PromoCarousel';
 import { VerticalTabs, type HomeVertical } from '../components/home/VerticalTabs';
 import { CitySection } from '../components/home/CitySection';
+import { CityCarousel, type CityCarouselItem } from '../components/home/CityCarousel';
 import { ScrollTopButton } from '../components/home/ScrollTopButton';
 import type { HomeListing } from '../components/home/ListingCard';
 import propertyService from '../../services/property.service';
@@ -41,6 +42,36 @@ function groupByCity(listings: HomeListing[]): [string, HomeListing[]][] {
     map.get(key)!.push(item);
   }
   return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
+}
+
+/**
+ * Montant en FCFA formate a la francaise. Les espaces fines insecables
+ * produites par fr-FR sont ramenees a une espace normale : a la taille de
+ * texte des cartes, elles sont si etroites que le nombre parait ne pas
+ * avoir de separateur du tout.
+ */
+function formatFcfa(value: unknown): string {
+  const n = Number(value ?? 0);
+  if (!Number.isFinite(n)) return '0';
+  return n.toLocaleString('fr-FR').replace(/[  ]/g, ' ');
+}
+
+/**
+ * Prix médian d'un groupe d'annonces, reformaté comme les prix affichés.
+ * Médiane et non moyenne : une seule villa à 250 000 FCFA fausserait
+ * complètement une moyenne sur un échantillon de cette taille.
+ */
+function medianPrice(listings: HomeListing[]): string | undefined {
+  const values = listings
+    .map((l) => Number(String(l.priceDisplay).replace(/[^\d]/g, '')))
+    .filter((n) => Number.isFinite(n) && n > 0)
+    .sort((a, b) => a - b);
+
+  if (values.length === 0) return undefined;
+
+  const mid = Math.floor(values.length / 2);
+  const value = values.length % 2 ? values[mid] : Math.round((values[mid - 1] + values[mid]) / 2);
+  return formatFcfa(value);
 }
 
 function SectionsSkeleton() {
@@ -120,6 +151,16 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
 
   const citySections = useMemo(() => groupByCity(filteredProperties.map(toListing)).slice(0, 6), [filteredProperties]);
 
+  const cityCarouselItems = useMemo(
+    (): CityCarouselItem[] =>
+      citySections.map(([city, listings]) => ({
+        city,
+        stats: { count: listings.length, medianPrice: medianPrice(listings) },
+        seeAllRoute: { name: 'search-logements', search: `destination=${encodeURIComponent(city)}` },
+      })),
+    [citySections]
+  );
+
   const hotelListings = useMemo(() => {
     const raw = hotelsData?.data?.data || hotelsData?.data || [];
     return raw.map(mapProperty).filter((p: any) => p.isVisible).map(toListing);
@@ -134,7 +175,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
       title: exp.name,
       location: exp.location || 'Bénin',
       image: getFirstExperienceImage(exp),
-      priceDisplay: `${Number(exp.price || 0).toLocaleString()} FCFA`,
+      priceDisplay: `${formatFcfa(exp.price)} FCFA`,
       priceUnit: '/séance' as const,
     }));
   }, [experiencesData]);
@@ -146,7 +187,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
       title: svc.title,
       location: svc.location || 'Bénin',
       image: getServiceImages(svc)[0],
-      priceDisplay: `${Number(svc.price || 0).toLocaleString()} FCFA`,
+      priceDisplay: `${formatFcfa(svc.price)} FCFA`,
       priceUnit: '/prestation' as const,
     }));
   }, [servicesData]);
@@ -161,7 +202,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
   };
 
   return (
-    <div className="min-h-screen bg-white pb-6 lg:pb-0">
+    // La barre de navigation du bas est `fixed` et fait 64px (80px en sm) : sans
+    // réserve équivalente ici, la dernière rangée de cartes passe dessous.
+    <div className="min-h-screen bg-white pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-0">
       <Seo
         title="Bluefin Immo — Location de logements vérifiés au Bénin"
         description="Réservez des logements, expériences et services vérifiés partout au Bénin. Paiement sécurisé par Mobile Money (MTN, Moov, Orange)."
@@ -184,7 +227,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
         <div className="px-4 mb-3">
           <button
             onClick={() => onNavigate?.({ name: 'search-logements' })}
-            className="w-full flex items-center gap-3 bg-white border-[1.5px] border-[#00c9a7] rounded-full pl-4 pr-4 py-2.5 text-left"
+            className="w-full flex items-center gap-3 bg-white border-[1.5px] border-[#12b8c9] rounded-full pl-4 pr-4 py-2.5 text-left"
           >
             <svg className="w-5 h-5 text-[#0f2940] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
@@ -217,6 +260,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
               <SectionsSkeleton />
             ) : (
               <>
+                <CityCarousel items={cityCarouselItems} onNavigate={onNavigate} />
                 <CitySection
                   title="Les mieux notés"
                   listings={topListings}
@@ -224,7 +268,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
                   seeAllRoute={{ name: 'popular' }}
                   onNavigate={onNavigate}
                 />
-                {citySections.map(([city, listings]) => (
+                {citySections.map(([city, listings], i) => (
                   <CitySection
                     key={city}
                     title={city}
@@ -232,6 +276,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
                     routeFor={(l) => ({ name: 'listing', id: String(l.id) })}
                     seeAllRoute={{ name: 'search-logements', search: `destination=${encodeURIComponent(city)}` }}
                     onNavigate={onNavigate}
+                    tinted={i % 2 === 1}
                   />
                 ))}
               </>

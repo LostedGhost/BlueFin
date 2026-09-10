@@ -3,7 +3,10 @@
     <html lang="fr">
       <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- viewport-fit=cover est requis pour que env(safe-area-inset-*) soit
+             non nul sur iOS (encoche / barre d'accueil gestuelle). Sans lui, les
+             marges de sécurité valent 0 et le contenu colle aux bords. -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
         <!--
           Titre/description/OG/canonical : gérés exclusivement par react-helmet-async
           (voir src/app/components/Seo.tsx et le <Seo default /> rendu par AppContent).
@@ -22,9 +25,12 @@
         -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <!-- Instrument Serif : police d'affichage de la direction éditoriale
+             (noms de ville, titres de section). Plus Jakarta Sans reste la
+             police de corps. -->
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Instrument+Serif:ital@0;1&display=swap"
         />
 
         <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>

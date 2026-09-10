@@ -55,12 +55,12 @@ export function AdminLoginPage({ onNavigate }: AdminLoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f4fffe] to-[#e8fffb] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#eefbfd] to-[#e8fffb] p-4">
       <div className="w-full max-w-md animate-fade-in-up">
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-[#e2f5f2]">
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-[#d5eef2]">
           {/* Logo et titre */}
           <div className="text-center mb-8">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[#00c9a7] to-[#0f2940] rounded-2xl flex items-center justify-center shadow-lg animate-pulse-slow">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[#12b8c9] to-[#0f2940] rounded-2xl flex items-center justify-center shadow-lg animate-pulse-slow">
               <Shield className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-[#0f2940] mt-4">Administration</h1>
@@ -77,12 +77,12 @@ export function AdminLoginPage({ onNavigate }: AdminLoginPageProps) {
             <div>
               <label className="block text-sm font-medium text-[#0f2940] mb-1">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00c9a7]" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#12b8c9]" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent transition-all bg-white/70"
+                  className="w-full pl-10 pr-3 py-2.5 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent transition-all bg-white/70"
                   placeholder="admin@bluefin-immo.com"
                   required
                 />
@@ -92,12 +92,12 @@ export function AdminLoginPage({ onNavigate }: AdminLoginPageProps) {
             <div>
               <label className="block text-sm font-medium text-[#0f2940] mb-1">Mot de passe</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#00c9a7]" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#12b8c9]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 border border-[#e2f5f2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent transition-all bg-white/70"
+                  className="w-full pl-10 pr-10 py-2.5 border border-[#d5eef2] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent transition-all bg-white/70"
                   placeholder="••••••••"
                   required
                 />
@@ -114,7 +114,7 @@ export function AdminLoginPage({ onNavigate }: AdminLoginPageProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>

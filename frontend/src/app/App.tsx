@@ -441,9 +441,9 @@ function AppContent() {
   // ============================================
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f4fffe] to-[#e8fffb]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#eefbfd] to-[#e8fffb]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#00c9a7] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#12b8c9] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 font-medium">Chargement de votre session...</p>
         </div>
       </div>

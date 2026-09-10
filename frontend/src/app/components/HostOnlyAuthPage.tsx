@@ -115,11 +115,11 @@ export function HostOnlyAuthPage({
 
   if (showVerification) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#f4fffe] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#eefbfd] flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-[#00c9a7]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-[#00c9a7]" />
+            <div className="w-16 h-16 bg-[#12b8c9]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-[#12b8c9]" />
             </div>
             <h2 className="text-2xl font-bold text-[#0F2940] mb-2">Vérifiez votre email</h2>
             <p className="text-gray-600 text-sm">
@@ -138,7 +138,7 @@ export function HostOnlyAuthPage({
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
                 placeholder="Entrez le code à 6 chiffres"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent text-center text-2xl tracking-widest"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent text-center text-2xl tracking-widest"
                 maxLength={6}
                 required
               />
@@ -147,7 +147,7 @@ export function HostOnlyAuthPage({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
             >
               {isLoading ? 'Vérification...' : 'Vérifier'}
             </button>
@@ -158,7 +158,7 @@ export function HostOnlyAuthPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#f4fffe] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#eefbfd] flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden">
         {!hideBackButton && (
           <button
@@ -174,7 +174,7 @@ export function HostOnlyAuthPage({
             onClick={() => setIsLogin(true)}
             className={`flex-1 py-4 text-center font-semibold transition-all duration-300 ${
               isLogin
-                ? 'text-[#00c9a7] border-b-2 border-[#00c9a7]'
+                ? 'text-[#12b8c9] border-b-2 border-[#12b8c9]'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -184,7 +184,7 @@ export function HostOnlyAuthPage({
             onClick={() => setIsLogin(false)}
             className={`flex-1 py-4 text-center font-semibold transition-all duration-300 ${
               !isLogin
-                ? 'text-[#00c9a7] border-b-2 border-[#00c9a7]'
+                ? 'text-[#12b8c9] border-b-2 border-[#12b8c9]'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -203,7 +203,7 @@ export function HostOnlyAuthPage({
                     type="email"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="votre@email.com"
                     required
                   />
@@ -218,7 +218,7 @@ export function HostOnlyAuthPage({
                     type={showPassword ? "text" : "password"}
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="Votre mot de passe"
                     required
                   />
@@ -235,7 +235,7 @@ export function HostOnlyAuthPage({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
               >
                 {isLoading ? 'Connexion...' : 'Se connecter'}
               </button>
@@ -250,7 +250,7 @@ export function HostOnlyAuthPage({
                     type="text"
                     value={registerData.name}
                     onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="Jean Dupont"
                     required
                   />
@@ -265,7 +265,7 @@ export function HostOnlyAuthPage({
                     type="email"
                     value={registerData.email}
                     onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="votre@email.com"
                     required
                   />
@@ -280,7 +280,7 @@ export function HostOnlyAuthPage({
                     type="tel"
                     value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="+229 XX XXX XXX"
                     required
                   />
@@ -295,7 +295,7 @@ export function HostOnlyAuthPage({
                     type="password"
                     value={registerData.password}
                     onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="Minimum 8 caractères"
                     required
                   />
@@ -310,7 +310,7 @@ export function HostOnlyAuthPage({
                     type="password"
                     value={registerData.password_confirmation}
                     onChange={(e) => setRegisterData({ ...registerData, password_confirmation: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#12b8c9] focus:border-transparent"
                     placeholder="Confirmez votre mot de passe"
                     required
                   />
@@ -320,7 +320,7 @@ export function HostOnlyAuthPage({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50"
               >
                 {isLoading ? 'Inscription...' : 'S\'inscrire'}
               </button>

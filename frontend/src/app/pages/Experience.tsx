@@ -1203,7 +1203,7 @@ export default function Experiences() {
           </div>
           {exp.rating && (
             <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-current text-[#00c9a7]" />
+              <Star className="w-4 h-4 fill-current text-[#12b8c9]" />
               <span className="text-sm font-medium">{exp.rating}</span>
             </div>
           )}
@@ -1253,7 +1253,7 @@ export default function Experiences() {
                             <input
                               type="text"
                               placeholder="Rechercher une destination au Bénin"
-                              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
                               value={destination}
                               onChange={(e) => setDestination(e.target.value)}
                             />
@@ -1297,7 +1297,7 @@ export default function Experiences() {
                   </div>
 
                   {/* Bouton recherche */}
-                  <button className="bg-[#00c9a7] text-[#0F2940] rounded-full p-4 hover:bg-[#00b892] transition-colors ml-0 sm:ml-2 mt-2 sm:mt-0">
+                  <button className="bg-[#12b8c9] text-[#0F2940] rounded-full p-4 hover:bg-[#00b892] transition-colors ml-0 sm:ml-2 mt-2 sm:mt-0">
                     <Search className="w-5 h-5" />
                   </button>
                 </div>
@@ -1322,7 +1322,7 @@ export default function Experiences() {
         <div className="mb-16">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-semibold text-[#0F2940]">Expériences recommandées</h2>
-            <button className="text-[#00c9a7] text-sm font-medium hover:underline">Tout afficher</button>
+            <button className="text-[#12b8c9] text-sm font-medium hover:underline">Tout afficher</button>
           </div>
           <p className="text-gray-600 mb-6">Organisées par des hôtes locaux du Bénin</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1394,7 +1394,7 @@ export default function Experiences() {
                             <p className="font-semibold text-[#0F2940]">{review.name}</p>
                             <p className="text-sm text-gray-500">{review.location} · {review.daysAgo}</p>
                           </div>
-                          <span className="rounded-full bg-[#00c9a7]/10 px-3 py-1 text-sm text-[#0F2940]">{review.rating.toFixed(1)}</span>
+                          <span className="rounded-full bg-[#12b8c9]/10 px-3 py-1 text-sm text-[#0F2940]">{review.rating.toFixed(1)}</span>
                         </div>
                         <p className="mt-3 text-sm text-gray-700">{review.text}</p>
                       </div>
@@ -1405,7 +1405,7 @@ export default function Experiences() {
               <aside className="space-y-6 rounded-3xl border border-gray-200 bg-[#f8fafb] p-6">
                 <div><p className="text-sm font-semibold text-gray-700">À savoir</p><ul className="mt-4 space-y-3 text-sm text-gray-600"><li>Durée : 2 à 3 heures</li><li>Langue : Français</li><li>Âge minimum : 12 ans</li><li>Petit groupe local sécurisé</li></ul></div>
                 <div className="rounded-3xl bg-white p-4 shadow-sm"><p className="text-sm text-gray-500">Lieu de rendez-vous</p><p className="mt-2 font-medium text-[#0F2940]">{selectedExperience.location}</p></div>
-                <button className="w-full rounded-full bg-[#00c9a7] px-5 py-3 text-sm font-semibold text-[#0F2940] hover:bg-[#00b892]">Réserver cette expérience</button>
+                <button className="w-full rounded-full bg-[#12b8c9] px-5 py-3 text-sm font-semibold text-[#0F2940] hover:bg-[#00b892]">Réserver cette expérience</button>
               </aside>
             </div>
           </div>

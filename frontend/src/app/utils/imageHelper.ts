@@ -3,7 +3,7 @@
 const API_BASE_URL = 'https://api.bluefin-immo.com';
 
 // URL de placeholder valide
-const PLACEHOLDER_IMAGE = 'https://ui-avatars.com/api/?background=00c9a7&color=fff&size=128&font-size=0.5&name=Image';
+const PLACEHOLDER_IMAGE = 'https://ui-avatars.com/api/?background=12b8c9&color=fff&size=128&font-size=0.5&name=Image';
 
 // ✅ Export de getImageUrl
 export const getImageUrl = (path: any, type: 'property' | 'experience' | 'step' | 'service' = 'property'): string => {

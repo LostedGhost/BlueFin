@@ -18,13 +18,13 @@ class ServiceBookingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'reservation_date' => 'required|date|after_or_equal:today',
-            'guests_count' => 'nullable|integer|min:1',
+            'guests_count' => 'nullable|integer|min:1|max:50',
             'payment_method' => 'nullable|in:mobile_money,card,bank_transfer',
             'guest_details' => 'nullable|array',
-            'special_requests' => 'nullable|string',
-            'transaction_id' => 'nullable|string',
-            'mobile_money_provider' => 'nullable|string',
-            'mobile_money_number' => 'nullable|string',
+            'special_requests' => 'nullable|string|max:1000',
+            'transaction_id' => 'nullable|string|max:255',
+            'mobile_money_provider' => 'nullable|in:MTN,Moov,Orange',
+            'mobile_money_number' => 'nullable|string|regex:/^\+?[0-9]{8,15}$/',
         ]);
 
         if ($validator->fails()) {

@@ -36,14 +36,15 @@ class HostExperienceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|min:20',
+            'description' => 'required|string|min:20|max:10000',
             'location' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'total_places' => 'nullable|integer|min:1',
-            'images' => 'nullable|array',
+            'price' => 'required|numeric|min:0|max:10000000',
+            'total_places' => 'nullable|integer|min:1|max:500',
+            'images' => 'nullable|array|max:20',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
-            'steps' => 'nullable|array',
-            'step_images' => 'nullable|array',
+            'steps' => 'nullable|array|max:30',
+            'steps.*' => 'nullable|string|max:1000',
+            'step_images' => 'nullable|array|max:30',
             'step_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
@@ -85,11 +86,14 @@ class HostExperienceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string|min:20',
+            'description' => 'sometimes|string|min:20|max:10000',
             'location' => 'sometimes|string|max:255',
-            'price' => 'sometimes|numeric|min:0',
-            'total_places' => 'sometimes|integer|min:1',
-            'status' => 'sometimes|in:draft,pending,active,inactive,rejected,suspended',
+            'price' => 'sometimes|numeric|min:0|max:10000000',
+            'total_places' => 'sometimes|integer|min:1|max:500',
+            // Seul 'pending' est réellement appliqué plus bas (soumission pour
+            // modération) — les autres statuts (active/rejected/...) relèvent
+            // exclusivement du workflow admin, jamais de cette route hôte.
+            'status' => 'sometimes|in:draft,pending',
         ]);
 
         if ($validator->fails()) {

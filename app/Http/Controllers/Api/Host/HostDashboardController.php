@@ -182,23 +182,26 @@ class HostDashboardController extends Controller
         
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string|min:50',
-            'price_per_night' => 'sometimes|numeric|min:5000',
-            'city' => 'sometimes|string',
-            'district' => 'sometimes|string',
-            'bedrooms' => 'sometimes|integer|min:0',
-            'beds' => 'sometimes|integer|min:1',
-            'bathrooms' => 'sometimes|integer|min:1',
-            'max_guests' => 'sometimes|integer|min:1',
-            'property_type' => 'sometimes|string',
+            'description' => 'sometimes|string|min:50|max:10000',
+            'price_per_night' => 'sometimes|numeric|min:5000|max:100000000',
+            'city' => 'sometimes|string|max:100',
+            'district' => 'sometimes|string|max:100',
+            'bedrooms' => 'sometimes|integer|min:0|max:50',
+            'beds' => 'sometimes|integer|min:1|max:50',
+            'bathrooms' => 'sometimes|integer|min:1|max:20',
+            'max_guests' => 'sometimes|integer|min:1|max:50',
+            'property_type' => 'sometimes|in:appartement,chambre_habitant,villa,hotel,motel,auberge,maison_hotes,ecolodge,residence_hoteliere,immeuble_entier',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $property->update($request->all());
-        
+        // Ce contrôleur duplique HostPropertyController::update — cf. audit :
+        // même défaut de mass assignment corrigé ici pour ne pas laisser de
+        // piège si cette méthode venait à être routée un jour.
+        $property->update($validator->validated());
+
         // Reset status to draft if it was rejected
         if ($property->status === 'rejected') {
             $property->update(['status' => 'draft', 'requires_review' => true]);

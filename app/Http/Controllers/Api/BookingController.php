@@ -10,6 +10,7 @@ use App\Models\Availability;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
@@ -28,11 +29,13 @@ class BookingController extends Controller
             'property_id' => 'required|exists:properties,id',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
-            'guests' => 'nullable|integer|min:1',           // ✅ Nouveau champ
-            'guests_count' => 'nullable|integer|min:1',     // ✅ Ancien champ
-            'payment_method' => 'nullable|in:card,mobile_money,cash',
+            'guests' => 'nullable|integer|min:1|max:50',           // ✅ Nouveau champ
+            'guests_count' => 'nullable|integer|min:1|max:50',     // ✅ Ancien champ
+            // 'cash' n'existe pas dans l'enum DB (mobile_money|card|bank_transfer) —
+            // le laisser passer la validation aurait provoqué une erreur SQL à l'insertion.
+            'payment_method' => 'nullable|in:card,mobile_money,bank_transfer',
             'mobile_money_provider' => 'nullable|in:MTN,Moov,Orange',
-            'mobile_money_number' => 'nullable|string',
+            'mobile_money_number' => 'nullable|string|regex:/^\+?[0-9]{8,15}$/',
             'guest_details' => 'nullable|array',
             'transaction_id' => 'nullable|string',
         ], [
@@ -304,6 +307,44 @@ class BookingController extends Controller
             ]);
         }
 
+        // ⚠️ Cette route confirmait le paiement sur la seule foi de l'appelant
+        // (y compris le voyageur lui-même), sans jamais vérifier auprès de la
+        // passerelle — n'importe qui pouvait donc valider gratuitement sa
+        // propre réservation. On applique désormais la même vérification
+        // serveur-à-serveur que PaymentController::webhook.
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $transactionId = $request->input('transaction_id');
+
+        try {
+            $verification = Http::post('https://api-checkout.cinetpay.com/v2/payment/check', [
+                'apikey' => env('CINETPAY_API_KEY'),
+                'site_id' => env('CINETPAY_SITE_ID'),
+                'transaction_id' => $transactionId,
+            ])->json();
+        } catch (\Throwable $e) {
+            \Log::error('Vérification paiement réservation échouée', ['booking_id' => $booking->id, 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Vérification du paiement indisponible, réessayez.'], 502);
+        }
+
+        $verifiedStatus = $verification['data']['status'] ?? null;
+        $verifiedAmount = isset($verification['data']['amount']) ? (float) $verification['data']['amount'] : null;
+        $isConfirmed = ($verification['code'] ?? null) === '00'
+            && $verifiedStatus === 'ACCEPTED'
+            && $verifiedAmount !== null
+            && abs($verifiedAmount - (float) $booking->total_amount) < 0.01;
+
+        if (!$isConfirmed) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le paiement n\'a pas pu être confirmé auprès de la passerelle.',
+            ], 422);
+        }
+
         $booking->update([
             'payment_status' => 'paid',
             'booking_status' => 'confirmed',
@@ -313,7 +354,8 @@ class BookingController extends Controller
             $booking->payment->update([
                 'status' => 'success',
                 'paid_at' => now(),
-                'transaction_id' => $request->get('transaction_id', $booking->payment->transaction_id),
+                'transaction_id' => $transactionId,
+                'payment_gateway_response' => $verification,
             ]);
         }
 

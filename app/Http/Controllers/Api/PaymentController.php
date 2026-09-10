@@ -246,17 +246,15 @@ class PaymentController extends Controller
     }
 
     /**
-     * Mobile Money webhook
+     * Mobile Money webhook — CinetPay est le seul intermédiaire Mobile Money
+     * (MTN/Moov/Orange) utilisé par la plateforme ; cette route doit donc
+     * appliquer exactement la même vérification que webhook(), au lieu de se
+     * contenter de logguer la requête sans jamais confirmer aucun paiement
+     * (trou fonctionnel signalé par l'audit).
      */
     public function mobileMoneyWebhook(Request $request)
     {
-        // Handle Mobile Money callback
-        $data = $request->all();
-        
-        // Log webhook for debugging
-        \Log::info('Mobile Money Webhook', $data);
-        
-        return response()->json(['status' => 'received']);
+        return $this->webhook($request);
     }
 
     /**

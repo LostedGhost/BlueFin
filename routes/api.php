@@ -95,10 +95,12 @@ Route::prefix('host')->middleware('throttle:auth')->group(function () {
 });
 
 // ==================== ROUTES ADMIN PUBLIQUES ====================
+// login-otp/verify-otp retirées : AdminAuthController ne définit pas ces
+// méthodes (routes cassées — 500 "method does not exist" si appelées) et
+// aucun code frontend ne les appelle. À réintroduire seulement si un vrai
+// flux OTP admin est implémenté.
 Route::prefix('admin')->middleware('throttle:auth')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login']);
-    Route::post('/login-otp', [AdminAuthController::class, 'loginWithOTP']);
-    Route::post('/verify-otp', [AdminAuthController::class, 'verifyOTP']);
 });
 
 // ==================== ROUTES V1 (API versionnées) ====================
@@ -380,11 +382,17 @@ Route::prefix('v1')->group(function () {
                 Route::get('/bookings', [ReportController::class, 'bookings']);
                 Route::get('/properties', [ReportController::class, 'properties']);
                 Route::get('/users', [ReportController::class, 'users']);
-                Route::post('/export/{type}', [ReportController::class, 'export']);
+                // /export/{type} retirée : ReportController::export n'existe pas
+                // (route cassée) et seul le code frontend mort (pages/admin/AdminReportsPage.tsx,
+                // jamais chargé par App.tsx) l'appelait. À réimplémenter si un
+                // vrai export est nécessaire.
             });
-            
-            Route::get('/settings', [SettingsController::class, 'index']);
-            Route::put('/settings', [SettingsController::class, 'update']);
+
+            // /settings retirée : SettingsController est une classe vide (index/update
+            // inexistants, route cassée) et rien côté frontend ne l'appelle réellement
+            // (admin.service.ts::getSettings/updateSettings ne sont utilisés par
+            // aucune page). À réimplémenter avec une vraie validation si un panneau
+            // de réglages plateforme est construit.
         });
         
     }); 

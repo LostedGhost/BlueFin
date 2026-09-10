@@ -28,6 +28,20 @@ class AdminAuthController extends Controller
             ]);
         }
 
+        // ⚠️ Contrairement aux 3 autres login() (traveler/host/auth), celui-ci
+        // ne vérifiait jamais si le compte était désactivé/suspendu — un
+        // administrateur désactivé pouvait donc continuer à se connecter.
+        if (!$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Ce compte administrateur est désactivé.'],
+            ]);
+        }
+        if ($user->is_suspended) {
+            throw ValidationException::withMessages([
+                'email' => ['Ce compte administrateur est suspendu jusqu\'au ' . $user->suspended_until->format('d/m/Y') . '.'],
+            ]);
+        }
+
         // Supprimer les anciens tokens
         $user->tokens()->delete();
 

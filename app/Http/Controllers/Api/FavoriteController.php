@@ -15,8 +15,15 @@ class FavoriteController extends Controller
      */
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'list_name' => 'nullable|string|max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $listName = $request->get('list_name', 'default');
-        
+
         $favorites = Favorite::with('property', 'property.photos')
             ->where('user_id', $request->user()->id)
             ->where('list_name', $listName)
@@ -93,6 +100,8 @@ class FavoriteController extends Controller
      */
     public function check(Request $request, $propertyId)
     {
+        Property::findOrFail($propertyId);
+
         $isFavorited = Favorite::where('user_id', $request->user()->id)
             ->where('property_id', $propertyId)
             ->exists();
@@ -129,10 +138,19 @@ class FavoriteController extends Controller
      */
     public function deleteList(Request $request, $listName)
     {
+        // La liste 'default' ne doit jamais pouvoir être supprimée en bloc —
+        // même garde-fou que TravelerFavoriteController::deleteList.
+        if ($listName === 'default') {
+            return response()->json([
+                'success' => false,
+                'message' => 'La liste par défaut ne peut pas être supprimée.',
+            ], 422);
+        }
+
         Favorite::where('user_id', $request->user()->id)
             ->where('list_name', $listName)
             ->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Liste supprimée'

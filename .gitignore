@@ -2,6 +2,11 @@
 # Seule la vraie documentation projet (README.md dans chaque dossier) l'est.
 /docs/
 
+# Sorties générées par les scripts de tools/ (SQL de migration, planche de
+# contact, manifeste d'envoi). Ce sont des artefacts liés à une exécution
+# précise, pas du code.
+/tools/out/
+
 # OS / éditeurs
 .DS_Store
 Thumbs.db

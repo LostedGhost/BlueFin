@@ -110,13 +110,13 @@ class TravelerAuthController extends Controller
         $otp = rand(100000, 999999);
         Cache::put("otp_{$request->phone}", $otp, 300);
         
-        $message = "🔐 *Votre code de vérification Bluefin*\n\n"
+        $message = "🔐 *Votre code de vérification Bluefin Immo*\n\n"
             . "Code: *{$otp}*\n\n"
             . "Valable 5 minutes.\n\n"
             . "Si vous n'avez pas demandé ce code, ignorez ce message.";
-        
+
         $this->notificationService->sendWhatsApp($request->phone, $message);
-        $this->notificationService->sendSMS($request->phone, "Votre code Bluefin: {$otp}");
+        $this->notificationService->sendSMS($request->phone, "Votre code Bluefin Immo: {$otp}");
         
         return response()->json([
             'success' => true,

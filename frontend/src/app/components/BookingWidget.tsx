@@ -427,7 +427,7 @@ export function BookingWidget({
               <span className="text-[#0f2940]">{priceDetails.subtotal.toLocaleString()} FCFA</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-[#6b7280]">Frais de service Bluefin (10%)</span>
+              <span className="text-[#6b7280]">Frais de service Bluefin Immo (10%)</span>
               <span className="text-[#0f2940]">{priceDetails.serviceFee.toLocaleString()} FCFA</span>
             </div>
           </div>

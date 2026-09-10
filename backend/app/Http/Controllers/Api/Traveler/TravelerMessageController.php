@@ -198,7 +198,7 @@ class TravelerMessageController extends Controller
             . "📞 Téléphone: {$user->phone}\n"
             . "📅 Dates: {$booking->check_in->format('d/m/Y')} → {$booking->check_out->format('d/m/Y')}\n\n"
             . "📝 Message:\n{$request->message}\n\n"
-            . "📱 Répondez directement dans l'application Bluefin"
+            . "📱 Répondez directement dans l'application Bluefin Immo"
         );
         
         // Send push notification
@@ -278,7 +278,7 @@ class TravelerMessageController extends Controller
             . "👤 Voyageur: {$user->full_name}\n"
             . "📞 Téléphone: {$user->phone}\n\n"
             . "📝 Message:\n{$request->message}\n\n"
-            . "📱 Répondez directement dans l'application Bluefin"
+            . "📱 Répondez directement dans l'application Bluefin Immo"
         );
         
         return response()->json([

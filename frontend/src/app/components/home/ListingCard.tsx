@@ -31,7 +31,7 @@ export function ListingCard({
     >
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100">
         <img
-          src={imgError ? 'https://ui-avatars.com/api/?background=00c9a7&color=fff&size=128&name=Bluefin' : listing.image}
+          src={imgError ? 'https://ui-avatars.com/api/?background=00c9a7&color=fff&size=128&name=Bluefin+Immo' : listing.image}
           alt={listing.title}
           loading="lazy"
           onError={() => setImgError(true)}

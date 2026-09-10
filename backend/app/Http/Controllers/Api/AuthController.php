@@ -138,7 +138,7 @@ event(new NewUserRegistered($user));
         Cache::put("otp_{$request->phone}", $otp, 300);
         
         // Send OTP via WhatsApp (primary) and SMS (backup)
-        $message = "Votre code de vérification Bluefin est: {$otp}\nValable 5 minutes.";
+        $message = "Votre code de vérification Bluefin Immo est: {$otp}\nValable 5 minutes.";
         
         $this->notificationService->sendWhatsApp($request->phone, $message);
         $this->notificationService->sendSMS($request->phone, $message);

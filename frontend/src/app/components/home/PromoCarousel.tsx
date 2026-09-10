@@ -8,8 +8,8 @@ interface Slide {
 }
 
 const SLIDES: Slide[] = [
-  { icon: Sparkles, text: 'Devenez hôte et générez des revenus avec Bluefin', route: { name: 'become-host' } },
-  { icon: ShieldCheck, text: 'Logements vérifiés et certifiés Bluefin partout au Bénin' },
+  { icon: Sparkles, text: 'Devenez hôte et générez des revenus avec Bluefin Immo', route: { name: 'become-host' } },
+  { icon: ShieldCheck, text: 'Logements vérifiés et certifiés Bluefin Immo partout au Bénin' },
   { icon: Smartphone, text: 'Payez en toute sécurité par Mobile Money (MTN, Moov, Orange)' },
 ];
 

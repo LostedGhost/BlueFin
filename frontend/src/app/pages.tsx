@@ -168,7 +168,7 @@ const popularListings = [
     reviewCount: 124,
     price: 45000,
     priceEur: 69,
-    badge: 'Certifié Bluefin',
+    badge: 'Certifié Bluefin Immo',
   },
   {
     id: '2',
@@ -2518,10 +2518,10 @@ export function PropertyCard({
           onError={() => setImgError(true)}
         />
         
-        {/* Badge Bluefin Certifié */}
+        {/* Badge Bluefin Immo Certifié */}
         {property.bluefin_certified && (
           <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-medium z-10">
-            ✓ Bluefin Certifié
+            ✓ Bluefin Immo Certifié
           </div>
         )}
         
@@ -16024,7 +16024,7 @@ export function FavoritesPage({ onNavigate }: PageProps) {
             <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
               {propertyData.bluefin_certified && (
                 <div className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full font-medium shadow-sm">
-                  ✓ Bluefin Certifié
+                  ✓ Bluefin Immo Certifié
                 </div>
               )}
             </div>
@@ -17416,11 +17416,11 @@ export function HelpPage({ onNavigate }: { onNavigate?: (route: any) => void }) 
     articles: [
      { 
   id: "experience-adaptee", 
-  title: "Mon expérience est-elle adaptée sur Bluefin ?", 
+  title: "Mon expérience est-elle adaptée sur Bluefin Immo ?",
   description: "Découvrez les critères pour qu'une expérience soit éligible sur Bluefin Immo.",
   content: `
     <div class="space-y-4">
-      <p>Les Expériences Bluefin sont des activités mémorables animées par des hôtes passionnés, experts de leur ville.</p>
+      <p>Les Expériences Bluefin Immo sont des activités mémorables animées par des hôtes passionnés, experts de leur ville.</p>
       <p><strong>Types d'expériences acceptées :</strong></p>
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-[#f4fffe] rounded-xl p-3 text-center">Visites insolites</div>
@@ -17432,7 +17432,7 @@ export function HelpPage({ onNavigate }: { onNavigate?: (route: any) => void }) 
       </div>
       <p>Chaque expérience est conçue pour être unique et authentique.</p>
       <div class="bg-[#f4fffe] rounded-xl p-4 mt-4">
-        <p class="text-sm text-[#0F2940]"><strong> En savoir plus :</strong> Consultez nos critères détaillés pour les expériences Bluefin.</p>
+        <p class="text-sm text-[#0F2940]"><strong> En savoir plus :</strong> Consultez nos critères détaillés pour les expériences Bluefin Immo.</p>
       </div>
     </div>
   `
@@ -17476,7 +17476,7 @@ export function HelpPage({ onNavigate }: { onNavigate?: (route: any) => void }) 
 },
       { 
         id: "experience-frais", 
-        title: "Quels sont les frais Bluefin ?", 
+        title: "Quels sont les frais Bluefin Immo ?",
         description: "Détail des frais de service appliqués.",
         content: `
           <div class="space-y-4">
@@ -17567,7 +17567,7 @@ export function HelpPage({ onNavigate }: { onNavigate?: (route: any) => void }) 
             <p>Tout dépend de votre type d'annonce et de la réglementation locale. Si un agrément ou d'autres documents sont nécessaires, nous vous en informerons après vérification de votre annonce.</p>
             
             <h3 class="font-semibold text-lg mt-4">Dois-je avoir ma propre assurance ?</h3>
-            <p><strong>Oui</strong>. Bluefin exige que vous souscriviez une <strong>assurance responsabilité civile</strong> adaptée à votre activité. Il est possible que nous vous demandions de nous fournir une preuve de cette assurance.</p>
+            <p><strong>Oui</strong>. Bluefin Immo exige que vous souscriviez une <strong>assurance responsabilité civile</strong> adaptée à votre activité. Il est possible que nous vous demandions de nous fournir une preuve de cette assurance.</p>
             
             <h3 class="font-semibold text-lg mt-4">Est-ce que Bluefin-Immo fournit une assurance ?</h3>
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
@@ -17594,7 +17594,7 @@ const getServiceContent = () => ({
   articles: [
     { 
       id: "service-adapte", 
-      title: "Mon service est-il adapté sur Bluefin ?", 
+      title: "Mon service est-il adapté sur Bluefin Immo ?",
       description: "Découvrez les types de services acceptés sur Bluefin Immo.",
       content: `
         <div class="space-y-4">
@@ -17653,7 +17653,7 @@ const getServiceContent = () => ({
     },
     { 
       id: "service-frais", 
-      title: "Quels sont les frais Bluefin ?", 
+      title: "Quels sont les frais Bluefin Immo ?",
       description: "Frais de service pour les services.",
       content: `
         <div class="space-y-4">
@@ -17738,7 +17738,7 @@ const getServiceContent = () => ({
       <p>Tout dépend de votre type d'annonce et de la réglementation locale. Si un agrément ou d'autres documents sont nécessaires, nous vous en informerons après vérification de votre annonce.</p>
       
       <h3 class="font-semibold text-lg mt-4">Dois-je avoir ma propre assurance ?</h3>
-      <p><strong>Oui</strong>. Bluefin exige que vous souscriviez une <strong>assurance responsabilité civile</strong> adaptée à votre activité. Il est possible que nous vous demandions de nous fournir une preuve de cette assurance.</p>
+      <p><strong>Oui</strong>. Bluefin Immo exige que vous souscriviez une <strong>assurance responsabilité civile</strong> adaptée à votre activité. Il est possible que nous vous demandions de nous fournir une preuve de cette assurance.</p>
       
       <h3 class="font-semibold text-lg mt-4">Est-ce que Bluefin-Immo fournit une assurance ?</h3>
       <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">

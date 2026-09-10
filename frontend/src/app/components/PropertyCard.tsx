@@ -64,10 +64,10 @@ export function PropertyCard({
           onError={() => setImgError(true)}
         />
         
-        {/* Badge Bluefin Certifié */}
+        {/* Badge Bluefin Immo Certifié */}
         {property.bluefin_certified && (
           <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-medium z-10">
-            ✓ Bluefin Certifié
+            ✓ Bluefin Immo Certifié
           </div>
         )}
         

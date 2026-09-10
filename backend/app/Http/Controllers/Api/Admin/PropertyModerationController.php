@@ -502,7 +502,7 @@ class PropertyModerationController extends Controller
         }
         
         $message .= "🔗 Gérez votre annonce: " . env('APP_URL') . "/host/properties/{$property->id}\n\n"
-            . "Merci de faire partie de la communauté Bluefin ! 🎉";
+            . "Merci de faire partie de la communauté Bluefin Immo ! 🎉";
         
         $this->notificationService->sendWhatsApp($property->user->phone, $message);
     }

@@ -108,13 +108,13 @@ class HostAuthController extends Controller
         
         Cache::put("otp_{$request->phone}", $otp, 300);
         
-        $message = "🔐 *Votre code de vérification Bluefin*\n\n"
+        $message = "🔐 *Votre code de vérification Bluefin Immo*\n\n"
             . "Code: *{$otp}*\n\n"
             . "Valable 5 minutes.\n\n"
             . "Utilisez ce code pour vous connecter à votre espace hôte.";
-        
+
         $this->notificationService->sendWhatsApp($request->phone, $message);
-        $this->notificationService->sendSMS($request->phone, "Votre code Bluefin: {$otp}");
+        $this->notificationService->sendSMS($request->phone, "Votre code Bluefin Immo: {$otp}");
         
         return response()->json([
             'success' => true,
@@ -340,7 +340,7 @@ class HostAuthController extends Controller
         // Send welcome message
         $this->notificationService->sendWhatsApp(
             $user->phone,
-            "🎉 *Félicitations! Vous êtes maintenant hôte sur Bluefin!* 🎉\n\n"
+            "🎉 *Félicitations! Vous êtes maintenant hôte sur Bluefin Immo!* 🎉\n\n"
             . "📝 *Prochaines étapes:*\n"
             . "1. ✅ Vérifiez votre identité\n"
             . "2. 🏠 Publiez votre première annonce\n\n"

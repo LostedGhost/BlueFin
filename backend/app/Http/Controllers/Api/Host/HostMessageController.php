@@ -216,7 +216,7 @@ class HostMessageController extends Controller
             . "📅 Réservation: #{$booking->booking_reference}\n"
             . "📆 Dates: {$booking->check_in->format('d/m/Y')} → {$booking->check_out->format('d/m/Y')}\n\n"
             . "📝 Message:\n{$request->message}\n\n"
-            . "📱 Répondez directement dans l'application Bluefin"
+            . "📱 Répondez directement dans l'application Bluefin Immo"
         );
         
         // Send push notification
@@ -352,7 +352,7 @@ class HostMessageController extends Controller
             . "👤 De: {$user->full_name}\n"
             . "📞 Téléphone: {$user->phone}\n\n"
             . "📝 Message:\n{$request->message}\n\n"
-            . "📱 Répondez dans l'application Bluefin"
+            . "📱 Répondez dans l'application Bluefin Immo"
         );
         
         return response()->json([
@@ -523,7 +523,7 @@ class HostMessageController extends Controller
                 'title' => 'Merci et demande d\'avis',
                 'message' => "Bonjour! Merci d'avoir choisi notre logement! 🙏\n\n"
                     . "J'espère que votre séjour s'est bien passé.\n\n"
-                    . "Si cela vous a plu, n'hésitez pas à laisser un avis sur Bluefin. Cela nous aide beaucoup!\n\n"
+                    . "Si cela vous a plu, n'hésitez pas à laisser un avis sur Bluefin Immo. Cela nous aide beaucoup!\n\n"
                     . "Au plaisir de vous accueillir à nouveau! 🌟"
             ],
         ];

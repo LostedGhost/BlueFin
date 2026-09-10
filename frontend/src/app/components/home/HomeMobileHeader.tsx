@@ -24,7 +24,7 @@ export function HomeMobileHeader({ onNavigate }: { onNavigate?: (route: any) => 
     <div className="flex items-center justify-between px-4 pt-3 pb-2">
       <button onClick={() => onNavigate?.({ name: 'home' })} className="flex items-center gap-2">
         <img src={Logo} alt="Bluefin Immo" className="w-8 h-8 rounded-lg object-contain" />
-        <span className="font-semibold text-[#0f2940]">Bluefin</span>
+        <span className="font-semibold text-[#0f2940]">Bluefin-Immo</span>
       </button>
 
       <div className="relative" ref={ref}>

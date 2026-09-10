@@ -79,7 +79,7 @@
         </div>
 
         <div class="footer">
-            <p>© {{ date('Y') }} Bluefin. Tous les droits réservés.</p>
+            <p>© {{ date('Y') }} Bluefin Immo. Tous les droits réservés.</p>
             <p>Ceci est un email automatisé. Veuillez ne pas répondre directement à cet email.</p>
         </div>
     </div>

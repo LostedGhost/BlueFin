@@ -29,7 +29,7 @@ const Login: React.FC = () => {
             <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
                 <div>
                     <h2 className="text-center text-3xl font-bold text-gray-900">
-                        Connexion Bluefin
+                        Connexion Bluefin Immo
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

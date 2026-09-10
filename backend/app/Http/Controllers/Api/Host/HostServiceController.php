@@ -33,13 +33,13 @@ class HostServiceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'description' => 'required|string|min:20',
+            'description' => 'required|string|min:20|max:10000',
             'location' => 'required|string|max:255',
             'service_type' => 'required|string|max:100',
             'category' => 'required|string|max:100',
-            'price' => 'required|numeric|min:0',
-            'duration_minutes' => 'nullable|integer|min:1',
-            'images' => 'nullable|array',
+            'price' => 'required|numeric|min:0|max:10000000',
+            'duration_minutes' => 'nullable|integer|min:1|max:1440',
+            'images' => 'nullable|array|max:20',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
@@ -82,12 +82,12 @@ class HostServiceController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string|min:20',
+            'description' => 'sometimes|string|min:20|max:10000',
             'location' => 'sometimes|string|max:255',
             'service_type' => 'sometimes|string|max:100',
             'category' => 'sometimes|string|max:100',
-            'price' => 'sometimes|numeric|min:0',
-            'duration_minutes' => 'sometimes|integer|min:1',
+            'price' => 'sometimes|numeric|min:0|max:10000000',
+            'duration_minutes' => 'sometimes|integer|min:1|max:1440',
         ]);
 
         if ($validator->fails()) {

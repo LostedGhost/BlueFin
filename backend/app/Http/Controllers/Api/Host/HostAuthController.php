@@ -30,7 +30,7 @@ class HostAuthController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
             'property_address' => 'nullable|string',
             'property_type' => 'nullable|string',
         ]);
@@ -97,7 +97,7 @@ class HostAuthController extends Controller
     public function loginWithOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
         ]);
 
         if ($validator->fails()) {
@@ -129,7 +129,7 @@ class HostAuthController extends Controller
     public function verifyOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
             'otp' => 'required|string|size:6',
         ]);
 
@@ -139,7 +139,7 @@ class HostAuthController extends Controller
 
         $cachedOtp = Cache::get("otp_{$request->phone}");
         
-        if (!$cachedOtp || $cachedOtp != $request->otp) {
+        if (!$cachedOtp || (string) $cachedOtp !== (string) $request->otp) {
             return response()->json([
                 'success' => false,
                 'message' => 'Code OTP invalide ou expiré'

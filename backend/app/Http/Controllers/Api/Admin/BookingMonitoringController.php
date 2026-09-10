@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class BookingMonitoringController extends Controller
 {
@@ -20,6 +21,17 @@ class BookingMonitoringController extends Controller
 
     public function index(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'nullable|in:pending,confirmed,cancelled,completed,refunded',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'search' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $query = Booking::with(['user', 'property.user', 'payment']);
 
         if ($request->has('status')) {
@@ -32,7 +44,10 @@ class BookingMonitoringController extends Controller
             $query->where('check_out', '<=', $request->end_date);
         }
         if ($request->has('search')) {
-            $search = $request->search;
+            // Échapper les jokers LIKE (%, _) présents dans la saisie utilisateur
+            // pour éviter qu'une recherche contenant ces caractères ne se
+            // comporte de façon inattendue.
+            $search = str_replace(['%', '_'], ['\\%', '\\_'], $request->search);
             $query->where(function($q) use ($search) {
                 $q->where('booking_reference', 'like', "%{$search}%")
                   ->orWhereHas('user', function($q2) use ($search) {

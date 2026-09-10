@@ -15,10 +15,19 @@ class SearchController extends Controller
      */
     public function search(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'q' => 'nullable|string|max:100',
+            'city' => 'nullable|string|max:100',
+            'district' => 'nullable|string|max:100',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $query = $request->get('q');
         $city = $request->get('city');
         $district = $request->get('district');
-        
+
         $properties = Property::where('status', 'active')
             ->when($query, function($q) use ($query) {
                 $q->where(function($sub) use ($query) {
@@ -48,8 +57,15 @@ class SearchController extends Controller
      */
     public function autocomplete(Request $request)
     {
-        $query = $request->get('q');
-        
+        $validator = Validator::make($request->all(), [
+            'q' => 'nullable|string|max:100',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $query = (string) $request->get('q', '');
+
         if (strlen($query) < 2) {
             return response()->json(['success' => true, 'data' => []]);
         }
@@ -127,6 +143,24 @@ class SearchController extends Controller
      */
     public function advancedSearch(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'city' => 'nullable|string|max:100',
+            'district' => 'nullable|string|max:100',
+            'check_in' => 'nullable|date',
+            'check_out' => 'nullable|date|after:check_in',
+            'guests' => 'nullable|integer|min:1|max:50',
+            'bedrooms' => 'nullable|integer|min:0|max:50',
+            'min_price' => 'nullable|numeric|min:0',
+            'max_price' => 'nullable|numeric|min:0|gte:min_price',
+            'property_type' => 'nullable|string|max:255',
+            'min_rating' => 'nullable|numeric|min:0|max:5',
+            'sort_by' => 'nullable|in:price_asc,price_desc,rating_desc,newest,recommended',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
         $query = Property::where('status', 'active')
             ->with(['user', 'coverPhoto']);
         
@@ -224,7 +258,7 @@ class SearchController extends Controller
                 $query->orderByRaw('bluefin_certified DESC, average_rating DESC');
         }
         
-        $perPage = $request->get('per_page', 20);
+        $perPage = min((int) $request->get('per_page', 20), 100);
         $results = $query->paginate($perPage);
         
         return response()->json([

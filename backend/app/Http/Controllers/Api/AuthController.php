@@ -32,7 +32,7 @@ class AuthController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
             'user_type' => 'in:voyageur,hote',
         ]);
 
@@ -125,7 +125,7 @@ event(new NewUserRegistered($user));
     public function loginWithOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
         ]);
 
         if ($validator->fails()) {
@@ -156,7 +156,7 @@ event(new NewUserRegistered($user));
     public function verifyOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
             'otp' => 'required|string|size:6',
             'device_token' => 'nullable|string',
             'device_type' => 'nullable|in:ios,android,web',
@@ -168,7 +168,7 @@ event(new NewUserRegistered($user));
 
         $cachedOtp = Cache::get("otp_{$request->phone}");
         
-        if (!$cachedOtp || $cachedOtp != $request->otp) {
+        if (!$cachedOtp || (string) $cachedOtp !== (string) $request->otp) {
             return response()->json([
                 'success' => false,
                 'message' => 'Code OTP invalide ou expiré'

@@ -96,9 +96,12 @@ class HostPropertyController extends Controller
         DB::beginTransaction();
 
         try {
+            // ⚠️ $request->except(['photos']) laissait passer tout champ
+            // additionnel (bluefin_certified, is_hotel_promoted, superhost,
+            // average_rating...) au-delà des champs validés ci-dessus.
             // Create property as draft
             $property = Property::create(array_merge(
-                $request->except(['photos']),
+                $validator->validated(),
                 [
                     'user_id' => $user->id,
                     'slug' => Str::slug($request->title . '-' . uniqid()),
@@ -166,19 +169,22 @@ class HostPropertyController extends Controller
         }
         
         $validator = Validator::make($request->all(), [
-            'title' => 'string|max:255',
-            'description' => 'string|min:50',
-            'price_per_night' => 'numeric|min:5000',
-            'city' => 'string',
-            'district' => 'string',
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string|min:50|max:10000',
+            'price_per_night' => 'sometimes|numeric|min:5000|max:100000000',
+            'city' => 'sometimes|string|max:100',
+            'district' => 'sometimes|string|max:100',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $property->update($request->all());
-        
+        // ⚠️ update($request->all()) laissait passer n'importe quel champ du
+        // modèle (status, is_hotel_promoted, bluefin_certified, user_id, ...) —
+        // seuls les champs réellement validés ci-dessus doivent être appliqués.
+        $property->update($validator->validated());
+
         // Reset status to draft if it was rejected
         if ($property->status === 'rejected') {
             $property->update(['status' => 'draft', 'requires_review' => true]);
@@ -282,8 +288,13 @@ public function updateAmenities(Request $request, $id)
         'has_balcony', 'has_garden', 'has_bbq', 'has_loungers',
     ];
 
-    $data = $request->only($amenityFields);
-    
+    $validator = Validator::make($request->all(), array_fill_keys($amenityFields, 'sometimes|boolean'));
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $data = $validator->validated();
+
     $property->update($data);
 
     return response()->json([

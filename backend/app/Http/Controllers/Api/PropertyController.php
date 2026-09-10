@@ -161,6 +161,18 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
+        // ⚠️ Cette route (générique, group auth:sanctum) n'exigeait aucun rôle
+        // hôte ni vérification d'identité — contrairement à
+        // HostPropertyController::store — un simple voyageur pouvait publier
+        // une annonce en la contournant.
+        if ($request->user()->user_type !== 'hote' || $request->user()->verification_status !== 'verified') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vous devez être un hôte vérifié pour publier une annonce.',
+                'verification_required' => true,
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -190,7 +202,11 @@ class PropertyController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->except('photos');
+            // ⚠️ $request->except('photos') laissait passer tout champ
+            // additionnel du payload (ex. status, bluefin_certified,
+            // is_hotel_promoted, average_rating...) au-delà de ceux validés.
+            $data = $validator->validated();
+            unset($data['photos']);
             if (!isset($data['cleaning_fee'])) {
                 $data['cleaning_fee'] = 0;
             }
@@ -301,19 +317,34 @@ class PropertyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $property = Property::where('user_id', $request->user()->id)
-            ->orWhereHas('user', function($q) use ($request) {
-                $q->where('user_type', 'admin');
-            })
-            ->findOrFail($id);
+        // ⚠️ La condition précédente (orWhereHas sur le propriétaire admin) ne
+        // référençait jamais l'utilisateur courant : elle rendait modifiable par
+        // N'IMPORTE QUEL utilisateur authentifié toute propriété appartenant à un
+        // compte admin. Seul le propriétaire lui-même, ou un requérant admin,
+        // doit pouvoir passer cette route.
+        $requester = $request->user();
+        $query = Property::query();
+        if ($requester->user_type !== 'admin') {
+            $query->where('user_id', $requester->id);
+        }
+        $property = $query->findOrFail($id);
+
+        // Un hôte ne doit jamais pouvoir s'auto-approuver, se certifier ou se
+        // promouvoir en hôtel via cette route "édition" — seuls le statut de
+        // base (draft/pending) et les champs de contenu sont modifiables ici ;
+        // status=active, is_hotel_promoted, is_featured/bluefin_certified
+        // restent réservés au workflow de modération admin.
+        $allowedStatuses = $requester->user_type === 'admin'
+            ? 'draft,pending,active,inactive,rejected,suspended'
+            : 'draft,pending';
 
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'price_per_night' => 'sometimes|numeric|min:0',
-            'cleaning_fee' => 'sometimes|numeric|min:0',
-            'min_stay' => 'sometimes|integer|min:1',
-            'status' => 'sometimes|in:draft,pending,active,inactive',
+            'description' => 'sometimes|string|max:10000',
+            'price_per_night' => 'sometimes|numeric|min:5000|max:100000000',
+            'cleaning_fee' => 'sometimes|numeric|min:0|max:1000000',
+            'min_stay' => 'sometimes|integer|min:1|max:365',
+            'status' => 'sometimes|in:' . $allowedStatuses,
             'has_generator' => 'sometimes|boolean',
             'has_water_tank' => 'sometimes|boolean',
             'has_air_conditioning' => 'sometimes|boolean',
@@ -326,7 +357,12 @@ class PropertyController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $property->update($request->all());
+        $data = $validator->validated();
+        if ($requester->user_type !== 'admin') {
+            unset($data['is_hotel_promoted'], $data['is_featured']);
+        }
+
+        $property->update($data);
 
         return response()->json([
             'success' => true,

@@ -30,7 +30,7 @@ class TravelerAuthController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
             'user_type' => 'sometimes|in:voyageur,hote', // ✅ accepte le rôle du frontend
         ]);
 
@@ -41,14 +41,20 @@ class TravelerAuthController extends Controller
         // Valeur par défaut : voyageur
         $userType = $request->user_type ?? 'voyageur';
 
+        // ⚠️ Cette route forçait 'verification_status' => 'verified' quel que
+        // soit le rôle choisi, y compris pour user_type=hote — un compte
+        // pouvait ainsi obtenir le statut "hôte vérifié" sans jamais soumettre
+        // de pièce d'identité, contournant tout HostAuthController::register/
+        // uploadIdentity. Un hôte créé ici doit repartir 'pending' comme
+        // n'importe quel hôte, et ne pourra publier qu'après vérification.
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
-            'user_type' => $userType, // ✅ utilise la valeur reçue
-            'verification_status' => 'verified',
+            'user_type' => $userType,
+            'verification_status' => $userType === 'hote' ? 'pending' : 'verified',
             'is_active' => true,
         ]);
 
@@ -94,7 +100,7 @@ class TravelerAuthController extends Controller
     public function loginWithOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
         ]);
 
         if ($validator->fails()) {
@@ -125,7 +131,7 @@ class TravelerAuthController extends Controller
     public function verifyOTP(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|string',
+            'phone' => 'required|string|regex:/^\+?[0-9]{8,15}$/',
             'otp' => 'required|string|size:6',
         ]);
 
@@ -135,7 +141,7 @@ class TravelerAuthController extends Controller
 
         $cachedOtp = Cache::get("otp_{$request->phone}");
         
-        if (!$cachedOtp || $cachedOtp != $request->otp) {
+        if (!$cachedOtp || (string) $cachedOtp !== (string) $request->otp) {
             return response()->json([
                 'success' => false,
                 'message' => 'Code OTP invalide ou expiré'

@@ -25,9 +25,9 @@ export function ListingCard({
   return (
     <button
       onClick={() => onNavigate?.(route)}
-      className="w-[182px] sm:w-[212px] flex-shrink-0 snap-start text-left group"
+      className="w-[76vw] max-w-[300px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start text-left group"
     >
-      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 shadow-[0_4px_14px_rgba(15,41,64,0.10)]">
         <img
           src={imgError ? 'https://ui-avatars.com/api/?background=00c9a7&color=fff&size=128&name=Bluefin+Immo' : listing.image}
           alt={listing.title}

@@ -30,7 +30,7 @@ export function PromoCarousel({ onNavigate }: { onNavigate?: (route: any) => voi
   return (
     <button
       onClick={() => slide.route && onNavigate?.(slide.route)}
-      className="w-full text-left block mx-4 mb-3 rounded-2xl bg-[#0f2940] px-4 py-3.5 flex items-center gap-3 relative"
+      className="w-full text-left block mx-4 mb-3 rounded-2xl bg-gradient-to-br from-[#12314d] to-[#0a1c2e] px-4 py-3.5 flex items-center gap-3 relative"
       style={{ width: 'calc(100% - 2rem)' }}
     >
       <span className="w-8 h-8 rounded-full bg-[#00c9a7]/20 flex items-center justify-center flex-shrink-0">

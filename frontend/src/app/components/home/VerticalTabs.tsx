@@ -17,27 +17,27 @@ export function VerticalTabs({
   onChange: (v: HomeVertical) => void;
 }) {
   return (
-    <div className="flex gap-2.5 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex gap-2 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {VERTICALS.map(({ id, label, icon: Icon }) => {
         const isActive = active === id;
         return (
           <button
             key={id}
             onClick={() => onChange(id)}
-            className={`flex-shrink-0 flex items-center gap-2 pl-1.5 pr-4 h-11 rounded-full border transition-all ${
+            className={`flex-shrink-0 flex items-center gap-1.5 pl-1 pr-3 h-8 rounded-full border transition-all ${
               isActive
-                ? 'bg-[#00c9a7] border-[#00c9a7] text-white shadow-sm'
-                : 'bg-white border-gray-200 text-[#0f2940] hover:border-[#00c9a7]/50'
+                ? 'bg-[#00c9a7] border-[#00c9a7] text-white'
+                : 'bg-transparent border-gray-200 text-[#0f2940]/80 hover:border-[#00c9a7]/50'
             }`}
           >
             <span
-              className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+              className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                 isActive ? 'bg-white/20' : 'bg-[#f4fffe]'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#00c9a7]'}`} />
+              <Icon className={`w-3 h-3 ${isActive ? 'text-white' : 'text-[#00c9a7]'}`} />
             </span>
-            <span className="text-sm font-semibold whitespace-nowrap">{label}</span>
+            <span className="text-[13px] font-medium whitespace-nowrap">{label}</span>
           </button>
         );
       })}

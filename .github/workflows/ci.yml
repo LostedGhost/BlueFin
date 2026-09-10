@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend — build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+  backend:
+    name: Backend — vérifications
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite
+          coverage: none
+
+      - run: composer install --no-progress --prefer-dist
+
+      - name: Vérifier la syntaxe PHP de tous les fichiers
+        run: find app database routes -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Copier la config de test et lancer les migrations (SQLite en mémoire)
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+          sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+          touch database/database.sqlite
+          php artisan migrate --force
+
+      - name: Lancer la suite de tests
+        run: php artisan test

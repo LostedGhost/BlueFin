@@ -1,0 +1,48 @@
+name: Deploy backend (Hostinger)
+
+# Se déclenche uniquement quand le backend change sur main, après que le job CI
+# ait validé que le code compile/passe les tests.
+#
+# Secrets requis à configurer dans Settings > Secrets and variables > Actions :
+#   HOSTINGER_SSH_HOST       — hôte SSH (ex: 123.45.67.89 ou ssh.votredomaine.com)
+#   HOSTINGER_SSH_PORT       — port SSH (souvent 65002 chez Hostinger, pas 22)
+#   HOSTINGER_SSH_USERNAME   — utilisateur SSH hPanel
+#   HOSTINGER_SSH_KEY        — clé privée SSH (format PEM), la clé publique
+#                              correspondante doit être ajoutée dans hPanel
+#   HOSTINGER_DEPLOY_PATH    — chemin absolu du projet Laravel sur le serveur
+#                              (ex: /home/utilisateur/api.bluefin-immo.com)
+#
+# Ce workflow suppose que le dossier de déploiement sur Hostinger est LUI-MÊME
+# un clone git de ce repo (branche main, sous-dossier backend/ via un lien
+# symbolique ou un checkout sparse) — à adapter selon la configuration réelle
+# de l'hébergement si elle diffère (ex: déploiement par rsync plutôt que git pull).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Déployer sur Hostinger
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOSTINGER_SSH_HOST }}
+          port: ${{ secrets.HOSTINGER_SSH_PORT }}
+          username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          script: |
+            set -e
+            cd "${{ secrets.HOSTINGER_DEPLOY_PATH }}"
+            git pull origin main
+            composer install --no-dev --optimize-autoloader --no-interaction
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan event:cache
+            php artisan queue:restart

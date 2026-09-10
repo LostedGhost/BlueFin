@@ -1,0 +1,10 @@
+# Docs de travail (audits, plans, notes de session) — jamais committées.
+# Seule la vraie documentation projet (README.md dans chaque dossier) l'est.
+/docs/
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

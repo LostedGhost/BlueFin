@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { ListingCard, type HomeListing } from './ListingCard';
 
 export function CitySection({
@@ -23,10 +23,10 @@ export function CitySection({
         {seeAllRoute && (
           <button
             onClick={() => onNavigate?.(seeAllRoute)}
-            className="flex items-center gap-0.5 text-sm text-[#00c9a7] font-medium hover:text-[#0f2940] transition-colors"
+            aria-label="Tout voir"
+            className="w-9 h-9 flex items-center justify-center rounded-full text-[#0f2940] hover:bg-[#f4fffe] transition-colors"
           >
-            Tout voir
-            <ChevronRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </button>
         )}
       </div>

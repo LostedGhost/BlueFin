@@ -5,7 +5,6 @@ import { Seo } from '../components/Seo';
 import { HomeMobileHeader } from '../components/home/HomeMobileHeader';
 import { PromoCarousel } from '../components/home/PromoCarousel';
 import { VerticalTabs, type HomeVertical } from '../components/home/VerticalTabs';
-import { TypeFilterChips, type TypeFilterOption } from '../components/home/TypeFilterChips';
 import { CitySection } from '../components/home/CitySection';
 import { ScrollTopButton } from '../components/home/ScrollTopButton';
 import type { HomeListing } from '../components/home/ListingCard';
@@ -14,14 +13,6 @@ import experienceService from '../../services/experience.service';
 import serviceService from '../../services/service.service';
 import { getFirstExperienceImage, getServiceImages } from '../utils/imageHelper';
 import { mapProperty } from '../pages';
-
-const TYPE_OPTIONS: TypeFilterOption[] = [
-  { id: 'tout', label: 'Tout' },
-  { id: 'appartement', label: 'Appartement' },
-  { id: 'villa', label: 'Villa' },
-  { id: 'chambre_habitant', label: "Chez l'habitant" },
-  { id: 'residence_hoteliere', label: 'Résidence hôtelière' },
-];
 
 function toListing(p: any): HomeListing {
   return {
@@ -72,7 +63,6 @@ function SectionsSkeleton() {
 
 export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) {
   const [vertical, setVertical] = useState<HomeVertical>('logements');
-  const [typeFilter, setTypeFilter] = useState('tout');
 
   const { data: propertiesData, isLoading: propertiesLoading } = useQuery({
     queryKey: ['home-properties'],
@@ -110,10 +100,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
     return raw.map(mapProperty).filter((p: any) => p.isVisible && !p.is_hotel_promoted);
   }, [propertiesData]);
 
-  const filteredProperties = useMemo(() => {
-    if (typeFilter === 'tout') return properties;
-    return properties.filter((p: any) => p.property_type === typeFilter);
-  }, [properties, typeFilter]);
+  const filteredProperties = properties;
 
   const topListings = useMemo(
     () =>
@@ -189,25 +176,24 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
 
         <button
           onClick={() => onNavigate?.({ name: 'search-logements' })}
-          className="flex items-center gap-2 mx-4 mb-3 bg-white border border-gray-200 rounded-full px-4 py-3 shadow-sm"
+          className="flex items-center gap-3 mx-4 mb-3 bg-white border-[1.5px] border-[#00c9a7] rounded-full pl-4 pr-4 py-2.5 text-left"
         >
-          <svg className="w-4 h-4 text-[#00c9a7] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg className="w-5 h-5 text-[#0f2940] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" strokeLinecap="round" />
           </svg>
-          <span className="text-sm text-gray-400">
-            {vertical === 'logements' && 'Rechercher un logement'}
-            {vertical === 'hotels' && 'Rechercher un hôtel'}
-            {vertical === 'experiences' && 'Rechercher une expérience'}
-            {vertical === 'services' && 'Rechercher un service'}
+          <span className="flex flex-col leading-tight">
+            <span className="text-sm font-medium text-[#374151]">Que cherchez-vous ?</span>
+            <span className="text-xs text-[#9ca3af]">
+              {vertical === 'logements' && 'une villa'}
+              {vertical === 'hotels' && 'un hôtel'}
+              {vertical === 'experiences' && 'une expérience'}
+              {vertical === 'services' && 'un service'}
+            </span>
           </span>
         </button>
 
         <VerticalTabs active={vertical} onChange={setVertical} />
-
-        {vertical === 'logements' && (
-          <TypeFilterChips options={TYPE_OPTIONS} active={typeFilter} onChange={setTypeFilter} />
-        )}
       </div>
 
       <main className="max-w-[1440px] mx-auto lg:px-6 lg:py-6">

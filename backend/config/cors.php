@@ -4,9 +4,13 @@ return [
     'paths' => ['api/*', 'sanctum/csrf-cookie', 'login', 'logout', 'traveler/*', 'host/*', 'v1/*'],
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'http://localhost:5173', 
+        'http://localhost:5173',
         'http://127.0.0.1:5173',
         'http://localhost:3000',
+        // IP locale du poste de dev, pour tester depuis un vrai téléphone sur le
+        // même réseau Wi-Fi pendant le développement — à retirer si l'IP change
+        // (DHCP) ou une fois les tests sur appareil réel terminés.
+        'http://192.168.1.198:5173',
     'https://bluefin-immo.com',
     'https://www.bluefin-immo.com',
         'https://bluefin-immo.vercel.app',  // 👈 AJOUTE CETTE LIGNE

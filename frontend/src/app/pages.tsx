@@ -5302,23 +5302,19 @@ export function BookingPage({ onNavigate, id, search }: any) {
                 </div>
               </div>
               
-              <button 
-                onClick={handleFedapayRedirect} 
-                disabled={loading} 
+              <button
+                onClick={handleFedapayRedirect}
+                disabled={loading}
                 className="w-full mt-4 bg-gradient-to-r from-[#00c9a7] to-[#00a887] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 text-sm active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
                 {loading ? 'Préparation...' : 'Payer avec Fedapay'}
               </button>
-              
-              <button 
-                onClick={handleOpenPaymentModal} 
-                disabled={loading} 
-                className="w-full mt-2 py-2 border border-gray-300 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-all disabled:opacity-50 text-sm"
-              >
-                Autres méthodes de paiement
-              </button>
-              
+              {/* Le bouton "Autres méthodes de paiement" a été retiré : il ouvrait
+                  une modal Mobile Money/Carte qui n'était jamais rendue dans le
+                  JSX (aucun effet au clic) — voir audit formulaires. Fedapay gère
+                  déjà Mobile Money et carte sur sa page de paiement hébergée. */}
+
               <div className="mt-3 flex items-center justify-center gap-4 text-xs text-gray-400">
                 <div className="flex items-center gap-1">
                   <Lock className="w-3 h-3" />
@@ -7076,9 +7072,19 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
       updateUser(response.user);
       queryClient.invalidateQueries({ queryKey: ['user-profile'] });
       setIsEditing(false);
+      toast.success('Profil mis à jour');
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      // ⚠️ Avant : uniquement un console.error — si le serveur rejetait la
+      // mise à jour (email déjà utilisé, format invalide...), l'utilisateur
+      // ne voyait absolument rien, le bouton arrêtait juste de charger.
       console.error('Erreur mise à jour profil:', error);
+      const errors = error?.response?.data?.errors;
+      if (errors) {
+        toast.error(Object.values(errors).flat().join(', '));
+        return;
+      }
+      toast.error(error?.response?.data?.message || 'Erreur lors de la mise à jour du profil');
     },
   });
 
@@ -7152,7 +7158,34 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
   const userIcon = profile.user_type === 'hote' ? <Home className="w-5 h-5" /> : <Compass className="w-5 h-5" />;
 
   const handleSave = () => {
-    updateMutation.mutate(editedUser);
+    // ⚠️ Avant : aucune validation, editedUser envoyé tel quel au serveur.
+    const firstName = editedUser.first_name.trim();
+    const lastName = editedUser.last_name.trim();
+    const email = editedUser.email.trim();
+    const phone = editedUser.phone.trim();
+
+    if (!firstName || firstName.length > 50) {
+      toast.error('Le prénom est requis (50 caractères maximum)');
+      return;
+    }
+    if (!lastName || lastName.length > 50) {
+      toast.error('Le nom est requis (50 caractères maximum)');
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      toast.error('Adresse email invalide');
+      return;
+    }
+    if (phone && !/^\+?[0-9]{8,15}$/.test(phone.replace(/\s/g, ''))) {
+      toast.error('Numéro de téléphone invalide (ex: +229 XX XX XX XX)');
+      return;
+    }
+    if (editedUser.bio && editedUser.bio.length > 500) {
+      toast.error('La bio ne doit pas dépasser 500 caractères');
+      return;
+    }
+
+    updateMutation.mutate({ ...editedUser, first_name: firstName, last_name: lastName, email, phone });
   };
 
   const handleLogout = () => {
@@ -7430,6 +7463,49 @@ export function PaymentMethodModal({ isOpen, onClose, onSuccess }: PaymentMethod
       // Vérifier que l'utilisateur est connecté
       if (!user?.id) {
         toast.error('❌ Vous devez être connecté');
+        return;
+      }
+
+      // ⚠️ Avant : ces informations (utilisées pour verser de l'argent réel à
+      // l'hôte) n'étaient jamais validées — une erreur de saisie pouvait
+      // envoyer les gains vers un mauvais compte ou faire échouer le virement.
+      if (!formData.fullName.trim()) {
+        toast.error('Le nom du titulaire est requis');
+        return;
+      }
+
+      if (paymentMethod === 'MOBILE_MONEY') {
+        if (!formData.mobileProvider) {
+          toast.error('Veuillez choisir un opérateur Mobile Money');
+          return;
+        }
+        if (!/^\+?[0-9]{8,15}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
+          toast.error('Numéro Mobile Money invalide (ex: +229 XX XX XX XX)');
+          return;
+        }
+      }
+
+      if (paymentMethod === 'BANK_TRANSFER') {
+        if (!formData.bankName.trim() || !formData.accountHolder.trim()) {
+          toast.error('Le nom de la banque et le titulaire du compte sont requis');
+          return;
+        }
+        // Format IBAN : 2 lettres pays + 2 chiffres de contrôle + 11 à 30
+        // caractères alphanumériques (BBAN) — vérification de structure, pas
+        // du checksum mod-97 complet.
+        const ibanClean = formData.iban.replace(/\s/g, '').toUpperCase();
+        if (!/^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$/.test(ibanClean)) {
+          toast.error('Format IBAN invalide');
+          return;
+        }
+        if (!/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(formData.bic.replace(/\s/g, '').toUpperCase())) {
+          toast.error('Format BIC/SWIFT invalide (8 ou 11 caractères)');
+          return;
+        }
+      }
+
+      if (paymentMethod === 'PAYPAL' && !/^\S+@\S+\.\S+$/.test(formData.paypalEmail.trim())) {
+        toast.error('Adresse email PayPal invalide');
         return;
       }
 
@@ -10395,6 +10471,35 @@ const updateExperienceMutation = useMutation({
   },
 });
 
+  // ⚠️ Cette mutation n'existait pas : cliquer sur "Créer une expérience" ne
+  // déclenchait strictement aucun appel API (voir handleSubmit plus bas, qui
+  // n'appelait updateExperienceMutation que si editingExperience était défini,
+  // sans jamais gérer le cas de création) — échec totalement silencieux pour
+  // l'hôte, sans aucun message d'erreur.
+  const createExperienceMutation = useMutation({
+    mutationFn: (payload: any) => hostService.createExperience(payload),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ['host-experiences'] });
+      queryClient.invalidateQueries({ queryKey: ['experiences'] });
+
+      toast.success(response?.message || 'Expérience créée');
+      setIsFormOpen(false);
+      setEditingExperience(null);
+      resetForm();
+      refetch();
+
+      window.dispatchEvent(new Event('experience-updated'));
+    },
+    onError: (error: any) => {
+      const errors = error?.response?.data?.errors;
+      if (errors) {
+        toast.error(Object.values(errors).flat().join(', '));
+        return;
+      }
+      toast.error(error?.response?.data?.message || 'Erreur lors de la création');
+    },
+  });
+
   const deleteExperienceMutation = useMutation({
     mutationFn: (id: number) => hostService.deleteExperience(id),
     onSuccess: () => {
@@ -10557,13 +10662,28 @@ const updateExperienceMutation = useMutation({
       return;
     }
 
-    if (!capacity || capacity <= 0) {
-      toast.error('Veuillez renseigner un nombre de places valide (> 0)');
+    if (name.length > 255) {
+      toast.error('Le nom ne doit pas dépasser 255 caractères');
+      return;
+    }
+
+    if (price > 10000000) {
+      toast.error('Le prix ne peut pas dépasser 10 000 000 FCFA');
+      return;
+    }
+
+    if (!capacity || capacity <= 0 || capacity > 500) {
+      toast.error('Veuillez renseigner un nombre de places valide (entre 1 et 500)');
       return;
     }
 
     if (description.length < 20) {
       toast.error('La description doit faire au moins 20 caractères');
+      return;
+    }
+
+    if (description.length > 10000) {
+      toast.error('La description ne doit pas dépasser 10 000 caractères');
       return;
     }
 
@@ -10615,6 +10735,8 @@ const updateExperienceMutation = useMutation({
 
     if (editingExperience) {
       updateExperienceMutation.mutate({ id: editingExperience.id, payload });
+    } else {
+      createExperienceMutation.mutate(payload);
     }
   };
 
@@ -10949,10 +11071,12 @@ const updateExperienceMutation = useMutation({
               </button>
               <button
                 type="submit"
-                disabled={updateExperienceMutation.isPending}
+                disabled={updateExperienceMutation.isPending || createExperienceMutation.isPending}
                 className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-[#00c9a7] text-white font-semibold hover:bg-[#00b396] transition disabled:opacity-60"
               >
-                {updateExperienceMutation.isPending ? 'Enregistrement...' : 'Mettre à jour'}
+                {updateExperienceMutation.isPending || createExperienceMutation.isPending
+                  ? 'Enregistrement...'
+                  : editingExperience ? 'Mettre à jour' : 'Créer l\'expérience'}
               </button>
             </div>
           </form>
@@ -21407,15 +21531,26 @@ const saveBookingData = () => {
       return;
     }
 
+    // ⚠️ Avant : aucune validation du numéro Mobile Money ni des champs carte
+    // avant l'envoi de la réservation au serveur.
+    if (paymentMethod === 'mobile_money' && !/^\+?[0-9]{8,15}$/.test(mobileMoneyNumber.replace(/\s/g, ''))) {
+      setError('Numéro Mobile Money invalide (ex: 97 00 00 00)');
+      return;
+    }
+    if (paymentMethod === 'card') {
+      setError('Le paiement par carte n\'est pas encore disponible — choisissez Mobile Money ou Fedapay.');
+      return;
+    }
+
     setIsProcessing(true);
     setPaymentStep('processing');
 
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       setPaymentStep('success');
       const savedData = saveBookingData();
-      
+
       const bookingPayload = {
         experience_id: parseInt(experienceId || '0'),
         check_in: checkIn,
@@ -21665,23 +21800,19 @@ const saveBookingData = () => {
                 </div>
               </div>
               
-              <button 
-                onClick={handleFedapayRedirect} 
-                disabled={loading} 
+              <button
+                onClick={handleFedapayRedirect}
+                disabled={loading}
                 className="w-full mt-4 bg-gradient-to-r from-[#00c9a7] to-[#00a887] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 text-sm active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
                 {loading ? 'Préparation...' : 'Payer avec Fedapay'}
               </button>
-              
-              <button 
-                onClick={handleOpenPaymentModal} 
-                disabled={loading} 
-                className="w-full mt-2 py-2 border border-gray-300 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-all disabled:opacity-50 text-sm"
-              >
-                Autres méthodes de paiement
-              </button>
-              
+              {/* Le bouton "Autres méthodes de paiement" a été retiré : il ouvrait
+                  une modal Mobile Money/Carte qui n'était jamais rendue dans le
+                  JSX (aucun effet au clic) — voir audit formulaires. Fedapay gère
+                  déjà Mobile Money et carte sur sa page de paiement hébergée. */}
+
               <div className="mt-3 flex items-center justify-center gap-4 text-xs text-gray-400">
                 <div className="flex items-center gap-1">
                   <Lock className="w-3 h-3" />
@@ -23209,15 +23340,26 @@ export function ServiceBookingPage({ onNavigate, id, search }: any) {
       return;
     }
 
+    // ⚠️ Avant : aucune validation du numéro Mobile Money ni des champs carte
+    // avant l'envoi de la réservation au serveur.
+    if (paymentMethod === 'mobile_money' && !/^\+?[0-9]{8,15}$/.test(mobileMoneyNumber.replace(/\s/g, ''))) {
+      setError('Numéro Mobile Money invalide (ex: 97 00 00 00)');
+      return;
+    }
+    if (paymentMethod === 'card') {
+      setError('Le paiement par carte n\'est pas encore disponible — choisissez Mobile Money ou Fedapay.');
+      return;
+    }
+
     setIsProcessing(true);
     setPaymentStep('processing');
 
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       setPaymentStep('success');
       const savedData = saveBookingData();
-      
+
       const bookingPayload = {
         service_id: parseInt(serviceId || '0'),
         date: selectedDate,
@@ -24069,13 +24211,17 @@ function HostOnlyAuthPage({
   const validateSignup = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.firstName) newErrors.firstName = "Le prénom est requis";
+    else if (formData.firstName.length > 50) newErrors.firstName = "50 caractères maximum";
     if (!formData.lastName) newErrors.lastName = "Le nom est requis";
+    else if (formData.lastName.length > 50) newErrors.lastName = "50 caractères maximum";
     if (!formData.email) newErrors.email = "L'email est requis";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email invalide";
+    if (!formData.phone) newErrors.phone = "Le téléphone est requis";
+    else if (!/^\+?[0-9]{8,15}$/.test(formData.phone.replace(/\s/g, ''))) newErrors.phone = "Numéro béninois invalide (ex: +229 XX XX XX XX)";
     if (!formData.password) newErrors.password = "Le mot de passe est requis";
-    else if (formData.password.length < 6) newErrors.password = "Au moins 6 caractères";
+    else if (formData.password.length < 8) newErrors.password = "Au moins 8 caractères";
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
-    
+
     // ✅ Valider selon le type d'hôte
     const hostType = formData.host_type || 'logement';
     
@@ -24606,11 +24752,15 @@ export function AuthPage({
     const validateSignup = () => {
         const newErrors: Record<string, string> = {};
         if (!formData.firstName) newErrors.firstName = "Le prénom est requis";
+        else if (formData.firstName.length > 50) newErrors.firstName = "50 caractères maximum";
         if (!formData.lastName) newErrors.lastName = "Le nom est requis";
+        else if (formData.lastName.length > 50) newErrors.lastName = "50 caractères maximum";
         if (!formData.email) newErrors.email = "L'email est requis";
         else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email invalide";
+        if (!formData.phone) newErrors.phone = "Le téléphone est requis";
+        else if (!/^\+?[0-9]{8,15}$/.test(formData.phone.replace(/\s/g, ''))) newErrors.phone = "Numéro béninois invalide (ex: +229 XX XX XX XX)";
         if (!formData.password) newErrors.password = "Le mot de passe est requis";
-        else if (formData.password.length < 6) newErrors.password = "Au moins 6 caractères";
+        else if (formData.password.length < 8) newErrors.password = "Au moins 8 caractères";
         if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
         return newErrors;
     };

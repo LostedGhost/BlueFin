@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://api.bluefin-immo.com/api/:path*"
+    },
+    {
+      "source": "/sanctum/:path*",
+      "destination": "https://api.bluefin-immo.com/sanctum/:path*"
+    },
+    {
+      "source": "/storage/:path*",
+      "destination": "https://api.bluefin-immo.com/storage/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

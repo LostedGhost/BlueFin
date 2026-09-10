@@ -1,0 +1,25 @@
+
+    <!DOCTYPE html>
+    <html lang="fr">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!--
+          Titre/description/OG/canonical : gérés exclusivement par react-helmet-async
+          (voir src/app/components/Seo.tsx et le <Seo default /> rendu par AppContent).
+          Ne pas ajouter de balises meta:description/og:*/canonical statiques ici — elles
+          ne seraient jamais retirées par Helmet et resteraient dupliquées à côté des
+          bonnes valeurs, ce qui a déjà causé un bug (voir audit SEO / plan-correction-totale.md).
+        -->
+        <title>Bluefin Immo</title>
+        <meta name="geo.region" content="BJ" />
+        <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+
+        <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+      </head>
+
+      <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+      </body>
+    </html>

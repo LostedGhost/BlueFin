@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /hote/
+Disallow: /admin/
+Disallow: /mon-compte
+Disallow: /reserver/
+Disallow: /messages
+Disallow: /publier-annonce
+
+Sitemap: https://bluefin-immo.com/sitemap.xml

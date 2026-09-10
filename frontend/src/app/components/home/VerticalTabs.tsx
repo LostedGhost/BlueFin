@@ -17,7 +17,8 @@ export function VerticalTabs({
   onChange: (v: HomeVertical) => void;
 }) {
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="w-4 flex-shrink-0" aria-hidden="true" />
       {VERTICALS.map(({ id, label, icon: Icon }) => {
         const isActive = active === id;
         return (
@@ -41,6 +42,7 @@ export function VerticalTabs({
           </button>
         );
       })}
+      <div className="w-4 flex-shrink-0" aria-hidden="true" />
     </div>
   );
 }

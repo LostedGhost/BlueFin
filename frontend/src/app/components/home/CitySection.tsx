@@ -30,10 +30,17 @@ export function CitySection({
           </button>
         )}
       </div>
-      <div className="flex gap-4 overflow-x-auto px-4 pb-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex gap-4 overflow-x-auto pb-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {/* Espaceurs explicites en début ET fin plutôt que pl-4/pr-4 sur le
+            conteneur : le padding d'un conteneur flex en overflow-x n'est pas
+            toujours respecté par certains navigateurs mobiles (Safari iOS
+            notamment) — un vrai élément flex garantit l'espace de façon fiable,
+            aux deux extrémités du défilement. */}
+        <div className="w-4 flex-shrink-0" aria-hidden="true" />
         {listings.map((listing) => (
           <ListingCard key={listing.id} listing={listing} route={routeFor(listing)} onNavigate={onNavigate} />
         ))}
+        <div className="w-4 flex-shrink-0" aria-hidden="true" />
       </div>
     </section>
   );

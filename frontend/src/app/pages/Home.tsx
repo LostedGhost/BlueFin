@@ -45,16 +45,23 @@ function groupByCity(listings: HomeListing[]): [string, HomeListing[]][] {
 
 function SectionsSkeleton() {
   return (
-    <div className="px-4 py-4 space-y-3">
+    <div className="py-4 space-y-6">
       {[0, 1].map((row) => (
-        <div key={row} className="flex gap-3">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="w-[168px] flex-shrink-0 animate-pulse">
-              <div className="aspect-[4/3] rounded-xl bg-gray-200" />
-              <div className="h-3 bg-gray-200 rounded w-3/4 mt-2" />
-              <div className="h-3 bg-gray-200 rounded w-1/2 mt-2" />
-            </div>
-          ))}
+        <div key={row}>
+          <div className="flex items-center justify-between px-4 mb-3">
+            <div className="h-[19px] w-32 bg-gray-200 rounded animate-pulse" />
+            <div className="w-9 h-9 rounded-full bg-gray-100 animate-pulse" />
+          </div>
+          <div className="flex gap-4 overflow-hidden pl-4">
+            {[0, 1].map((i) => (
+              <div key={i} className="w-[calc(100%-72px)] max-w-[300px] sm:w-[280px] flex-shrink-0 animate-pulse">
+                <div className="aspect-[4/3] rounded-2xl bg-gray-200" />
+                <div className="h-4 bg-gray-200 rounded w-3/4 mt-2.5" />
+                <div className="h-3 bg-gray-200 rounded w-1/2 mt-1.5" />
+                <div className="h-4 bg-gray-200 rounded w-2/5 mt-2" />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -174,25 +181,32 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
         <HomeMobileHeader onNavigate={onNavigate} />
         <PromoCarousel onNavigate={onNavigate} />
 
-        <button
-          onClick={() => onNavigate?.({ name: 'search-logements' })}
-          className="flex items-center gap-3 mx-4 mb-3 bg-white border-[1.5px] border-[#00c9a7] rounded-full pl-4 pr-4 py-2.5 text-left"
-        >
-          <svg className="w-5 h-5 text-[#0f2940] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" strokeLinecap="round" />
-          </svg>
-          <span className="flex flex-col leading-tight">
-            <span className="text-sm font-medium text-[#374151]">Que cherchez-vous ?</span>
-            <span className="text-xs text-[#9ca3af]">
-              {vertical === 'logements' && 'une villa'}
-              {vertical === 'hotels' && 'un hôtel'}
-              {vertical === 'experiences' && 'une expérience'}
-              {vertical === 'services' && 'un service'}
+        <div className="px-4 mb-3">
+          <button
+            onClick={() => onNavigate?.({ name: 'search-logements' })}
+            className="w-full flex items-center gap-3 bg-white border-[1.5px] border-[#00c9a7] rounded-full pl-4 pr-4 py-2.5 text-left"
+          >
+            <svg className="w-5 h-5 text-[#0f2940] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+            <span className="flex flex-col leading-tight">
+              <span className="text-sm font-medium text-[#374151]">Que cherchez-vous ?</span>
+              <span className="text-xs text-[#9ca3af]">
+                {vertical === 'logements' && 'une villa'}
+                {vertical === 'hotels' && 'un hôtel'}
+                {vertical === 'experiences' && 'une expérience'}
+                {vertical === 'services' && 'un service'}
+              </span>
             </span>
-          </span>
-        </button>
+          </button>
+        </div>
+      </div>
 
+      {/* Conteneur de rattachement du sticky : doit rester un ancêtre aussi
+          grand que la page (pas juste le bloc d'en-tête ci-dessus, sinon le
+          bandeau se détache dès que ce bloc, très court, sort de l'écran). */}
+      <div className="lg:hidden sticky top-0 z-30 bg-white pt-1 pb-2">
         <VerticalTabs active={vertical} onChange={setVertical} />
       </div>
 

@@ -30,7 +30,7 @@ export function CitySection({
           </button>
         )}
       </div>
-      <div className="flex gap-3 overflow-x-auto px-4 pb-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex gap-4 overflow-x-auto px-4 pb-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {listings.map((listing) => (
           <ListingCard key={listing.id} listing={listing} route={routeFor(listing)} onNavigate={onNavigate} />
         ))}

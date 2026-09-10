@@ -21,6 +21,7 @@ function toListing(p: any): HomeListing {
     title: p.title,
     location: p.location || p.city || 'Bénin',
     image: p.image,
+    images: Array.isArray(p.images) ? p.images : undefined,
     priceDisplay: p.priceDisplay,
     priceUnit: '/nuit',
     bluefinCertified: p.bluefin_certified,

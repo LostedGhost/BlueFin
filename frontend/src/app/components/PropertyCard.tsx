@@ -30,7 +30,7 @@ export function PropertyCard({
   // ✅ Récupération de l'image - utilise les données qui fonctionnent
   const imageUrl = !imgError && property.images?.[0] 
     ? property.images[0] 
-    : property.image || `https://picsum.photos/seed/${property.id}/400/300`;
+    : property.image || '/placeholder-photo.svg';
 
   const handleCardClick = () => {
     if (onNavigate && property.id) {

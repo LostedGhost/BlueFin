@@ -1,13 +1,15 @@
-import { useState } from 'react';
 import { BadgeCheck, Heart } from 'lucide-react';
 import { useFavorites } from '../../hooks/useFavorites';
-import { PhotoPlaceholder } from '../PhotoPlaceholder';
+import { ListingCardGallery } from './ListingCardGallery';
 
 export interface HomeListing {
   id: number | string;
   title: string;
   location: string;
-  image: string;
+  /** Image de couverture — conservée pour compatibilité */
+  image?: string;
+  /** Toutes les photos de l'annonce, pour la galerie défilante */
+  images?: string[];
   priceDisplay: string;
   priceUnit: '/nuit' | '/séance' | '/prestation';
   bluefinCertified?: boolean;
@@ -23,7 +25,10 @@ export function ListingCard({
   route: any;
 }) {
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [imgError, setImgError] = useState(false);
+
+  // `images` d'abord, `image` en repli pour les sources qui n'exposent qu'une
+  // couverture (expériences, services).
+  const gallery = listing.images?.length ? listing.images : listing.image ? [listing.image] : [];
 
   return (
     <button
@@ -31,17 +36,7 @@ export function ListingCard({
       className="w-[calc(100%-72px)] max-w-[300px] sm:w-[280px] sm:max-w-none flex-shrink-0 snap-start text-left group"
     >
       <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100 shadow-[0_4px_14px_rgba(15,41,64,0.10)]">
-        {imgError || !listing.image ? (
-          <PhotoPlaceholder seed={listing.id} />
-        ) : (
-          <img
-            src={listing.image}
-            alt={listing.title}
-            loading="lazy"
-            onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        )}
+        <ListingCardGallery images={gallery} alt={listing.title} seed={listing.id} />
 
         {/* Citron réservé à ce signal : c'est le seul endroit de la carte où
             une couleur d'éclat se justifie. */}

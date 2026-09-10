@@ -2406,11 +2406,11 @@ export const mapProperty = (p: any) => {
       }
     }
     
-    // Fallback
-    if (images.length === 0) {
-      images.push(`https://picsum.photos/seed/${p.id}/400/300`);
-    }
-    
+    // Volontairement PAS de photo de repli ici : le tableau reste vide quand
+    // l'annonce n'a aucune image exploitable, et c'est à l'affichage de
+    // décider quoi montrer. Auparavant on y poussait une image de stock
+    // aléatoire (picsum) — le site présentait donc au visiteur la photo d'un
+    // tout autre logement comme s'il s'agissait de celui qu'il réserve.
     return images;
   };
   
@@ -2490,7 +2490,7 @@ export function PropertyCard({
   // ✅ Récupération de l'image - utilise les données qui fonctionnent
   const imageUrl = !imgError && property.images?.[0] 
     ? property.images[0] 
-    : property.image || `https://picsum.photos/seed/${property.id}/400/300`;
+    : property.image || '/placeholder-photo.svg';
 
   const handleCardClick = () => {
     if (onNavigate && property.id) {
@@ -2907,9 +2907,9 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
     }
 
     if (images.length === 0) {
-      images.push(`https://picsum.photos/seed/${property.id}/800/600`);
-      images.push(`https://picsum.photos/seed/${property.id}-2/800/600`);
-      images.push(`https://picsum.photos/seed/${property.id}-3/800/600`);
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
     }
 
     return images;
@@ -3400,11 +3400,11 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                   onClick={() => setIsGalleryOpen(true)}
                 >
                   <img 
-                    src={images[0] || `https://picsum.photos/seed/${property.id}/1200/800`} 
+                    src={images[0] || '/placeholder-photo.svg'} 
                     alt={property.title} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${property.id}/1200/800`;
+                      (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                     }}
                   />
                   {/* Badge "Voir toutes les photos" */}
@@ -3429,11 +3429,11 @@ export const PropertyDetailModal: React.FC<PropertyDetailModalProps> = ({
                         }}
                       >
                         <img 
-                          src={img || `https://picsum.photos/seed/${property.id}-${index+2}/400/300`} 
+                          src={img || '/placeholder-photo.svg'} 
                           alt={`${property.title} - ${index + 2}`} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${property.id}-${index+2}/400/300`;
+                            (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                           }}
                         />
                       </div>
@@ -5534,7 +5534,7 @@ export function PopularPage({ onNavigate }: { onNavigate?: (route: Route) => voi
     if (property.image && property.image !== 'undefined') {
       return property.image;
     }
-    return `https://picsum.photos/seed/${property.id}/400/300`;
+    return '/placeholder-photo.svg';
   };
 
   if (isLoading) {
@@ -5606,7 +5606,7 @@ export function PopularPage({ onNavigate }: { onNavigate?: (route: Route) => voi
                       loading="lazy"
                       onError={(e) => {
                         console.error(`❌ Erreur chargement image ID ${property.id}:`, imageUrl);
-                        (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${property.id}/400/300`;
+                        (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                       }}
                       onLoad={() => console.log(`✅ Image chargée ID ${property.id}`)}
                     />
@@ -5935,9 +5935,9 @@ export function ListingPage({ onNavigate, id }: ListingPageProps) {
 
     // 5. Fallback
     if (images.length === 0) {
-      images.push(`https://picsum.photos/seed/${property.id}/800/600`);
-      images.push(`https://picsum.photos/seed/${property.id}-2/800/600`);
-      images.push(`https://picsum.photos/seed/${property.id}-3/800/600`);
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
     }
 
     return images;
@@ -15919,7 +15919,7 @@ export function FavoritesPage({ onNavigate }: PageProps) {
       if (property.cover_photo.full_url) return property.cover_photo.full_url;
     }
     
-    return `https://picsum.photos/seed/${property.id}/400/300`;
+    return '/placeholder-photo.svg';
   }, [getPropertyData]);
 
   const getPriceDisplay = useCallback((favorite: any): string => {
@@ -16010,7 +16010,7 @@ export function FavoritesPage({ onNavigate }: PageProps) {
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               loading="lazy"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${propertyId}/400/300`;
+                (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
               }}
             />
             
@@ -19887,7 +19887,7 @@ const formatPriceBoth = (amount: number): string => {
 // pages.tsx - Fonction pour les images d'expérience
 
 const getExperienceImages = (experience: any): string[] => {
-  if (!experience) return [`https://picsum.photos/seed/default/800/600`];
+  if (!experience) return ['/placeholder-photo.svg'];
   
   const images: string[] = [];
   
@@ -19958,9 +19958,9 @@ const getExperienceImages = (experience: any): string[] => {
   
   // Fallback avec picsum si aucune image trouvée
   if (images.length === 0) {
-    images.push(`https://picsum.photos/seed/${experience.id || 'default'}/800/600`);
-    images.push(`https://picsum.photos/seed/${experience.id || 'default'}-2/800/600`);
-    images.push(`https://picsum.photos/seed/${experience.id || 'default'}-3/800/600`);
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
   }
   
   console.log('🖼️ Images expérience (chemin corrigé):', {
@@ -20021,7 +20021,7 @@ const getExperienceImages = (experience: any): string[] => {
 
 const ExperienceCard = ({ exp, onClick }: { exp: Experience; onClick: () => void }) => {
   const images = getExperienceImages(exp);
-    const firstImage = images.length > 0 ? images[0] : `https://picsum.photos/seed/${exp.id}/800/600`;
+    const firstImage = images.length > 0 ? images[0] : '/placeholder-photo.svg';
   const rating = exp.average_rating || 4.5;
   const reviews = exp.reviews_count || 0;
 
@@ -20048,7 +20048,7 @@ const ExperienceCard = ({ exp, onClick }: { exp: Experience; onClick: () => void
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             console.warn('❌ Erreur chargement image:', target.src);
-            target.src = `https://picsum.photos/seed/${exp.id}/800/600`;
+            target.src = '/placeholder-photo.svg';
           }}
         />
         <div className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition">
@@ -20502,11 +20502,11 @@ const ExperienceDetailModal = ({
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
           <img 
-            src={images[galleryIndex] || `https://picsum.photos/seed/${exp.id}/800/600`} 
+            src={images[galleryIndex] || '/placeholder-photo.svg'} 
             alt={`${exp.name} - ${galleryIndex + 1}`}
             className="max-w-full max-h-full object-contain select-none"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${exp.id}/800/600`;
+              (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
             }}
           />
         </div>
@@ -20564,11 +20564,11 @@ const ExperienceDetailModal = ({
                   onClick={() => setIsGalleryOpen(true)}
                 >
                   <img 
-                    src={images[0] || `https://picsum.photos/seed/${exp.id}/1200/800`} 
+                    src={images[0] || '/placeholder-photo.svg'} 
                     alt={exp.name} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${exp.id}/1200/800`;
+                      (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                     }}
                   />
                   {images.length > 1 && (
@@ -20591,11 +20591,11 @@ const ExperienceDetailModal = ({
                         }}
                       >
                         <img 
-                          src={img || `https://picsum.photos/seed/${exp.id}-${index+2}/400/300`} 
+                          src={img || '/placeholder-photo.svg'} 
                           alt={`${exp.name} - ${index + 2}`} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = `https://picsum.photos/seed/${exp.id}-${index+2}/400/300`;
+                            (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                           }}
                         />
                       </div>
@@ -22316,7 +22316,7 @@ interface Service {
 // // ✅ Fonction pour obtenir l'URL d'une image
 
 const getServiceImages = (service: any): string[] => {
-  if (!service) return [`https://picsum.photos/seed/default/800/600`];
+  if (!service) return ['/placeholder-photo.svg'];
   
   const images: string[] = [];
   
@@ -22387,9 +22387,9 @@ const getServiceImages = (service: any): string[] => {
   
   // Fallback avec picsum si aucune image trouvée
   if (images.length === 0) {
-    images.push(`https://picsum.photos/seed/${service.id || 'default'}/800/600`);
-    images.push(`https://picsum.photos/seed/${service.id || 'default'}-2/800/600`);
-    images.push(`https://picsum.photos/seed/${service.id || 'default'}-3/800/600`);
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
   }
   
   console.log('🖼️ Images service (chemin corrigé):', {
@@ -22625,11 +22625,11 @@ const ServiceCard = ({ service, onClick }: { service: Service; onClick: () => vo
     >
       <div className="relative h-56 overflow-hidden">
         <img 
-          src={images[0] || `https://picsum.photos/seed/service-${service.id}/800/600`} 
+          src={images[0] || '/placeholder-photo.svg'} 
           alt={service.title} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
           onError={(e) => {
-            (e.target as HTMLImageElement).src = `https://picsum.photos/seed/service-${service.id}/800/600`;
+            (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
           }}
         />
         <div className="absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition">
@@ -22822,11 +22822,11 @@ const ServiceDetailModal = ({
         </div>
         <div className="flex-1 flex items-center justify-center p-4">
           <img 
-            src={images[galleryIndex] || `https://picsum.photos/seed/service-${service.id}/800/600`} 
+            src={images[galleryIndex] || '/placeholder-photo.svg'} 
             alt={`${service.title} - ${galleryIndex + 1}`}
             className="max-w-full max-h-full object-contain select-none"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://picsum.photos/seed/service-${service.id}/800/600`;
+              (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
             }}
           />
         </div>
@@ -22884,11 +22884,11 @@ const ServiceDetailModal = ({
                   onClick={() => setIsGalleryOpen(true)}
                 >
                   <img 
-                    src={images[0] || `https://picsum.photos/seed/service-${service.id}/1200/800`} 
+                    src={images[0] || '/placeholder-photo.svg'} 
                     alt={service.title} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://picsum.photos/seed/service-${service.id}/1200/800`;
+                      (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                     }}
                   />
                   {images.length > 1 && (
@@ -22911,11 +22911,11 @@ const ServiceDetailModal = ({
                         }}
                       >
                         <img 
-                          src={img || `https://picsum.photos/seed/service-${service.id}-${index+2}/400/300`} 
+                          src={img || '/placeholder-photo.svg'} 
                           alt={`${service.title} - ${index + 2}`} 
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = `https://picsum.photos/seed/service-${service.id}-${index+2}/400/300`;
+                            (e.target as HTMLImageElement).src = '/placeholder-photo.svg';
                           }}
                         />
                       </div>

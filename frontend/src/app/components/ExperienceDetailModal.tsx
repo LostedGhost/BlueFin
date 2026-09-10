@@ -313,9 +313,9 @@ const getExperienceImages = (exp: any): string[] => {
 
   // 5. Fallback
   if (images.length === 0) {
-    images.push(`https://picsum.photos/seed/${exp.id}/800/600`);
-    images.push(`https://picsum.photos/seed/${exp.id}-2/800/600`);
-    images.push(`https://picsum.photos/seed/${exp.id}-3/800/600`);
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
+    images.push('/placeholder-photo.svg');
   }
   
   return images;
@@ -344,7 +344,7 @@ const getImageUrl = (exp: any): string => {
     }
     
     // 4. Fallback
-    return `https://picsum.photos/seed/${exp.id}/800/600`;
+    return '/placeholder-photo.svg';
 };
 
 // ✅ Version améliorée - accepte string ou objet
@@ -607,7 +607,7 @@ const formatImageUrl = (path: any): string => {
             >
               <div className="col-span-1 row-span-2 overflow-hidden aspect-[4/3] relative">
                 <img 
-                  src={images[0] || `https://picsum.photos/seed/${experience.id}/800/600`} 
+                  src={images[0] || '/placeholder-photo.svg'} 
                   alt={experience.name} 
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                 />
@@ -615,7 +615,7 @@ const formatImageUrl = (path: any): string => {
               {images.slice(1, 4).map((img, i) => (
                 <div key={i} className="overflow-hidden aspect-[4/3]">
                   <img 
-                    src={img || `https://picsum.photos/seed/${experience.id}-${i+2}/800/600`} 
+                    src={img || '/placeholder-photo.svg'} 
                     alt={`${experience.name} - ${i + 2}`} 
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                   />

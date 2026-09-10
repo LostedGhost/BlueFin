@@ -120,9 +120,9 @@ export const getExperienceImages = (experience: any): string[] => {
     }
     
     if (images.length === 0) {
-      images.push(`https://picsum.photos/seed/${experience.id || 'default'}/800/600`);
-      images.push(`https://picsum.photos/seed/${experience.id || 'default'}-2/800/600`);
-      images.push(`https://picsum.photos/seed/${experience.id || 'default'}-3/800/600`);
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
+      images.push('/placeholder-photo.svg');
     }
     
     return images;
@@ -207,7 +207,7 @@ export const getServiceImages = (service: any): string[] => {
     }
     
     if (images.length === 0) {
-      images.push(`https://picsum.photos/seed/${service.id || 'default'}/800/600`);
+      images.push('/placeholder-photo.svg');
     }
     
     return images;

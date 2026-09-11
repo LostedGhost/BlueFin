@@ -7,6 +7,12 @@
 # précise, pas du code.
 /tools/out/
 
+# Identifiants des scripts — contient une clé secrète Cloudinary.
+# Seul le modèle .env.example est versionné.
+.env
+.env.*
+!.env.example
+
 # OS / éditeurs
 .DS_Store
 Thumbs.db

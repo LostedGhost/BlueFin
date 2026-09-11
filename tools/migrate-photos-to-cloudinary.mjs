@@ -36,6 +36,35 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Charge tools/.env s'il existe. Les variables déjà définies dans
+ * l'environnement gagnent, pour pouvoir surcharger ponctuellement sans
+ * modifier le fichier.
+ */
+function loadEnvFile() {
+  const envPath = path.join(HERE, '.env');
+  if (!fs.existsSync(envPath)) return;
+  for (const raw of fs.readFileSync(envPath, 'utf8').split('\n')) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq === -1) continue;
+    const key = line.slice(0, eq).trim();
+    let value = line.slice(eq + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (!(key in process.env)) process.env[key] = value;
+  }
+}
+loadEnvFile();
 
 const SOURCE_DIR =
   process.env.PHOTOS_DIR || 'D:/SolDigit/BlueFin/Bluefin-api/public/storage/properties';
@@ -268,10 +297,14 @@ async function main() {
   }
 
   if (!CLOUD || !KEY || !SECRET) {
-    console.error(
-      '\nIl manque des identifiants Cloudinary. Définissez CLOUDINARY_CLOUD_NAME, ' +
-        'CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET avant de relancer.'
-    );
+    const manquants = [
+      !CLOUD && 'CLOUDINARY_CLOUD_NAME',
+      !KEY && 'CLOUDINARY_API_KEY',
+      !SECRET && 'CLOUDINARY_API_SECRET',
+    ].filter(Boolean);
+    console.error(`\nIdentifiants Cloudinary manquants : ${manquants.join(', ')}`);
+    console.error(`\nCréez le fichier  ${path.join(HERE, '.env')}  en copiant tools/.env.example,`);
+    console.error('puis collez-y les valeurs du tableau de bord Cloudinary.');
     process.exit(1);
   }
 
@@ -284,11 +317,15 @@ async function main() {
   const results = [];
   let done = 0;
   let failed = 0;
+  // Compté quel que soit le résultat : sinon --limit ne s'arrête jamais quand
+  // tous les envois échouent, et le script parcourt tout le lot pour rien.
+  let processed = 0;
 
   console.log('');
-  for (const g of groups) {
+  outer: for (const g of groups) {
     for (const [i, f] of g.files.entries()) {
-      if (done >= LIMIT) break;
+      if (processed >= LIMIT) break outer;
+      processed++;
       const publicId = `bluefin/properties/${g.propertyId}/${path.parse(f.file).name}`;
       try {
         let url = manifest[f.absolute]?.url;

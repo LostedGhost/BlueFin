@@ -1,10 +1,11 @@
-import { Building2, Landmark, Compass, Wrench } from 'lucide-react';
+import { Building2, Compass, Wrench } from 'lucide-react';
 
 export type HomeVertical = 'logements' | 'hotels' | 'experiences' | 'services';
 
 const VERTICALS: { id: HomeVertical; label: string; icon: typeof Building2 }[] = [
   { id: 'logements', label: 'Logements', icon: Building2 },
-  { id: 'hotels', label: 'Hôtels', icon: Landmark },
+  // « Hôtels » retiré de l'accueil mobile à la demande du client : les hôtels
+  // restent des logements, visibles dans l'onglet Logements.
   { id: 'experiences', label: 'Expériences', icon: Compass },
   { id: 'services', label: 'Services', icon: Wrench },
 ];

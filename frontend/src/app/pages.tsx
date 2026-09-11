@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo ,useCallback   } from 'react';
+import { LocationPicker } from './components/map/LocationPicker';
+import { useHideSiteChrome } from './siteChrome';
 import { SignupWizard, type PendingGoogleSignup } from './components/auth/SignupWizard';
 import { GoogleSignInButton } from './components/auth/GoogleSignInButton';
 import type { ReactNode } from 'react';
@@ -12456,6 +12458,8 @@ export function HostListingsPage({ onNavigate }: HostListingsPageProps) {
       city: property.city || '',
       district: property.district || '',
       address: property.address || '',
+      latitude: property.latitude ?? null,
+      longitude: property.longitude ?? null,
       bedrooms: property.bedrooms || 0,
       beds: property.beds || 0,
       bathrooms: property.bathrooms || 0,
@@ -12570,6 +12574,8 @@ export function HostListingsPage({ onNavigate }: HostListingsPageProps) {
         city: editFormData.city,
         district: editFormData.district,
         address: editFormData.address,
+        latitude: editFormData.latitude ?? null,
+        longitude: editFormData.longitude ?? null,
         bedrooms: editFormData.bedrooms,
         beds: editFormData.beds,
         bathrooms: editFormData.bathrooms,
@@ -12945,6 +12951,10 @@ export function HostListingsPage({ onNavigate }: HostListingsPageProps) {
                       className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:ring-2 focus:ring-[#00c9a7] focus:border-transparent" 
                     />
                   </div>
+                </div>
+                <div className="mt-4">
+                  <LocationPicker city={editFormData.city} latitude={editFormData.latitude} longitude={editFormData.longitude}
+                    onChange={(latitude, longitude) => setEditFormData(prev => ({ ...prev, latitude, longitude }))} />
                 </div>
               </div>
 
@@ -16237,6 +16247,8 @@ export function PublishListingPage({ onNavigate }: PublishListingPageProps) {
     city: '',
     district: '',
     address: '',
+    latitude: null as number | null,
+    longitude: null as number | null,
     bedrooms: '1',
     beds: '1',
     bathrooms: '1',
@@ -16435,6 +16447,8 @@ export function PublishListingPage({ onNavigate }: PublishListingPageProps) {
         city: formData.city.trim(),
         district: formData.district.trim(),
         address: formData.address?.trim() || '',
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         bedrooms: parseInt(formData.bedrooms, 10),
         beds: parseInt(formData.beds, 10),
         bathrooms: parseInt(formData.bathrooms, 10),
@@ -16813,6 +16827,9 @@ export function PublishListingPage({ onNavigate }: PublishListingPageProps) {
                   />
                 </div>
               </div>
+
+              <LocationPicker city={formData.city} latitude={formData.latitude} longitude={formData.longitude}
+                onChange={(latitude, longitude) => setFormData((prev: any) => ({ ...prev, latitude, longitude }))} />
 
               {/* Capacité */}
               <div className="grid gap-6 lg:grid-cols-4">
@@ -24074,6 +24091,9 @@ export function BecomeHost({ onNavigate }: PageProps) {
   const [showAuthPage, setShowAuthPage] = useState(false);
   const [showCommitment, setShowCommitment] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  // Formulaire de connexion/inscription hôte : page épurée, sans en-tête ni
+  // pied de page du site (même règle que /auth).
+  useHideSiteChrome(showAuthPage);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   

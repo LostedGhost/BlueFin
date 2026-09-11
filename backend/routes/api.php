@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GoogleAuthController;
+use App\Http\Controllers\Api\NeedController;
 use App\Http\Controllers\Api\PropertyController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
@@ -166,6 +167,13 @@ Route::prefix('v1')->group(function () {
         // Authentification générale
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [AuthController::class, 'me']);
+
+        // Besoins : le voyageur publie, les hôtes de la ville répondent.
+        Route::get('/needs/mine', [NeedController::class, 'mine']);
+        Route::post('/needs', [NeedController::class, 'store'])->middleware('throttle:10,1');
+        Route::post('/needs/{id}/close', [NeedController::class, 'close'])->whereNumber('id');
+        Route::get('/needs/for-host', [NeedController::class, 'forHost']);
+        Route::post('/needs/{id}/respond', [NeedController::class, 'respond'])->whereNumber('id')->middleware('throttle:20,1');
         Route::put('/auth/profile', [AuthController::class, 'updateProfile']);
         Route::post('/auth/verify-identity', [AuthController::class, 'verifyIdentity']);
         
@@ -414,6 +422,8 @@ Route::prefix('v1')->group(function () {
             });
 
             Route::get('/settings', [SettingsController::class, 'index']);
+            Route::get('/needs', [NeedController::class, 'adminIndex']);
+            Route::post('/needs/{id}/close', [NeedController::class, 'adminClose'])->whereNumber('id');
             Route::put('/settings', [SettingsController::class, 'update']);
 
             // Versements aux hôtes (voir Admin\HostPayoutController pour le cycle de vie).

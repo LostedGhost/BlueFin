@@ -11,10 +11,9 @@ export interface CityBandStats {
 /**
  * Bandeau éditorial d'une ville : le geste central de la direction A.
  *
- * Il est conçu pour tenir SANS photo — aujourd'hui les visuels de ville
- * n'existent pas, et un bandeau vide serait pire que pas de bandeau du tout.
- * Sans image, il se rabat sur un aplat profond qui reste une composition
- * volontaire, et il s'enrichit tout seul le jour où une photo est fournie.
+ * Photo de fond : celle de cityEditorial (Cotonou, Ouidah, Parakou), avec son
+ * crédit. Sans photo, il se rabat sur un aplat profond qui reste une
+ * composition volontaire.
  */
 export function CityBand({
   city,
@@ -31,7 +30,9 @@ export function CityBand({
 }) {
   const editorial = getCityEditorial(city);
   const [imgError, setImgError] = useState(false);
-  const showPhoto = Boolean(photo) && !imgError;
+  const cityPhoto = editorial?.photo;
+  const src = photo ?? cityPhoto?.src;
+  const showPhoto = Boolean(src) && !imgError;
 
   // Sans texte éditorial pour cette ville, on n'invente rien : on n'affiche
   // pas de bandeau, la section garde son titre simple.
@@ -44,11 +45,12 @@ export function CityBand({
     >
       {showPhoto ? (
         <img
-          src={photo}
+          src={src}
           alt={`${city}, Bénin`}
           loading="lazy"
           onError={() => setImgError(true)}
           className="w-full h-full object-cover"
+          style={{ objectPosition: cityPhoto?.position ?? 'center' }}
         />
       ) : (
         <div className="w-full h-full bg-[#0f2940]" />
@@ -63,6 +65,13 @@ export function CityBand({
             'linear-gradient(to top, rgba(4,36,44,.92) 0%, rgba(4,36,44,.32) 48%, rgba(4,36,44,0) 78%)',
         }}
       />
+
+      {/* Crédit obligatoire (licences libres Wikimedia Commons). */}
+      {showPhoto && cityPhoto && (
+        <span className="absolute top-2 right-3 text-[9px] text-white/75 drop-shadow">
+          Photo : {cityPhoto.author} · {cityPhoto.license}
+        </span>
+      )}
 
       <div className="absolute left-4 right-4 bottom-3.5 text-white">
         <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ffc93c]">

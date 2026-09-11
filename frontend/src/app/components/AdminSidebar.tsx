@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Settings,
+  ClipboardList,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -38,6 +39,7 @@ const menuItems = [
   { to: '/admin/payments', icon: CreditCard, label: 'Paiements' },
   { to: '/admin/host-payments', icon: Wallet, label: 'Paiements Hôtes' },
   { to: '/admin/messages', icon: MessageSquare, label: 'Messages' },
+  { to: '/admin/needs', icon: ClipboardList, label: 'Besoins' },
   { to: '/admin/reports', icon: BarChart3, label: 'Rapports' },
   { to: '/admin/settings', icon: Settings, label: 'Réglages' },
 ];

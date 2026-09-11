@@ -5,14 +5,15 @@ class FavoriteService {
   // Récupérer les favoris
   async getFavorites(listName: string = 'default') {
     // ✅ CORRECTION : Utiliser v1Api
-    const response = await v1Api.get(`/traveler/favorites?list_name=${listName}`);
+    // Route commune voyageurs / hôtes (l'ancienne /traveler/… refusait les hôtes).
+    const response = await v1Api.get(`/favorites?list_name=${listName}`);
     return response.data;
   }
 
   // Ajouter/retirer des favoris
   async toggle(propertyId: number, listName: string = 'default', notes?: string) {
     // ✅ CORRECTION : Utiliser v1Api
-    const response = await v1Api.post(`/traveler/favorites/${propertyId}/toggle`, {
+    const response = await v1Api.post(`/favorites/${propertyId}/toggle`, {
       list_name: listName,
       notes
     });

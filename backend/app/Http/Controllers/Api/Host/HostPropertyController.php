@@ -82,6 +82,10 @@ class HostPropertyController extends Controller
             'city' => 'required|string',
             'district' => 'required|string',
             'address' => 'nullable|string',
+            // Position exacte choisie sur la carte à la publication ; bornée au
+            // territoire béninois pour écarter un repère posé par erreur.
+            'latitude' => 'nullable|numeric|between:6,13',
+            'longitude' => 'nullable|numeric|between:0.5,4',
             'bedrooms' => 'required|integer|min:0',
             'beds' => 'required|integer|min:1',
             'bathrooms' => 'required|integer|min:1',
@@ -176,6 +180,8 @@ class HostPropertyController extends Controller
             'price_per_night' => 'sometimes|numeric|min:5000|max:100000000',
             'city' => 'sometimes|string|max:100',
             'district' => 'sometimes|string|max:100',
+            'latitude' => 'sometimes|nullable|numeric|between:6,13',
+            'longitude' => 'sometimes|nullable|numeric|between:0.5,4',
         ]);
 
         if ($validator->fails()) {

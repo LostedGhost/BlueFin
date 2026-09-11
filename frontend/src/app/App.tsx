@@ -37,7 +37,6 @@ import {
   HostReservationsPage,
   HostMessagesPage,
   MessagesPage,
-  FavoritesPage,
   PublishListingPage,
   HelpPage,
   AboutPage,
@@ -67,6 +66,10 @@ import {
 } from './pages';
 import { AdminPropertiesPage } from './pages/admin/AdminPropertiesPage';
 import { HomePage } from './pages/Home';
+import { MapPage } from './pages/MapPage';
+import { NeedsPage } from './pages/NeedsPage';
+import { FavoritesScreen } from './pages/Favorites';
+import { SiteChromeContext } from './siteChrome';
 import { parseRoute, routeToPath, tabFromPage, routeFromTab, type Route, type Page } from './router';
 import { AdminSidebar } from './components/AdminSidebar';
 import { AdminHeader } from './components/AdminHeader';
@@ -75,6 +78,7 @@ import { WhatsAppButton } from './components/WhatsAppButton';
 import { BookingSummaryPage } from '../app/pages/BookingSummaryPage';
 import { AdminHostPaymentsPage } from './pages/admin/AdminHostPaymentsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { AdminNeedsPage } from './pages/admin/AdminNeedsPage';
 import { FedapayPaymentPage } from './pages/FedapayPaymentPage';
 import { FedapayCallbackPage } from './pages/FedapayCallbackPage';
 
@@ -130,6 +134,8 @@ function AdminLayoutContent({
         return <AdminReportsPage onNavigate={onNavigate} />;
       case 'admin-settings':
         return <AdminSettingsPage onNavigate={onNavigate} />;
+      case 'admin-needs':
+        return <AdminNeedsPage onNavigate={onNavigate} />;
       default: 
         return <AdminDashboardPage onNavigate={onNavigate} />;
     }
@@ -167,10 +173,12 @@ function AdminLayoutWrapper({
 // ============================================
 function AppContent() {
   const [route, setRoute] = useState<Route>(() => parseRoute(window.location.pathname + window.location.search));
-  const [mobileNavActive, setMobileNavActive] = useState<'explore' | 'favorites' | 'trips' | 'messages' | 'profile'>(
+  const [mobileNavActive, setMobileNavActive] = useState<'explore' | 'map' | 'favorites' | 'needs' | 'trips' | 'messages' | 'profile'>(
     tabFromPage(route.name)
   );
   const [isBookingSheetOpen, setIsBookingSheetOpen] = useState(false);
+  // Une page peut masquer l'en-tête et le pied de page (voir siteChrome.ts).
+  const [siteChromeHidden, setSiteChromeHidden] = useState(false);
   const { user, isAuthenticated, loading, refreshUser } = useAuth();
   const routerNavigate = useRouterNavigate();
   const location = useLocation();
@@ -419,7 +427,7 @@ function AppContent() {
     
     const protectedRoutes: Page[] = [
       'account', 'account-reservations', 'host-dashboard', 'host-annonces',
-      'host-calendrier', 'host-reservations', 'host-messages', 'favorites', 'publish',
+      'host-calendrier', 'host-reservations', 'host-messages', 'publish',
       'host-experience-dashboard', 'host-experiences-list', 'host-experience-calendar',
       'host-experience-reservations', 'host-service-dashboard'
     ];
@@ -505,8 +513,11 @@ function AppContent() {
   // ============================================
   // ROUTES PUBLIQUES ET PROTÉGÉES CLASSIQUES
   // ============================================
-  const showNavbar = route.name !== 'home' && route.name !== 'listing' && route.name !== 'booking';
-  const showFooter = route.name !== 'listing' && route.name !== 'booking';
+  // Connexion / inscription : page épurée, sans en-tête ni pied de page du
+  // site (demande client). La carte occupe tout l'écran : pas de pied de page.
+  const isAuthScreen = route.name === 'auth' || siteChromeHidden;
+  const showNavbar = route.name !== 'home' && route.name !== 'listing' && route.name !== 'booking' && !isAuthScreen;
+  const showFooter = route.name !== 'listing' && route.name !== 'booking' && route.name !== 'map' && !isAuthScreen;
   const showMobileBottomNav = route.name !== 'listing' && route.name !== 'booking';
 
   // Certaines pages (home, listing) définissent leurs propres balises Seo plus
@@ -515,11 +526,12 @@ function AppContent() {
   const hasOwnSeo = route.name === 'home' || route.name === 'listing';
 
   return (
+    <SiteChromeContext.Provider value={setSiteChromeHidden}>
     <div className="min-h-screen bg-white">
       {!hasOwnSeo && (
         <Seo
           title="Bluefin Immo — Location de logements vérifiés au Bénin"
-          description="Réservez des logements, expériences et services vérifiés partout au Bénin. Paiement sécurisé par Mobile Money (MTN, Moov, Orange)."
+          description="Réservez des logements, expériences et services vérifiés partout au Bénin. Paiement sécurisé par Mobile Money (MTN, Moov, Celtiis)."
           path={routeToPath(route)}
         />
       )}
@@ -588,7 +600,7 @@ function AppContent() {
       {route.name === 'host-reservations' && <HostReservationsPage onNavigate={navigate} />}
       {route.name === 'messages' && <MessagesPage onNavigate={navigate} id={route.id} search={route.search} />}
       {route.name === 'host-messages' && <HostMessagesPage onNavigate={navigate} id={route.id} />}
-      {route.name === 'favorites' && <FavoritesPage onNavigate={navigate} />}
+      {route.name === 'favorites' && <FavoritesScreen onNavigate={navigate} />}
       {route.name === 'publish' && <PublishListingPage onNavigate={navigate} />}
       {route.name === 'help' && <HelpPage onNavigate={navigate} />}
       {route.name === 'about' && <AboutPage onNavigate={navigate} />}
@@ -602,6 +614,8 @@ function AppContent() {
       {route.name === 'services' && <ServicesPage onNavigate={navigate} />}
       {route.name === 'become-host' && <BecomeHost onNavigate={navigate} />}
       {route.name === 'auth' && <AuthPage onNavigate={navigate} search={route.search} />}
+      {route.name === 'map' && <MapPage onNavigate={navigate} />}
+      {route.name === 'needs' && <NeedsPage onNavigate={navigate} />}
       {route.name === 'site-functioning' && <SiteFunctioningPage onNavigate={navigate} />}
       {route.name === 'company-info' && <CompanyInfoPage onNavigate={navigate} />}
       {route.name === 'not-found' && <NotFoundPage onNavigate={navigate} />}
@@ -634,6 +648,7 @@ function AppContent() {
       <MobileBookingSheet isOpen={isBookingSheetOpen} onClose={() => setIsBookingSheetOpen(false)} propertyId={0} pricePerNight={0} />
       <Toaster position="top-right" />
     </div>
+    </SiteChromeContext.Provider>
   );
 }
 

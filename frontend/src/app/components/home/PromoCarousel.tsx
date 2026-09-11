@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { X, Sparkles, ShieldCheck, Smartphone } from 'lucide-react';
+import { X, KeyRound, ShieldCheck, Smartphone } from 'lucide-react';
 
 interface Slide {
-  icon: typeof Sparkles;
+  icon: typeof KeyRound;
   text: string;
   route?: any;
 }
 
 const SLIDES: Slide[] = [
-  { icon: Sparkles, text: 'Devenez hôte et générez des revenus avec Bluefin Immo', route: { name: 'become-host' } },
+  // Clé plutôt que les « étincelles » (Sparkles), icône devenue le symbole des outils d'IA.
+  { icon: KeyRound, text: 'Devenez hôte et générez des revenus avec Bluefin Immo', route: { name: 'become-host' } },
   { icon: ShieldCheck, text: 'Logements vérifiés et certifiés Bluefin Immo partout au Bénin' },
-  { icon: Smartphone, text: 'Payez en toute sécurité par Mobile Money (MTN, Moov, Orange)' },
+  // Opérateurs Mobile Money présents au Bénin (Orange n'y opère pas).
+  { icon: Smartphone, text: 'Payez en toute sécurité par Mobile Money (MTN, Moov, Celtiis)' },
 ];
 
 export function PromoCarousel({ onNavigate }: { onNavigate?: (route: any) => void }) {

@@ -24,19 +24,53 @@ class FavoriteController extends Controller
 
         $listName = $request->get('list_name', 'default');
 
-        $favorites = Favorite::with('property', 'property.photos')
+        // Réponse explicite, champ par champ : l'ancienne renvoyait l'annonce
+        // complète (justificatifs, chiffre d'affaires, lien iCal privé…).
+        // Même format pour voyageurs et hôtes (route commune).
+        $favorites = Favorite::with(['property.coverPhoto'])
             ->where('user_id', $request->user()->id)
             ->where('list_name', $listName)
             ->orderBy('created_at', 'desc')
-            ->get();
-        
+            ->get()
+            ->filter(fn ($favorite) => $favorite->property !== null)
+            ->map(fn ($favorite) => self::present($favorite))
+            ->values();
+
         return response()->json([
             'success' => true,
-            'data' => $favorites,
-            'list_name' => $listName
+            'data' => [
+                'current_list' => $listName,
+                'favorites' => $favorites,
+                'total' => $favorites->count(),
+            ],
+            'list_name' => $listName,
         ]);
     }
-    
+
+    /** Favori présenté pour l'application (aucun champ interne de l'annonce). */
+    public static function present(Favorite $favorite): array
+    {
+        $property = $favorite->property;
+
+        return [
+            'id' => $favorite->id,
+            'property' => [
+                'id' => $property->id,
+                'title' => $property->title,
+                'city' => $property->city,
+                'district' => $property->district,
+                'property_type' => $property->property_type,
+                'price_per_night' => (int) $property->price_per_night,
+                'average_rating' => (float) ($property->average_rating ?? 0),
+                'reviews_count' => (int) ($property->reviews_count ?? 0),
+                'bluefin_certified' => (bool) ($property->bluefin_certified ?? false),
+                'cover_photo' => $property->coverPhoto ? ['full_url' => $property->coverPhoto->full_url] : null,
+            ],
+            'notes' => $favorite->notes,
+            'created_at' => $favorite->created_at?->toIso8601String(),
+        ];
+    }
+
     /**
      * Get all favorite lists
      */

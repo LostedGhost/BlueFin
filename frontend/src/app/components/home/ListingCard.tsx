@@ -1,4 +1,5 @@
 import { BadgeCheck, Heart } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useFavorites } from '../../hooks/useFavorites';
 import { ListingCardGallery } from './ListingCardGallery';
 
@@ -25,6 +26,24 @@ export function ListingCard({
   route: any;
 }) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  // Les favoris n'existent que pour les logements : sur une carte
+  // d'expérience ou de service, le même identifiant désignerait un autre
+  // logement. Le cœur n'y est donc pas affiché.
+  const canFavorite = route?.name === 'listing';
+  const favorite = canFavorite && isFavorite(Number(listing.id));
+
+  const onHeart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const result: any = await toggleFavorite({ id: listing.id });
+    if (result?.needsLogin) {
+      toast('Connectez-vous pour enregistrer vos favoris.', { icon: '♡' });
+      onNavigate?.({ name: 'auth' });
+    } else if (result?.success) {
+      toast.success(result.message);
+    } else if (result?.message) {
+      toast.error(result.message);
+    }
+  };
 
   // `images` d'abord, `image` en repli pour les sources qui n'exposent qu'une
   // couverture (expériences, services).
@@ -47,19 +66,17 @@ export function ListingCard({
           </span>
         )}
 
-        <span
-          role="button"
-          aria-label="Ajouter aux favoris"
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite({ id: listing.id, title: listing.title } as any);
-          }}
-          className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center rounded-full bg-white/95 backdrop-blur-sm shadow-sm active:scale-90 transition-transform"
-        >
-          <Heart
-            className={`w-4 h-4 ${isFavorite(Number(listing.id)) ? 'fill-red-500 text-red-500' : 'text-[#0f2940]'}`}
-          />
-        </span>
+        {canFavorite && (
+          <span
+            role="button"
+            aria-label={favorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            aria-pressed={favorite}
+            onClick={onHeart}
+            className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center rounded-full bg-white/95 backdrop-blur-sm shadow-sm active:scale-90 transition-transform"
+          >
+            <Heart className={`w-4 h-4 ${favorite ? 'fill-red-500 text-red-500' : 'text-[#0f2940]'}`} />
+          </span>
+        )}
       </div>
 
       <h4 className="font-body mt-2.5 text-[15.5px] font-bold text-[#0f2940] leading-snug tracking-[-0.015em] line-clamp-1">

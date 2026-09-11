@@ -1,9 +1,14 @@
 // src/app/hooks/useFavorites.ts
-import { useState, useEffect, useCallback } from 'react';
+//
+// Favoris de l'utilisateur, partagés par toute l'application via le cache
+// React Query : UNE requête, quel que soit le nombre de cartes affichées.
+// Auparavant chaque carte chargeait la liste complète (20 cartes = 20
+// requêtes identiques), ce qui entamait le quota de 60 requêtes/minute.
+import { useCallback } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import favoriteService from '../../services/favorite.service';
-import { useAuth } from './useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 
-// Interface correspondant à l'API Laravel
 export interface FavoriteItem {
   id: number;
   property: {
@@ -14,12 +19,10 @@ export interface FavoriteItem {
     price_per_night: number;
     average_rating: number;
     reviews_count: number;
-    cover_photo?: {
-      photo_url: string;
-    };
+    property_type?: string;
+    cover_photo?: { photo_url?: string; full_url?: string };
     bluefin_certified?: boolean;
   };
-  // Propriétés aplaties pour un accès facile
   title?: string;
   location?: string;
   price?: number;
@@ -32,168 +35,97 @@ export interface FavoriteItem {
   addedAt: string;
 }
 
+const fcfa = (n: number) => new Intl.NumberFormat('fr-FR').format(n || 0).replace(/[  ]/g, ' ');
+
+const toItem = (fav: any): FavoriteItem => ({
+  id: fav.id,
+  property: fav.property,
+  notes: fav.notes,
+  addedAt: fav.created_at,
+  title: fav.property?.title,
+  location: [fav.property?.district, fav.property?.city].filter(Boolean).join(', '),
+  price: Number(fav.property?.price_per_night) || 0,
+  priceDisplay: `${fcfa(Number(fav.property?.price_per_night) || 0)} FCFA / nuit`,
+  rating: Number(fav.property?.average_rating) || 0,
+  reviews: fav.property?.reviews_count,
+  image: fav.property?.cover_photo?.full_url || fav.property?.cover_photo?.photo_url,
+  type: fav.property?.property_type || 'Logement',
+});
+
+export const FAVORITES_KEY = ['favorites'];
+
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { isAuthenticated, user } = useAuth();
-
-  // ✅ Vérifier si l'utilisateur est admin
+  const queryClient = useQueryClient();
   const isAdmin = user?.user_type === 'admin';
+  const enabled = Boolean(isAuthenticated && user && !isAdmin);
 
-  // Charger les favoris depuis l'API
-  const loadFavorites = useCallback(async () => {
-    // ✅ Si admin, ne pas charger les favoris
-    if (!isAuthenticated || isAdmin) {
-      setFavorites([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    
-    try {
+  const query = useQuery({
+    queryKey: [...FAVORITES_KEY, user?.id],
+    queryFn: async () => {
       const response = await favoriteService.getFavorites();
-      // Adapter la réponse à notre interface
-      const favoritesData = response.data?.favorites?.map((fav: any) => ({
-        id: fav.id,
-        property: fav.property,
-        notes: fav.notes,
-        addedAt: fav.created_at,
-        // Propriétés aplaties pour accès facile
-        title: fav.property?.title,
-        location: `${fav.property?.city}${fav.property?.district ? ', ' + fav.property.district : ''}`,
-        price: fav.property?.price_per_night,
-        priceDisplay: `${fav.property?.price_per_night?.toLocaleString() || 0} FCFA / nuit`,
-        rating: fav.property?.average_rating,
-        reviews: fav.property?.reviews_count,
-        image: fav.property?.cover_photo?.photo_url,
-        type: fav.property?.property_type || 'Logement'
-      })) || [];
-      setFavorites(favoritesData);
-    } catch (err: any) {
-      console.error('Erreur chargement favoris:', err);
-      setError(err.message || 'Erreur lors du chargement des favoris');
-    } finally {
-      setLoading(false);
-    }
-  }, [isAuthenticated, isAdmin]);
+      return ((response?.data?.favorites as any[]) || []).map(toItem);
+    },
+    enabled,
+    staleTime: 60 * 1000,
+  });
+  const favorites: FavoriteItem[] = enabled ? query.data ?? [] : [];
 
-  // Recharger quand l'utilisateur se connecte
-  useEffect(() => {
-    loadFavorites();
-  }, [loadFavorites, isAuthenticated, isAdmin]);
+  const isFavorite = useCallback(
+    (propertyId: number) => favorites.some((f) => f.property?.id === Number(propertyId)),
+    [favorites]
+  );
 
-  // Vérifier si une propriété est en favori
-  const isFavorite = useCallback((propertyId: number): boolean => {
-    // ✅ Si admin, retourner false directement
-    if (isAdmin) return false;
-    return favorites.some(fav => fav.property?.id === propertyId);
-  }, [favorites, isAdmin]);
-
-  // Ajouter un favori
-  const addFavorite = useCallback(async (property: any, listName?: string, notes?: string) => {
-    // ✅ Si admin, ne pas permettre l'ajout
-    if (!isAuthenticated || isAdmin) {
-      console.warn('Utilisateur non connecté ou admin, impossible d\'ajouter aux favoris');
-      return false;
-    }
-
-    try {
-      const propertyId = property.id || property;
-      const response = await favoriteService.toggle(propertyId, listName || 'default', notes);
-      
-      if (response.action === 'added') {
-        await loadFavorites(); // Recharger la liste
-        return true;
+  const mutation = useMutation({
+    mutationFn: (propertyId: number) => favoriteService.toggle(propertyId),
+    // Mise à jour immédiate du cœur, sans attendre le serveur.
+    onMutate: async (propertyId: number) => {
+      const key = [...FAVORITES_KEY, user?.id];
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<FavoriteItem[]>(key);
+      if (previous?.some((f) => f.property?.id === propertyId)) {
+        queryClient.setQueryData<FavoriteItem[]>(key, previous.filter((f) => f.property?.id !== propertyId));
       }
-      return false;
-    } catch (err: any) {
-      console.error('Erreur ajout favori:', err);
-      setError(err.message);
-      return false;
-    }
-  }, [isAuthenticated, isAdmin, loadFavorites]);
+      return { previous, key };
+    },
+    onError: (_e, _id, context) => { if (context?.previous) queryClient.setQueryData(context.key, context.previous); },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: FAVORITES_KEY }),
+  });
 
-  // Supprimer un favori
+  const toggleFavorite = useCallback(async (property: any) => {
+    if (!enabled) return { success: false, needsLogin: !isAuthenticated, message: 'Connectez-vous pour enregistrer vos favoris.' };
+    const propertyId = Number(property?.id ?? property);
+    try {
+      const response = await mutation.mutateAsync(propertyId);
+      return { success: true, action: response?.action, message: response?.action === 'added' ? 'Ajouté aux favoris' : 'Retiré des favoris' };
+    } catch (err: any) {
+      return { success: false, message: err?.response?.data?.message || 'Impossible de modifier vos favoris.' };
+    }
+  }, [enabled, isAuthenticated, mutation]);
+
+  const addFavorite = useCallback(async (property: any) => {
+    const id = Number(property?.id ?? property);
+    return isFavorite(id) ? true : (await toggleFavorite(id)).success;
+  }, [isFavorite, toggleFavorite]);
+
   const removeFavorite = useCallback(async (propertyId: number) => {
-    // ✅ Si admin, ne pas permettre la suppression
-    if (!isAuthenticated || isAdmin) {
-      return false;
-    }
-
-    try {
-      const response = await favoriteService.toggle(propertyId);
-      
-      if (response.action === 'removed') {
-        await loadFavorites(); // Recharger la liste
-        return true;
-      }
-      return false;
-    } catch (err: any) {
-      console.error('Erreur suppression favori:', err);
-      setError(err.message);
-      return false;
-    }
-  }, [isAuthenticated, isAdmin, loadFavorites]);
-
-  // Basculer l'état favori
-  const toggleFavorite = useCallback(async (property: any, listName?: string, notes?: string) => {
-    // ✅ Si admin, ne pas permettre le toggle
-    if (!isAuthenticated || isAdmin) {
-      console.warn('Veuillez vous connecter pour ajouter aux favoris');
-      return { success: false, message: 'Connexion requise' };
-    }
-
-    const propertyId = property.id || property;
-    const isCurrentlyFavorite = isFavorite(propertyId);
-    
-    try {
-      const response = await favoriteService.toggle(propertyId, listName || 'default', notes);
-      await loadFavorites(); // Recharger après modification
-      
-      return { 
-        success: true, 
-        action: response.action,
-        message: response.action === 'added' ? 'Ajouté aux favoris' : 'Retiré des favoris'
-      };
-    } catch (err: any) {
-      console.error('Erreur toggle favori:', err);
-      return { success: false, message: err.message };
-    }
-  }, [isAuthenticated, isAdmin, isFavorite, loadFavorites]);
-
-  // Obtenir les favoris formatés pour PropertyCard
-  const getFormattedFavorites = useCallback(() => {
-    // ✅ Si admin, retourner un tableau vide
-    if (isAdmin) return [];
-    
-    return favorites.map(fav => ({
-      id: fav.property?.id,
-      title: fav.property?.title,
-      location: `${fav.property?.district || ''}, ${fav.property?.city || ''}`,
-      price: fav.property?.price_per_night,
-      priceDisplay: `${fav.property?.price_per_night?.toLocaleString() || 0} FCFA / nuit`,
-      rating: fav.property?.average_rating || 0,
-      reviews: fav.property?.reviews_count || 0,
-      image: fav.property?.cover_photo?.photo_url || '/placeholder.jpg',
-      type: 'Logement',
-      addedAt: fav.addedAt,
-      notes: fav.notes
-    }));
-  }, [favorites, isAdmin]);
+    return isFavorite(propertyId) ? (await toggleFavorite(propertyId)).success : false;
+  }, [isFavorite, toggleFavorite]);
 
   return {
     favorites,
-    formattedFavorites: getFormattedFavorites(),
-    loading,
-    error,
+    formattedFavorites: favorites.map((f) => ({
+      id: f.property?.id, title: f.title, location: f.location, price: f.price, priceDisplay: f.priceDisplay,
+      rating: f.rating || 0, reviews: f.reviews || 0, image: f.image || '/placeholder-photo.svg', type: 'Logement',
+      addedAt: f.addedAt, notes: f.notes,
+    })),
+    loading: enabled && query.isLoading,
+    error: query.error ? 'Erreur lors du chargement des favoris' : null,
     isFavorite,
     addFavorite,
     removeFavorite,
     toggleFavorite,
-    favoriteCount: isAdmin ? 0 : favorites.length,
-    refreshFavorites: loadFavorites
+    favoriteCount: favorites.length,
+    refreshFavorites: () => queryClient.invalidateQueries({ queryKey: FAVORITES_KEY }),
   };
 }

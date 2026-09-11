@@ -43,6 +43,8 @@ export type Page =
   | 'hotels'
   | 'city'
   | 'auth'
+  | 'map'
+  | 'needs'
   | 'site-functioning'
   | 'company-info'
   | 'footer-info'
@@ -56,6 +58,7 @@ export type Page =
   | 'admin-messages'
   | 'admin-reports'
   | 'admin-settings'
+  | 'admin-needs'
   | 'admin-login'
   | 'admin-experiences'
   | 'admin-services'
@@ -101,6 +104,10 @@ export function parseRoute(path: string): Route {
     'become-host': 'become-host',
     'devenir-hote': 'become-host',
     auth: 'auth',
+    carte: 'map',
+    map: 'map',
+    besoins: 'needs',
+    needs: 'needs',
     connexion: 'auth',
     login: 'auth',
     'a-propos': 'about',
@@ -226,6 +233,7 @@ export function parseRoute(path: string): Route {
     if (sub === 'messages') return { name: 'admin-messages', search };
     if (sub === 'reports') return { name: 'admin-reports', search };
     if (sub === 'settings') return { name: 'admin-settings', search };
+    if (sub === 'needs') return { name: 'admin-needs', search };
     return { name: 'admin-dashboard', search };
   }
 
@@ -269,6 +277,8 @@ export function routeToPath(route: Route): string {
     case 'services': path = '/services'; break;
     case 'become-host': path = '/devenir-hote'; break;
     case 'auth': path = '/auth'; break;
+    case 'map': path = '/carte'; break;
+    case 'needs': path = '/besoins'; break;
     case 'about': path = '/a-propos'; break;
     case 'help': path = '/aide'; break;
     case 'blog': path = '/blog'; break;
@@ -346,6 +356,7 @@ export function routeToPath(route: Route): string {
     case 'admin-messages': path = '/admin/messages'; break;
     case 'admin-reports': path = '/admin/reports'; break;
     case 'admin-settings': path = '/admin/settings'; break;
+    case 'admin-needs': path = '/admin/needs'; break;
     case 'admin-login': path = '/admin-login'; break;
     case 'terms':
       if (route.type === 'privacy') path = '/confidentialite';
@@ -375,7 +386,12 @@ export function routeToPath(route: Route): string {
 /**
  * Détermine l'onglet de navigation mobile à partir du nom de la page
  */
-export function tabFromPage(page: Page): 'explore' | 'favorites' | 'trips' | 'messages' | 'profile' {
+export function tabFromPage(page: Page): 'explore' | 'map' | 'favorites' | 'needs' | 'trips' | 'messages' | 'profile' {
+  if (page === 'map') return 'map';
+  if (page === 'needs') return 'needs';
+  if (page === 'host-favorites') return 'favorites';
+  // Espaces hôte et compte : rattachés à l'onglet Profil.
+  if (page.startsWith('host-') || page === 'account' || page === 'publish' || page === 'auth') return 'profile';
   // Explorer
   if (page === 'home' || page === 'popular' || page === 'hotels' || page === 'city' || 
       page === 'experience' || page === 'services' || page === 'listing' || page === 'search-logements' || 

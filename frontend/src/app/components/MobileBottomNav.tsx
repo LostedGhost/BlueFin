@@ -1,230 +1,105 @@
 // components/MobileBottomNav.tsx
-import { Compass, Heart, MessageCircle, User, LogIn, Calendar, LayoutDashboard, Building2, Users, Settings } from 'lucide-react';
-import { useEffect } from 'react';
+//
+// Barre d'onglets mobile, identique pour visiteurs, voyageurs et hôtes
+// (demande client) : Accueil · Carte · Favoris · Besoins · Profil.
+// Messages et réservations sont accessibles depuis Profil (page profil et
+// menu de compte). L'administration garde sa propre barre.
+import { Home, Map, Heart, ClipboardList, User, LayoutDashboard, Building2, Users, Settings } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserAvatar } from './account/ProfileMenu';
 
-export type Tab = 'explore' | 'favorites' | 'trips' | 'messages' | 'profile' | 'auth' | 'admin-dashboard' | 'admin-users' | 'admin-properties' | 'admin-settings';
+export type Tab =
+  | 'explore' | 'map' | 'favorites' | 'needs' | 'profile'
+  // hérités (pages rattachées à Profil)
+  | 'trips' | 'messages' | 'auth'
+  | 'admin-dashboard' | 'admin-users' | 'admin-properties' | 'admin-settings';
 
 interface MobileBottomNavProps {
   active?: Tab;
   onNavigate?: (route: { name: string; id?: string } | string) => void;
 }
 
-export function MobileBottomNav({ active: propActive, onNavigate }: MobileBottomNavProps) {
+const MAIN_TABS: { id: Tab; icon: typeof Home; label: string }[] = [
+  { id: 'explore', icon: Home, label: 'Accueil' },
+  { id: 'map', icon: Map, label: 'Carte' },
+  { id: 'favorites', icon: Heart, label: 'Favoris' },
+  { id: 'needs', icon: ClipboardList, label: 'Besoins' },
+  { id: 'profile', icon: User, label: 'Profil' },
+];
+
+const ADMIN_TABS: { id: Tab; icon: typeof Home; label: string }[] = [
+  { id: 'admin-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { id: 'admin-users', icon: Users, label: 'Utilisateurs' },
+  { id: 'admin-properties', icon: Building2, label: 'Annonces' },
+  { id: 'admin-settings', icon: Settings, label: 'Réglages' },
+  { id: 'profile', icon: User, label: 'Profil' },
+];
+
+/** Onglet actif d'après l'adresse : les pages de compte relèvent de Profil. */
+function tabFromPath(path: string): Tab {
+  if (path.startsWith('/admin/users')) return 'admin-users';
+  if (path.startsWith('/admin/properties')) return 'admin-properties';
+  if (path.startsWith('/admin/settings')) return 'admin-settings';
+  if (path.startsWith('/admin')) return 'admin-dashboard';
+  if (path.startsWith('/carte')) return 'map';
+  if (path.startsWith('/besoins')) return 'needs';
+  if (path === '/favoris' || path === '/hote/favoris') return 'favorites';
+  if (path.startsWith('/profil') || path.startsWith('/mon-compte') || path.startsWith('/messages') ||
+      path.startsWith('/hote') || path.startsWith('/host/') || path.startsWith('/auth')) return 'profile';
+  return 'explore';
+}
+
+export function MobileBottomNav({ active, onNavigate }: MobileBottomNavProps) {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
-  const userType = user?.user_type;
-  const hostType = user?.host_type; // ✅ Récupérer le type d'hôte (logement, experience, service)
-  
-  // ✅ Vérifier si l'utilisateur est admin
-  const isAdmin = userType === 'admin';
+  const isAdmin = user?.user_type === 'admin';
+  // L'onglet actif vient d'abord de la route de l'application (App.tsx) :
+  // useLocation() n'est pas toujours à jour, le site changeant parfois
+  // d'adresse sans passer par react-router. L'adresse sert de repli.
+  const activeTab: Tab = active && active !== 'explore'
+    ? (active === 'trips' || active === 'messages' ? 'profile' : active)
+    : tabFromPath(location.pathname);
+  const tabs = isAdmin ? ADMIN_TABS : MAIN_TABS;
 
-  // ✅ Déterminer l'onglet actif en fonction de l'URL
-  const getActiveTabFromPath = (): Tab => {
-    const path = location.pathname;
-    
-    // Routes admin
-    if (path === '/admin-dashboard' || path.startsWith('/admin-dashboard')) {
-      return 'admin-dashboard';
-    }
-    if (path === '/admin/users' || path.startsWith('/admin/users')) {
-      return 'admin-users';
-    }
-    if (path === '/admin/properties' || path.startsWith('/admin/properties')) {
-      return 'admin-properties';
-    }
-    if (path === '/admin/settings' || path.startsWith('/admin/settings')) {
-      return 'admin-settings';
-    }
-    
-    // Routes publiques / voyageur / hôte
-    if (path === '/' || path === '/popular' || path === '/hotels' || path.startsWith('/city/') || 
-        path === '/experience' || path === '/services' || path.startsWith('/annonce/') ||
-        path.startsWith('/search/')) {
-      return 'explore';
-    }
-    
-    if (path === '/favoris' || path === '/hote/favoris') {
-      return 'favorites';
-    }
-    
-    if (path === '/mon-compte/reservations') {
-      return 'trips';
-    }
-    
-    // ✅ Détection des messages pour hôte logement ET expérience
-    if (path === '/messages' || path.startsWith('/messages/') || 
-        path === '/hote/messages' || path.startsWith('/hote/messages/') ||
-        path === '/host/experience/messages' || path.startsWith('/host/experience/messages/')) {
-      return 'messages';
-    }
-    
-    if (path === '/profil' || path === '/mon-compte' || path.startsWith('/profil/')) {
-      return 'profile';
-    }
-    
-    return 'explore';
-  };
-
-  // Priorité à la prop active, sinon déterminer par l'URL
-  const activeTab = propActive || getActiveTabFromPath();
-
-  useEffect(() => {
-    console.log('🔍 MobileBottomNav - activeTab:', activeTab, 'propActive:', propActive, 'path:', location.pathname, 'userType:', userType, 'hostType:', hostType);
-  }, [activeTab, propActive, location.pathname, userType, hostType]);
-
-  // ✅ Définir les onglets disponibles selon le type d'utilisateur
-  const getAvailableTabs = (): { id: Tab; icon: typeof Compass; label: string }[] => {
-    
-    // ✅ Si admin, afficher les onglets admin
-    if (isAdmin) {
-      return [
-        { id: 'admin-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-        { id: 'admin-users', icon: Users, label: 'Utilisateurs' },
-        { id: 'admin-properties', icon: Building2, label: 'Annonces' },
-        { id: 'admin-settings', icon: Settings, label: 'Réglages' },
-        { id: 'profile', icon: User, label: 'Profil' },
-      ];
-    }
-    
-    // Onglets publics
-    const publicTabs = [
-      { id: 'explore' as Tab, icon: Compass, label: 'Explorer' },
-      { id: 'favorites' as Tab, icon: Heart, label: 'Favoris' },
-    ];
-    
-    const privateTabs = [
-      { id: 'messages' as Tab, icon: MessageCircle, label: 'Messages' },
-      { id: 'profile' as Tab, icon: User, label: 'Profil' },
-    ];
-    
-    const travelerSpecificTab = [
-      { id: 'trips' as Tab, icon: Calendar, label: 'Voyages' },
-    ];
-    
-    const authTab = [
-      { id: 'auth' as Tab, icon: LogIn, label: 'Compte' },
-    ];
-    
-    if (isAuthenticated) {
-      if (userType === 'hote') {
-        return [...publicTabs, ...privateTabs];
-      }
-      return [...publicTabs, ...travelerSpecificTab, ...privateTabs];
-    } else {
-      return [...publicTabs, ...authTab];
+  const go = (tab: Tab) => {
+    switch (tab) {
+      case 'explore': return onNavigate?.({ name: 'home' });
+      case 'map': return onNavigate?.({ name: 'map' });
+      case 'favorites': return onNavigate?.({ name: 'favorites' });
+      case 'needs': return onNavigate?.({ name: 'needs' });
+      case 'profile':
+        if (!isAuthenticated) return onNavigate?.({ name: 'auth' });
+        return onNavigate?.({ name: isAdmin ? 'admin-dashboard' : 'profile' });
+      default: return onNavigate?.({ name: tab });
     }
   };
-
-  const tabs = getAvailableTabs();
-
-  // components/MobileBottomNav.tsx - Partie handleNavigate
-
-const handleNavigate = (tabId: Tab) => {
-  // ✅ Gestion navigation admin
-  if (isAdmin) {
-    if (tabId === 'admin-dashboard') {
-      onNavigate?.({ name: 'admin-dashboard' });
-    } else if (tabId === 'admin-users') {
-      onNavigate?.({ name: 'admin-users' });
-    } else if (tabId === 'admin-properties') {
-      onNavigate?.({ name: 'admin-properties' });
-    } else if (tabId === 'admin-settings') {
-      onNavigate?.({ name: 'admin-settings' });
-    } else if (tabId === 'profile') {
-      onNavigate?.({ name: 'admin-dashboard' });
-    }
-    return;
-  }
-  
-  // ✅ Gestion navigation non authentifié
-  if (!isAuthenticated && (tabId === 'trips' || tabId === 'messages' || tabId === 'profile')) {
-    onNavigate?.('auth');
-    return;
-  }
-
-  if (tabId === 'auth') {
-    onNavigate?.('auth');
-    return;
-  }
-
-  // ✅ Gestion des messages - CORRECTION ICI
-  if (tabId === 'messages') {
-    if (userType === 'hote') {
-      // ✅ Vérifier si c'est un hôte expérience
-      if (hostType === 'experience') {
-        console.log('📨 Hôte expérience → Redirection vers host-experience-messages');
-        onNavigate?.({ name: 'host-experience-messages' });
-      } else {
-        // ✅ Hôte logement → host-messages
-        console.log('📨 Hôte logement → Redirection vers host-messages');
-        onNavigate?.({ name: 'host-messages' });
-      }
-    } else {
-      // ✅ Voyageur → messages
-      console.log('📨 Voyageur → Redirection vers messages');
-      onNavigate?.({ name: 'messages' });
-    }
-    return;
-  }
-
-  if (tabId === 'favorites') {
-    if (userType === 'hote') {
-      onNavigate?.({ name: 'host-favorites' });
-    } else {
-      onNavigate?.({ name: 'favorites' });
-    }
-    return;
-  }
-
-  if (tabId === 'explore') {
-    onNavigate?.({ name: 'home' });
-  } else if (tabId === 'trips') {
-    onNavigate?.({ name: 'account-reservations' });
-  } else if (tabId === 'profile') {
-    onNavigate?.({ name: 'profile' });
-  } else {
-    onNavigate?.(tabId);
-  }
-};
 
   return (
-    // min-h + padding de zone sûre : `safe-area-pb` était utilisée ici mais
-    // n'a jamais été définie dans le CSS — la barre collait donc la zone
-    // gestuelle du système. Une hauteur fixe écraserait le contenu, d'où min-h.
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e2f5f2] min-h-16 sm:min-h-20 pb-[env(safe-area-inset-bottom)] px-2 flex items-center justify-around z-50">
-      {tabs.map(({ id, icon: Icon, label }) => (
-        <button
-          key={id}
-          onClick={() => handleNavigate(id)}
-          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition-all duration-200 ${
-            activeTab === id 
-              ? 'text-[#00c9a7] scale-105' 
-              : 'text-[#9ca3af] hover:text-[#0f2940] hover:scale-105'
-          }`}
-        >
-          {id === 'profile' && isAuthenticated && user ? (
-            // Connecté : avatar (photo ou initiales) avec point vert, cerclé
-            // de la couleur active quand l'onglet est sélectionné.
-            <span className={`rounded-full ${activeTab === id ? 'ring-2 ring-[#00c9a7] ring-offset-1' : ''}`}>
-              <UserAvatar user={user} size={24} />
-            </span>
-          ) : (
-          <Icon 
-            className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${
-              activeTab === id && id !== 'auth' && id !== 'admin-dashboard' && id !== 'admin-users' && id !== 'admin-properties' && id !== 'admin-settings'
-                ? 'fill-[#00c9a7] stroke-[#00c9a7]' 
-                : ''
-            }`} 
-          />
-          )}
-          <span className={`text-[10px] sm:text-xs transition-all ${activeTab === id ? 'font-bold' : ''}`}>
-            {label}
-          </span>
-        </button>
-      ))}
-    </div>
+    // min-h + padding de zone sûre : une hauteur fixe écraserait le contenu.
+    <nav aria-label="Navigation principale"
+      className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#e2f5f2] min-h-16 pb-[env(safe-area-inset-bottom)] px-1 flex items-center justify-around z-50">
+      {tabs.map(({ id, icon: Icon, label }) => {
+        const active = activeTab === id;
+        return (
+          <button
+            key={id}
+            onClick={() => go(id)}
+            aria-current={active ? 'page' : undefined}
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl transition-colors ${active ? 'text-[#00806b]' : 'text-slate-400 hover:text-[#0f2940]'}`}
+          >
+            {id === 'profile' && isAuthenticated && user ? (
+              // Connecté : avatar (photo ou initiales) avec point vert.
+              <span className={`rounded-full ${active ? 'ring-2 ring-[#00c9a7] ring-offset-1' : ''}`}>
+                <UserAvatar user={user} size={24} />
+              </span>
+            ) : (
+              <Icon className="w-6 h-6" strokeWidth={active ? 2.4 : 1.8} />
+            )}
+            <span className={`text-[11px] leading-none ${active ? 'font-semibold' : ''}`}>{label}</span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }

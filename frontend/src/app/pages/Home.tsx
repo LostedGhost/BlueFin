@@ -208,7 +208,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
     <div className="min-h-screen bg-white pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-0">
       <Seo
         title="Bluefin Immo — Location de logements vérifiés au Bénin"
-        description="Réservez des logements, expériences et services vérifiés partout au Bénin. Paiement sécurisé par Mobile Money (MTN, Moov, Orange)."
+        description="Réservez des logements, expériences et services vérifiés partout au Bénin. Paiement sécurisé par Mobile Money (MTN, Moov, Celtiis)."
         path="/"
       />
       <h1 className="sr-only">Location de logements, expériences et services vérifiés au Bénin</h1>

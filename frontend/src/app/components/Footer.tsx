@@ -1,6 +1,7 @@
 // src/app/components/Footer.tsx
 import { useState } from 'react';
-import { Facebook, Instagram, MessageCircle, Globe, ChevronRight, MapPin, Phone, Mail, Clock, Building, HelpCircle, FileText, Users, Shield, CreditCard } from 'lucide-react';
+import { ChevronRight, MapPin, Phone, Mail, Clock, Building, HelpCircle, Users } from 'lucide-react';
+import Logo from '../assets/Bluefin Immo_01.jpg.jpeg';
 import type { Route } from '../router';
 import { CONTACT_INFO } from '../config/legalInfo';
 
@@ -40,8 +41,46 @@ export function Footer({ onNavigate }: FooterProps) {
   };
 
   return (
-    <footer className="bg-slate-950 text-slate-100 mt-16 pb-20 lg:pb-0">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+    <footer className="bg-slate-950 text-slate-100 mt-16 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0">
+      {/* ===== MOBILE : court et lisible (l'ancien empilement faisait 880 px) ===== */}
+      <div className="lg:hidden px-5 pt-8 pb-6">
+        <div className="flex items-center gap-3">
+          <img src={Logo} alt="" className="w-10 h-10 rounded-xl object-cover bg-white" />
+          <div>
+            <p className="text-white font-semibold leading-tight">Bluefin-Immo</p>
+            <p className="text-xs text-slate-400">L'hébergement au Bénin</p>
+          </div>
+        </div>
+
+        <nav className="grid grid-cols-2 gap-x-4 gap-y-3 mt-6 text-sm text-slate-200" aria-label="Liens du pied de page">
+          <button onClick={() => handleNavigation('about')} className="text-left hover:text-[#00c9a7]">À propos</button>
+          <button onClick={() => handleNavigation('help')} className="text-left hover:text-[#00c9a7]">Centre d'aide</button>
+          <button onClick={() => handleNavigation('become-host')} className="text-left hover:text-[#00c9a7]">Devenir hôte</button>
+          <button onClick={() => handleNavigation('blog')} className="text-left hover:text-[#00c9a7]">Blog</button>
+        </nav>
+
+        <div className="flex flex-col gap-2 mt-6 text-sm">
+          <a href={`tel:${CONTACT_INFO.phone.replace(/\s+/g, '')}`} className="flex items-center gap-2.5 text-slate-300">
+            <Phone className="w-4 h-4 text-[#00c9a7]" /> {CONTACT_INFO.phone}
+          </a>
+          <a href={`mailto:${CONTACT_INFO.email}`} className="flex items-center gap-2.5 text-slate-300">
+            <Mail className="w-4 h-4 text-[#00c9a7]" /> {CONTACT_INFO.email}
+          </a>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+          <button onClick={() => handleNavigation('terms', 'privacy')} className="hover:text-[#00c9a7]">Confidentialité</button>
+          <span aria-hidden="true">·</span>
+          <button onClick={() => handleNavigation('cgu')} className="hover:text-[#00c9a7]">CGU</button>
+          <span aria-hidden="true">·</span>
+          <button onClick={() => handleNavigation('site-functioning')} className="hover:text-[#00c9a7]">Fonctionnement</button>
+        </div>
+        {/* Sur sa propre ligne, à gauche : le bouton WhatsApp flottant occupe le coin droit. */}
+        <p className="mt-2 text-xs text-slate-600">© {currentYear} Bluefin-Immo</p>
+      </div>
+
+      {/* ===== ORDINATEUR ===== */}
+      <div className="hidden lg:block mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
         
         {/* Section principale avec grid responsive et alignement vertical */}
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-6 border-t border-slate-800 pt-8 sm:pt-12 pb-6 sm:pb-8">
@@ -144,11 +183,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
             {/* Logo */}
             <div className="flex items-center gap-2 order-1 lg:order-1">
-              <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center shrink-0">
-                <div className="w-5 h-5 border-2 border-[#00c9a7] rounded relative">
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#00c9a7] rounded transform rotate-45"></div>
-                </div>
-              </div>
+              <img src={Logo} alt="" className="w-8 h-8 rounded-xl object-cover bg-white shrink-0" />
               <div className="text-white text-sm font-bold">Bluefin-Immo</div>
             </div>
 
@@ -167,19 +202,9 @@ export function Footer({ onNavigate }: FooterProps) {
               </button>
             </div>
 
-            {/* Réseaux sociaux + Copyright */}
+            {/* Copyright. Les icônes Facebook / Instagram / WhatsApp pointaient vers
+                « # » (nulle part) : retirées jusqu'à ce que les vraies pages existent. */}
             <div className="flex items-center gap-3 order-2 lg:order-3">
-              <div className="flex items-center gap-2">
-                <a href="#" className="text-slate-400 hover:text-[#00c9a7] transition">
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a href="#" className="text-slate-400 hover:text-[#00c9a7] transition">
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a href="#" className="text-slate-400 hover:text-[#00c9a7] transition">
-                  <MessageCircle className="w-4 h-4" />
-                </a>
-              </div>
               <div className="text-xs text-slate-500 whitespace-nowrap">
                 © {currentYear}
               </div>

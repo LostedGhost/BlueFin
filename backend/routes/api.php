@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\Admin\PaymentMonitoringController;
 use App\Http\Controllers\Api\Admin\MessageMonitoringController;
 use App\Http\Controllers\Api\Admin\ReportController;
 use App\Http\Controllers\Api\Admin\SettingsController;
+use App\Http\Controllers\Api\Admin\HostPayoutController as AdminHostPayoutController;
 use App\Http\Controllers\Api\ExperienceController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\Host\HostExperienceController;
@@ -77,6 +78,11 @@ Route::get('/property-image/{id}/{filename}', function ($id, $filename) {
         'Cache-Control' => 'public, max-age=86400'
     ]);
 })->name('property.image');
+
+// Vérification de session appelée par le site à chaque chargement de page
+// (AuthContext::checkSession). Elle n'existait pas : la réponse 404 faisait
+// effacer l'utilisateur, déconnecté juste après s'être connecté.
+Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'currentUser']);
 
 // ==================== ROUTES HORS V1 (AUTHENTIFICATION PUBLIQUE) ====================
 // Authentification voyageur
@@ -392,11 +398,22 @@ Route::prefix('v1')->group(function () {
                 // vrai export est nécessaire.
             });
 
-            // /settings retirée : SettingsController est une classe vide (index/update
-            // inexistants, route cassée) et rien côté frontend ne l'appelle réellement
-            // (admin.service.ts::getSettings/updateSettings ne sont utilisés par
-            // aucune page). À réimplémenter avec une vraie validation si un panneau
-            // de réglages plateforme est construit.
+            Route::get('/settings', [SettingsController::class, 'index']);
+            Route::put('/settings', [SettingsController::class, 'update']);
+
+            // Versements aux hôtes (voir Admin\HostPayoutController pour le cycle de vie).
+            Route::prefix('host-payouts')->group(function () {
+                Route::get('/stats', [AdminHostPayoutController::class, 'stats']);
+                Route::get('/', [AdminHostPayoutController::class, 'index']);
+                Route::get('/export', [AdminHostPayoutController::class, 'export']);
+                Route::post('/generate', [AdminHostPayoutController::class, 'generate']);
+                Route::get('/hosts', [AdminHostPayoutController::class, 'hosts']);
+                Route::get('/hosts/{hostId}/account', [AdminHostPayoutController::class, 'showAccount'])->whereNumber('hostId');
+                Route::put('/hosts/{hostId}/account', [AdminHostPayoutController::class, 'saveAccount'])->whereNumber('hostId');
+                Route::put('/{payoutId}/mark-paid', [AdminHostPayoutController::class, 'markPaid'])->whereNumber('payoutId');
+                Route::post('/{payoutId}/cancel', [AdminHostPayoutController::class, 'cancel'])->whereNumber('payoutId');
+                Route::post('/{payoutId}/undo', [AdminHostPayoutController::class, 'undo'])->whereNumber('payoutId');
+            });
         });
         
     }); 

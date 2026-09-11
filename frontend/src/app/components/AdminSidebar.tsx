@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   Menu,
   X,
+  Settings,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -35,12 +36,10 @@ const menuItems = [
   { to: '/admin/bookings-logements', icon: Calendar, label: 'Réservations logements' },
   { to: '/admin/bookings-offres', icon: Calendar, label: 'Réservations expériences/services' },
   { to: '/admin/payments', icon: CreditCard, label: 'Paiements' },
-  // « Paiements Hôtes » retiré : la page existe côté interface mais AUCUNE
-  // des 8 routes /admin/hosts/* qu'elle appelle n'existe côté backend —
-  // elles répondent toutes 404. À remettre le jour où le module de
-  // versement aux hôtes sera réellement écrit.
+  { to: '/admin/host-payments', icon: Wallet, label: 'Paiements Hôtes' },
   { to: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { to: '/admin/reports', icon: BarChart3, label: 'Rapports' },
+  { to: '/admin/settings', icon: Settings, label: 'Réglages' },
 ];
 
 export function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {

@@ -115,81 +115,86 @@ export interface AdminModerationStats {
   rejected: number;
 }
 
-// ==================== INTERFACES PAIEMENTS HÔTES ====================
-export interface HostPaymentInfo {
-  id: string;
-  hostId: string;
-  host?: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    host_type?: 'logement' | 'experience' | 'service'; // ✅ NOUVEAU
-  };
-  paymentMethod: 'MOBILE_MONEY' | 'BANK_TRANSFER' | 'PAYPAL';
-  fullName: string;
-  phoneNumber?: string;
-  mobileProvider?: 'ORANGE' | 'MTN' | 'MOOV' | 'WAVE';
-  bankName?: string;
-  accountHolder?: string;
-  iban?: string;
-  bic?: string;
-  paypalEmail?: string;
-  totalWeekAmount: number;
-  totalMonthAmount: number;
-  totalAllTime: number;
-  weeklyReservations: number;
-  monthlyReservations: number;
-  lastPayoutDate?: string;
-  nextPayoutDate?: string;
-  isPaid: boolean;
-  paidAt?: string;
-  paidBy?: string;
-  paymentReference?: string;
-  createdAt: string;
-  updatedAt: string;
-  payments: HostPaymentHistory[];
-}
+// ==================== VERSEMENTS AUX HÔTES ====================
+// Contrat de Admin\HostPayoutController (routes /admin/host-payouts/*).
 
-export interface HostPaymentHistory {
-  id: string;
-  weekStartDate: string;
-  weekEndDate: string;
+export type PayoutStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type PayoutMethod = 'mobile_money' | 'bank_transfer';
+
+export interface HostPayout {
+  id: number;
+  reference: string;
   amount: number;
-  reservationsCount: number;
-  isPaid: boolean;
-  paidAt?: string;
-  paidBy?: string;
-  paymentReference?: string;
+  method: PayoutMethod;
+  destination: string;
+  beneficiary: string | null;
+  status: PayoutStatus;
+  status_label: string;
+  is_overdue: boolean;
+  origin: 'host_request' | 'admin_generated';
+  payment_reference: string | null;
+  paid_by: string | null;
+  failure_reason: string | null;
+  undo_count: number;
+  created_at: string;
+  processed_at: string | null;
+  host: { id: number; name: string; email: string; phone: string } | null;
 }
 
-export interface HostPaymentStats {
-  total_pending: number;
-  total_paid_this_month: number;
-  total_hosts: number;
-  active_hosts: number;
-  total_revenue: number;
-  overdue_hosts: number;
-  weekly_stats: Array<{
-    week: string;
-    total_amount: number;
-    total_reservations: number;
-    paid_count: number;
-    unpaid_count: number;
-  }>;
-  recent_payments: Array<{
-    host_name: string;
-    amount: number;
-    payment_method: string;
-    reservations_count: number;
-    week: string;
-    is_paid: boolean;
-  }>;
+export interface HostPayoutAccount {
+  payment_method: PayoutMethod;
+  full_name: string;
+  phone_number: string | null;
+  mobile_provider: 'MTN' | 'Moov' | 'Celtiis' | null;
+  bank_name: string | null;
+  account_holder: string | null;
+  iban: string | null;
+  bic: string | null;
+  destination?: string;
+  updated_at?: string;
 }
 
-export interface HostPaymentListResponse {
-  data: HostPaymentInfo[];
-  stats: HostPaymentStats;
+export interface HostBalance {
+  gross: number;
+  commission_rate: number;
+  commission: number;
+  net: number;
+  paid: number;
+  open: number;
+  owed: number;
+}
+
+export interface HostWithBalance {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  host_type?: string | null;
+  balance: HostBalance;
+  account: HostPayoutAccount | null;
+  last_paid_at: string | null;
+}
+
+export interface HostPayoutStats {
+  owed_total: number;
+  hosts_owed: number;
+  open_total: number;
+  open_count: number;
+  overdue_count: number;
+  paid_this_month: number;
+  commission_total: number;
+  hosts_count: number;
+  hosts_without_account: number;
+  commission_rate: number;
+  min_payout_amount: number;
+  overdue_days: number;
+}
+
+export interface PlatformSettingItem {
+  key: 'commission_rate' | 'min_payout_amount' | 'payout_overdue_days';
+  label: string;
+  value: number;
+  default: number;
 }
 
 
@@ -557,14 +562,16 @@ class AdminService {
     return response.data;
   }
 
-  // ==================== PARAMÈTRES ====================
-  
-  async getSettings() {
+  // ==================== RÉGLAGES ====================
+
+  async getSettings(): Promise<{ success: boolean; data: PlatformSettingItem[] }> {
     const response = await this.api.get('/admin/settings');
     return response.data;
   }
 
-  async updateSettings(settings: any) {
+  async updateSettings(settings: Partial<Record<PlatformSettingItem['key'], number>>): Promise<{
+    success: boolean; message: string; data: PlatformSettingItem[];
+  }> {
     const response = await this.api.put('/admin/settings', settings);
     return response.data;
   }
@@ -576,162 +583,62 @@ class AdminService {
     return response.data;
   }
 
-  // ==================== PAIEMENTS HÔTES ====================
+  // ==================== VERSEMENTS AUX HÔTES ====================
 
-  async getHostPaymentStats(): Promise<{ data: HostPaymentStats }> {
-    const response = await this.api.get('/admin/hosts/payments/stats');
+  async getHostPayoutStats(): Promise<{ success: boolean; data: HostPayoutStats }> {
+    const response = await this.api.get('/admin/host-payouts/stats');
     return response.data;
   }
 
-  async getAllHostPayments(params?: {
-    status?: 'all' | 'paid' | 'unpaid';
+  async getHostPayouts(params?: {
+    status?: 'open' | 'completed' | 'failed';
     search?: string;
-    start_date?: string;
-    end_date?: string;
+    host_id?: number;
     per_page?: number;
-  }): Promise<{ data: { data: HostPaymentInfo[]; stats: HostPaymentStats } }> {
-    const queryParams = new URLSearchParams();
-    if (params?.status && params.status !== 'all') {
-      queryParams.append('status', params.status);
-    }
-    if (params?.search) {
-      queryParams.append('search', params.search);
-    }
-    if (params?.start_date) {
-      queryParams.append('start_date', params.start_date);
-    }
-    if (params?.end_date) {
-      queryParams.append('end_date', params.end_date);
-    }
-    if (params?.per_page) {
-      queryParams.append('per_page', params.per_page.toString());
-    }
-    
-    const response = await this.api.get(`/admin/hosts/payments?${queryParams.toString()}`);
+    page?: number;
+  }): Promise<{ success: boolean; data: { data: HostPayout[]; total: number; current_page: number; last_page: number } }> {
+    const response = await this.api.get('/admin/host-payouts', { params });
     return response.data;
   }
 
-  async getHostPaymentInfo(hostId: string): Promise<{ data: HostPaymentInfo }> {
-    const response = await this.api.get(`/admin/hosts/${hostId}/payment-info`);
-    return response.data;
-  }
-
-  async saveHostPaymentInfo(hostId: string, data: {
-    paymentMethod: 'MOBILE_MONEY' | 'BANK_TRANSFER' | 'PAYPAL';
-    fullName: string;
-    phoneNumber?: string;
-    mobileProvider?: 'ORANGE' | 'MTN' | 'MOOV' | 'WAVE';
-    bankName?: string;
-    accountHolder?: string;
-    iban?: string;
-    bic?: string;
-    paypalEmail?: string;
-  }): Promise<{ success: boolean; data: HostPaymentInfo; message: string }> {
-    const response = await this.api.post(`/admin/hosts/${hostId}/payment-info`, data);
-    return response.data;
-  }
-
-  async updateAllWeeklyPayments(): Promise<{ 
-    success: boolean; 
-    updated: number; 
-    total_amount: number;
-    message: string;
-    week_start: string;
-    week_end: string;
-  }> {
-    const response = await this.api.post('/admin/hosts/payments/update-weekly');
-    return response.data;
-  }
-
-  async updateHostWeeklyPayments(hostId: string): Promise<{ success: boolean; data: HostPaymentInfo }> {
-    const response = await this.api.post(`/admin/hosts/${hostId}/payments/update-weekly`);
-    return response.data;
-  }
-
-  async markPaymentAsPaid(historyId: string, paymentReference: string): Promise<{ 
-    success: boolean; 
-    data: HostPaymentHistory; 
-    message: string 
-  }> {
-    const response = await this.api.put(`/admin/hosts/payments/${historyId}/mark-paid`, {
-      payment_reference: paymentReference
+  async getHostsWithBalance(params?: { search?: string; owed_only?: boolean }): Promise<{ success: boolean; data: HostWithBalance[] }> {
+    const response = await this.api.get('/admin/host-payouts/hosts', {
+      params: { search: params?.search || undefined, owed_only: params?.owed_only ? 1 : undefined },
     });
     return response.data;
   }
 
-  async markAllPaymentsAsPaid(hostId: string, weekStartDate: string, paymentReference: string): Promise<{ 
-    success: boolean; 
-    message: string 
+  async saveHostPayoutAccount(hostId: number, data: HostPayoutAccount): Promise<{ success: boolean; message: string; data: HostPayoutAccount }> {
+    const response = await this.api.put(`/admin/host-payouts/hosts/${hostId}/account`, data);
+    return response.data;
+  }
+
+  /** Crée les versements pour tous les hôtes (ou un seul) dont le solde dû atteint le minimum. */
+  async generateHostPayouts(hostId?: number): Promise<{
+    success: boolean; message: string;
+    data: { created: number; total_amount: number; skipped_no_account: string[] };
   }> {
-    const response = await this.api.put(`/admin/hosts/${hostId}/payments/mark-all-paid`, {
-      week_start_date: weekStartDate,
-      payment_reference: paymentReference
-    });
+    const response = await this.api.post('/admin/host-payouts/generate', hostId ? { host_id: hostId } : {});
     return response.data;
   }
 
-  async undoHostPayment(historyId: string, reason: string): Promise<{ success: boolean; message: string }> {
-    const response = await this.api.post(`/admin/hosts/payments/${historyId}/undo`, { reason });
+  async markHostPayoutPaid(payoutId: number, paymentReference: string): Promise<{ success: boolean; message: string; data: HostPayout }> {
+    const response = await this.api.put(`/admin/host-payouts/${payoutId}/mark-paid`, { payment_reference: paymentReference });
     return response.data;
   }
 
-  async getHostPaymentHistory(hostId: string, limit?: number): Promise<{ data: HostPaymentHistory[] }> {
-    const params = new URLSearchParams();
-    if (limit) params.append('limit', limit.toString());
-    const response = await this.api.get(`/admin/hosts/${hostId}/payments/history?${params.toString()}`);
+  async cancelHostPayout(payoutId: number, reason: string): Promise<{ success: boolean; message: string; data: HostPayout }> {
+    const response = await this.api.post(`/admin/host-payouts/${payoutId}/cancel`, { reason });
     return response.data;
   }
 
-  async getOverduePayments(): Promise<{ data: HostPaymentInfo[] }> {
-    const response = await this.api.get('/admin/hosts/payments/overdue');
+  async undoHostPayout(payoutId: number, reason: string): Promise<{ success: boolean; message: string; data: HostPayout }> {
+    const response = await this.api.post(`/admin/host-payouts/${payoutId}/undo`, { reason });
     return response.data;
   }
 
-  async sendPaymentReminder(hostId: string): Promise<{ success: boolean; message: string }> {
-    const response = await this.api.post(`/admin/hosts/${hostId}/payments/reminder`);
-    return response.data;
-  }
-
-  async sendBulkPaymentReminders(): Promise<{ success: boolean; sent: number; message: string }> {
-    const response = await this.api.post('/admin/hosts/payments/send-reminders');
-    return response.data;
-  }
-
-  async exportHostPayments(params?: {
-    status?: 'all' | 'paid' | 'unpaid';
-    start_date?: string;
-    end_date?: string;
-  }): Promise<Blob> {
-    const queryParams = new URLSearchParams();
-    if (params?.status && params.status !== 'all') {
-      queryParams.append('status', params.status);
-    }
-    if (params?.start_date) {
-      queryParams.append('start_date', params.start_date);
-    }
-    if (params?.end_date) {
-      queryParams.append('end_date', params.end_date);
-    }
-    
-    const response = await this.api.get(`/admin/hosts/payments/export?${queryParams.toString()}`, {
-      responseType: 'blob'
-    });
-    return response.data;
-  }
-
-  async getHostPaymentSummary(hostId: string): Promise<{ 
-    data: {
-      total_all_time: number;
-      total_week_amount: number;
-      total_month_amount: number;
-      weekly_reservations: number;
-      monthly_reservations: number;
-      is_paid: boolean;
-      next_payout_date: string | null;
-      last_payout_date: string | null;
-    }
-  }> {
-    const response = await this.api.get(`/admin/hosts/${hostId}/payments/summary`);
+  async exportHostPayouts(params?: { status?: 'open' | 'completed' | 'failed'; search?: string }): Promise<Blob> {
+    const response = await this.api.get('/admin/host-payouts/export', { params, responseType: 'blob' });
     return response.data;
   }
 }

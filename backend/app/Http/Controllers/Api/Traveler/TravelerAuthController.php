@@ -25,6 +25,13 @@ class TravelerAuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Le site envoie « traveler » (vocabulaire du frontend) ; la base
+        // stocke « voyageur ». Sans cette traduction, toute inscription
+        // voyageur échouait en 422 « The selected user type is invalid ».
+        if ($request->input('user_type') === 'traveler') {
+            $request->merge(['user_type' => 'voyageur']);
+        }
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -32,7 +39,7 @@ class TravelerAuthController extends Controller
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'user_type' => 'sometimes|in:voyageur,hote', // ✅ accepte le rôle du frontend
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -59,6 +66,7 @@ class TravelerAuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         // Message de bienvenue adapté au rôle
         $roleText = $userType === 'hote' 
@@ -171,6 +179,7 @@ class TravelerAuthController extends Controller
         
         $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,
@@ -198,7 +207,7 @@ class TravelerAuthController extends Controller
             'email' => 'required_without:phone|email',
             'phone' => 'required_without:email|string',
             'password' => 'required|string',
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -224,6 +233,7 @@ class TravelerAuthController extends Controller
         $user->update(['last_login_at' => now()]);
         $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,

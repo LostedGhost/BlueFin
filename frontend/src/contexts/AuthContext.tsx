@@ -460,7 +460,11 @@ function clearOldCookies() {
 // contexts/AuthContext.tsx - Fonction login corrigée
 
 const login = async (email: string, password: string, userType: string = 'traveler') => {
-    setLoading(true);
+    // Pas de setLoading ici : `loading` pilote l'écran « Chargement de votre
+    // session… » d'App.tsx, qui démontait la page de connexion pendant la
+    // requête — un échec vidait alors tout le formulaire. Chaque page gère son
+    // propre indicateur d'envoi et affiche elle-même l'erreur (d'où l'absence
+    // de toast d'erreur ici, qui faisait doublon).
     try {
         console.log(`🔐 Tentative de login ${userType}...`);
 
@@ -533,6 +537,8 @@ const login = async (email: string, password: string, userType: string = 'travel
             if (!redirected) {
                 if (resolvedUserType === 'hote') {
                     window.location.href = '/hote/tableau-de-bord';
+                } else if (resolvedUserType === 'admin') {
+                    window.location.href = '/admin/dashboard';
                 } else {
                     window.location.href = '/';
                 }
@@ -545,11 +551,7 @@ const login = async (email: string, password: string, userType: string = 'travel
 
     } catch (error: any) {
         console.error('❌ Erreur login:', error);
-        const message = error.response?.data?.message || error.message || 'Erreur de connexion';
-        toast.error(message);
         throw error;
-    } finally {
-        setLoading(false);
     }
 };
 
@@ -557,7 +559,7 @@ const login = async (email: string, password: string, userType: string = 'travel
     // ✅ REGISTER - CORRIGÉ AVEC FALLBACK
     // ============================================
     const register = async (data: RegisterData, userType: string = 'traveler') => {
-        setLoading(true);
+        // Voir la note de login() : ni setLoading ni toast d'erreur ici.
         try {
             console.log(`📝 Tentative d'inscription ${userType}...`);
 
@@ -652,19 +654,16 @@ const login = async (email: string, password: string, userType: string = 'travel
         } catch (error: any) {
             console.error('❌ Erreur inscription:', error);
             
-            // ✅ Gérer les erreurs de validation Laravel
+            // Erreurs de validation : message lisible pour les pages qui
+            // affichent error.message, en conservant `response` pour celles qui
+            // placent chaque erreur sous son champ.
             if (error.response?.data?.errors) {
-                const errors = error.response.data.errors;
-                const messages = Object.values(errors).flat().join(', ');
-                toast.error(messages);
-                throw new Error(messages);
+                const messages = Object.values(error.response.data.errors).flat().join(' ');
+                const readable: any = new Error(messages);
+                readable.response = error.response;
+                throw readable;
             }
-            
-            const message = error.response?.data?.message || error.message || 'Erreur lors de l\'inscription';
-            toast.error(message);
             throw error;
-        } finally {
-            setLoading(false);
         }
     };
 

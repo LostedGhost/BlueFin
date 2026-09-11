@@ -74,6 +74,7 @@ import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { BookingSummaryPage } from '../app/pages/BookingSummaryPage';
 import { AdminHostPaymentsPage } from './pages/admin/AdminHostPaymentsPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { FedapayPaymentPage } from './pages/FedapayPaymentPage';
 import { FedapayCallbackPage } from './pages/FedapayCallbackPage';
 
@@ -127,6 +128,8 @@ function AdminLayoutContent({
         return <AdminMessagesPage onNavigate={onNavigate} />;
       case 'admin-reports': 
         return <AdminReportsPage onNavigate={onNavigate} />;
+      case 'admin-settings':
+        return <AdminSettingsPage onNavigate={onNavigate} />;
       default: 
         return <AdminDashboardPage onNavigate={onNavigate} />;
     }

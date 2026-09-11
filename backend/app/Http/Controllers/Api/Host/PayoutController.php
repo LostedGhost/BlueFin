@@ -10,6 +10,9 @@ use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Models\PlatformSetting;
+use App\Services\HostEarnings;
 
 class PayoutController extends Controller
 {
@@ -57,28 +60,8 @@ class PayoutController extends Controller
     {
         $user = $request->user();
         
-        // Calculate earned amount from completed bookings
-        $earned = Booking::whereHas('property', function($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->where('booking_status', 'completed')
-            ->sum('total_amount');
-        
-        // Calculate service fee (15%)
-        $serviceFee = $earned * 0.15;
-        
-        // Calculate paid out amount
-        $paidOut = Payout::where('user_id', $user->id)
-            ->where('status', 'completed')
-            ->sum('amount');
-        
-        // Calculate pending payouts
-        $pendingPayouts = Payout::where('user_id', $user->id)
-            ->where('status', 'pending')
-            ->sum('amount');
-        
-        $available = $earned - $serviceFee - $paidOut - $pendingPayouts;
-        
+        $balance = app(HostEarnings::class)->summary($user);
+
         // Get recent earnings (last 30 days)
         $recentEarnings = Booking::whereHas('property', function($q) use ($user) {
                 $q->where('user_id', $user->id);
@@ -93,12 +76,14 @@ class PayoutController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'total_earned' => number_format($earned, 0, ',', ' '),
-                'service_fee' => number_format($serviceFee, 0, ',', ' '),
-                'net_earned' => number_format($earned - $serviceFee, 0, ',', ' '),
-                'paid_out' => number_format($paidOut, 0, ',', ' '),
-                'pending_payouts' => number_format($pendingPayouts, 0, ',', ' '),
-                'available_balance' => number_format(max(0, $available), 0, ',', ' '),
+                'total_earned' => number_format($balance['gross'], 0, ',', ' '),
+                'service_fee' => number_format($balance['commission'], 0, ',', ' '),
+                'net_earned' => number_format($balance['net'], 0, ',', ' '),
+                'paid_out' => number_format($balance['paid'], 0, ',', ' '),
+                'pending_payouts' => number_format($balance['open'], 0, ',', ' '),
+                'available_balance' => number_format($balance['owed'], 0, ',', ' '),
+                'commission_rate' => $balance['commission_rate'],
+                'min_payout_amount' => PlatformSetting::current('min_payout_amount'),
                 'recent_earnings' => $recentEarnings,
             ],
         ]);
@@ -112,9 +97,9 @@ class PayoutController extends Controller
         $user = $request->user();
         
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:5000',
+            'amount' => 'required|integer|min:' . max(1, PlatformSetting::current('min_payout_amount')),
             'payout_method' => 'required|in:mobile_money,bank_transfer',
-            'mobile_money_provider' => 'required_if:payout_method,mobile_money|in:MTN,Moov,Orange',
+            'mobile_money_provider' => 'required_if:payout_method,mobile_money|in:MTN,Moov,Celtiis,Orange',
             'mobile_money_number' => 'required_if:payout_method,mobile_money|string',
             'bank_name' => 'required_if:payout_method,bank_transfer|string',
             'bank_account' => 'required_if:payout_method,bank_transfer|string',
@@ -124,39 +109,38 @@ class PayoutController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
         
-        // Calculate available balance
-        $earned = Booking::whereHas('property', function($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->where('booking_status', 'completed')
-            ->sum('total_amount');
-        
-        $serviceFee = $earned * 0.15;
-        $paidOut = Payout::where('user_id', $user->id)->where('status', 'completed')->sum('amount');
-        $pendingPayouts = Payout::where('user_id', $user->id)->where('status', 'pending')->sum('amount');
-        
-        $available = $earned - $serviceFee - $paidOut - $pendingPayouts;
-        
-        if ($request->amount > $available) {
+        // Verrou sur la ligne de l'hôte : deux demandes simultanées ne doivent
+        // pas pouvoir retirer deux fois le même solde.
+        $payout = DB::transaction(function () use ($request, $user) {
+            User::whereKey($user->id)->lockForUpdate()->first();
+
+            $available = app(HostEarnings::class)->owed($user);
+            if ($request->amount > $available) {
+                return $available;
+            }
+
+            return Payout::create([
+                'user_id' => $user->id,
+                'payout_reference' => 'PYT-' . strtoupper(Str::random(12)),
+                'amount' => (int) $request->amount,
+                'payout_method' => $request->payout_method,
+                'mobile_money_provider' => $request->mobile_money_provider,
+                'mobile_money_number' => $request->mobile_money_number,
+                'bank_name' => $request->bank_name,
+                'bank_account' => $request->bank_account,
+                'status' => 'pending',
+                'payout_details' => ['origin' => 'host_request'],
+            ]);
+        });
+
+        if (! $payout instanceof Payout) {
             return response()->json([
                 'success' => false,
                 'message' => 'Montant demandé supérieur au solde disponible',
-                'available_balance' => number_format($available, 0, ',', ' '),
+                'available_balance' => number_format($payout, 0, ',', ' '),
             ], 422);
         }
-        
-        $payout = Payout::create([
-            'user_id' => $user->id,
-            'payout_reference' => 'PYT-' . strtoupper(Str::random(12)),
-            'amount' => $request->amount,
-            'payout_method' => $request->payout_method,
-            'mobile_money_provider' => $request->mobile_money_provider,
-            'mobile_money_number' => $request->mobile_money_number,
-            'bank_name' => $request->bank_name,
-            'bank_account' => $request->bank_account,
-            'status' => 'pending',
-        ]);
-        
+
         // Send notification
         $this->notificationService->sendWhatsApp(
             $user->phone,

@@ -25265,15 +25265,9 @@ export function AuthPage({
             if (err.response?.status === 422) {
                 const errors = err.response.data.errors;
                 if (errors) {
-                    const errorList = Object.entries(errors)
-                        .map(([field, messages]) => {
-                            const fieldName = field.replace(/_/g, ' ');
-                            const msgs = Array.isArray(messages) ? messages.join(', ') : messages;
-                            return `${fieldName}: ${msgs}`;
-                        })
-                        .join('\n');
-                    errorMessage = `Erreurs de validation:\n${errorList}`;
-                    console.log('📋 Erreurs détaillées:', errorList);
+                    // Les messages du backend sont déjà des phrases françaises
+                    // complètes : on les affiche tels quels.
+                    errorMessage = Object.values(errors).flat().join(' ');
                     
                     // ✅ Mettre à jour les erreurs de champ
                     const fieldErrors: Record<string, string> = {};

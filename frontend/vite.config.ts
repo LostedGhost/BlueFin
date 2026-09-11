@@ -17,6 +17,11 @@ function figmaAssetResolver() {
   }
 }
 
+// Backend visé par le proxy de dev. Par défaut la production ; pour tester un
+// changement backend en local sans toucher aux vraies données :
+//   BLUEFIN_API_TARGET=http://127.0.0.1:8000 npm run dev
+const apiTarget = process.env.BLUEFIN_API_TARGET || 'https://api.bluefin-immo.com'
+
 export default defineConfig({
   plugins: [
     figmaAssetResolver(),
@@ -42,7 +47,7 @@ export default defineConfig({
     proxy: {
       // ✅ Proxy principal pour toutes les requêtes API
       '/api': {
-        target: 'https://api.bluefin-immo.com',
+        target: apiTarget,
         changeOrigin: true,
         cookieDomainRewrite: '',
         secure: false,
@@ -74,11 +79,13 @@ export default defineConfig({
               proxyReq.setHeader('Content-Type', incomingContentType);
             }
             
-            // ✅ Ajouter le token CSRF si présent
-            const xsrfToken = req.headers['x-xsrf-token'] || req.headers['x-csrf-token'];
+            // Le jeton du cookie XSRF-TOKEN est CHIFFRÉ : il ne doit voyager que
+            // dans X-XSRF-TOKEN, que Laravel déchiffre. Le recopier dans
+            // X-CSRF-TOKEN (lu en priorité et comparé tel quel) faisait échouer
+            // tout POST en 419 « CSRF token mismatch » via ce proxy.
+            const xsrfToken = req.headers['x-xsrf-token'];
             if (xsrfToken) {
               proxyReq.setHeader('X-XSRF-TOKEN', xsrfToken);
-              proxyReq.setHeader('X-CSRF-TOKEN', xsrfToken);
             }
           });
           
@@ -123,14 +130,14 @@ export default defineConfig({
       },
 
       '/storage': {
-        target: 'https://api.bluefin-immo.com',
+        target: apiTarget,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path,
       },
 
       '/api/public/storage': {
-        target: 'https://api.bluefin-immo.com',
+        target: apiTarget,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path,
@@ -139,7 +146,7 @@ export default defineConfig({
       
       // ✅ Proxy pour Sanctum CSRF
       '/sanctum': {
-        target: 'https://api.bluefin-immo.com',
+        target: apiTarget,
         changeOrigin: true,
         cookieDomainRewrite: '',
         secure: false,

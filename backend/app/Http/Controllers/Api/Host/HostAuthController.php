@@ -35,7 +35,7 @@ class HostAuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'property_address' => 'nullable|string',
             'property_type' => 'nullable|string',
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -53,6 +53,7 @@ class HostAuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         // Send welcome message to host
         $this->notificationService->sendWhatsApp(
@@ -168,6 +169,7 @@ class HostAuthController extends Controller
         
         $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,
@@ -196,7 +198,7 @@ class HostAuthController extends Controller
             'email' => 'required_without:phone|email',
             'phone' => 'required_without:email|string',
             'password' => 'required|string',
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -229,6 +231,7 @@ class HostAuthController extends Controller
         $user->update(['last_login_at' => now()]);
         $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,

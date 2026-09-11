@@ -55,6 +55,7 @@ export type Page =
   | 'admin-host-payments'
   | 'admin-messages'
   | 'admin-reports'
+  | 'admin-settings'
   | 'admin-login'
   | 'admin-experiences'
   | 'admin-services'
@@ -224,6 +225,7 @@ export function parseRoute(path: string): Route {
     if (sub === 'host-payments') return { name: 'admin-host-payments', search };
     if (sub === 'messages') return { name: 'admin-messages', search };
     if (sub === 'reports') return { name: 'admin-reports', search };
+    if (sub === 'settings') return { name: 'admin-settings', search };
     return { name: 'admin-dashboard', search };
   }
 
@@ -343,6 +345,7 @@ export function routeToPath(route: Route): string {
     case 'admin-host-payments': path = '/admin/host-payments'; break;
     case 'admin-messages': path = '/admin/messages'; break;
     case 'admin-reports': path = '/admin/reports'; break;
+    case 'admin-settings': path = '/admin/settings'; break;
     case 'admin-login': path = '/admin-login'; break;
     case 'terms':
       if (route.type === 'privacy') path = '/confidentialite';

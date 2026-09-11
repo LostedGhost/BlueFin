@@ -125,6 +125,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Property::class, 'favorites')->withTimestamps();
     }
 
+    public function payoutAccount()
+    {
+        return $this->hasOne(HostPayoutAccount::class);
+    }
+
     public function payouts()
     {
         return $this->hasMany(Payout::class);
@@ -252,17 +257,7 @@ class User extends Authenticatable
 
     public function getAvailableBalance()
     {
-        $earned = $this->properties()->with('bookings')
-            ->get()
-            ->sum(function($property) {
-                return $property->bookings->where('booking_status', 'completed')->sum('total_amount');
-            });
-        
-        $serviceFee = $earned * 0.15;
-        $paidOut = $this->payouts()->where('status', 'completed')->sum('amount');
-        $pending = $this->payouts()->where('status', 'pending')->sum('amount');
-        
-        return max(0, $earned - $serviceFee - $paidOut - $pending);
+        return app(\App\Services\HostEarnings::class)->owed($this);
     }
 
     public function hasCompletedVerification()

@@ -10,6 +10,7 @@ use App\Models\UserDevice;
 use App\Events\NewUserRegistered;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
@@ -29,6 +30,13 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Le site envoie « traveler » (vocabulaire du frontend) ; la base
+        // stocke « voyageur ». Sans cette traduction, toute inscription
+        // voyageur échouait en 422 « The selected user type is invalid ».
+        if ($request->input('user_type') === 'traveler') {
+            $request->merge(['user_type' => 'voyageur']);
+        }
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -36,7 +44,7 @@ class AuthController extends Controller
             'phone' => 'required|string|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'user_type' => 'in:voyageur,hote',
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -52,6 +60,7 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         // Send welcome notification
         $this->notificationService->sendWhatsApp(
@@ -61,7 +70,14 @@ class AuthController extends Controller
 
 
 // Après avoir créé l'utilisateur
-event(new NewUserRegistered($user));
+// Notification des admins : ne doit jamais faire échouer l'inscription
+        // (le compte est déjà créé à ce stade — un 500 ici laissait croire au
+        // visiteur que l'inscription avait échoué).
+        try {
+            event(new NewUserRegistered($user));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Notification nouvel inscrit non envoyée', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'success' => true,
@@ -81,7 +97,7 @@ event(new NewUserRegistered($user));
             'email' => 'required_without:phone|email',
             'phone' => 'required_without:email|string',
             'password' => 'required|string',
-        ]);
+        ], $this->frenchValidationMessages());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -111,6 +127,7 @@ event(new NewUserRegistered($user));
         $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,
@@ -208,9 +225,17 @@ event(new NewUserRegistered($user));
         $user->tokens()->delete();
         
         $token = $user->createToken('auth_token')->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         // Après avoir créé l'utilisateur
-event(new NewUserRegistered($user));
+// Notification des admins : ne doit jamais faire échouer l'inscription
+        // (le compte est déjà créé à ce stade — un 500 ici laissait croire au
+        // visiteur que l'inscription avait échoué).
+        try {
+            event(new NewUserRegistered($user));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Notification nouvel inscrit non envoyée', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'success' => true,
@@ -226,11 +251,35 @@ event(new NewUserRegistered($user));
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        
+        // Authentifié par jeton : on révoque ce jeton. Authentifié par session
+        // (cas du site), currentAccessToken() est un TransientToken sans
+        // delete() — l'appeler provoquait une erreur 500 à la déconnexion.
+        $token = $request->user()->currentAccessToken();
+        if ($token instanceof \Laravel\Sanctum\PersonalAccessToken) {
+            $token->delete();
+        }
+
+        if ($request->hasSession()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Déconnexion réussie'
+        ]);
+    }
+
+    /**
+     * Utilisateur connecté, version légère : appelée par le site à chaque
+     * chargement de page pour vérifier que la session est toujours valide.
+     */
+    public function currentUser(Request $request)
+    {
+        return response()->json([
+            'success' => true,
+            'user' => $request->user(),
         ]);
     }
 

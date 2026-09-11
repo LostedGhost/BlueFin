@@ -47,6 +47,7 @@ class AdminAuthController extends Controller
 
         // Créer un nouveau token
         $token = $user->createToken('admin-token', ['admin'])->plainTextToken;
+        $this->startWebSession($request, $user, $request->boolean('remember'));
 
         return response()->json([
             'success' => true,

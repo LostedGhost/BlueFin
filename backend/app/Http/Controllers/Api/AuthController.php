@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserDevice;
@@ -268,8 +270,8 @@ event(new NewUserRegistered($user));
         }
 
         if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $request->merge(['profile_photo' => $path]);
+            $stored = app(PhotoStorage::class)->upload($request->file('profile_photo'), 'profile-photos');
+            $request->merge(['profile_photo' => $stored['path'] ?: $stored['url']]);
         }
 
         $user->update($request->only([
@@ -299,7 +301,7 @@ event(new NewUserRegistered($user));
 
         $user = $request->user();
         
-        $path = $request->file('identity_document')->store('identity-documents', 'private');
+        $path = app(PhotoStorage::class)->uploadPrivate($request->file('identity_document'), 'identity-documents');
         
         $user->update([
             'identity_document' => $path,

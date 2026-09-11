@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Host;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Property;
@@ -118,9 +120,9 @@ class HostProfileController extends Controller
             Storage::disk('public')->delete($user->profile_photo);
         }
         
-        $path = $request->file('photo')->store('profile-photos', 'public');
+        $stored = app(PhotoStorage::class)->upload($request->file('photo'), 'profile-photos');
         
-        $user->update(['profile_photo' => $path]);
+        $user->update(['profile_photo' => $stored['path'] ?: $stored['url']]);
 
         return response()->json([
             'success' => true,

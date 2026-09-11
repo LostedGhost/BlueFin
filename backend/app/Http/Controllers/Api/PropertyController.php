@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\PropertyPhoto;
@@ -221,12 +223,12 @@ class PropertyController extends Controller
 
             // Upload photos
             foreach ($request->file('photos') as $index => $photo) {
-                $path = $photo->store('properties/' . $property->id, 'public');
+                $stored = app(PhotoStorage::class)->upload($photo, 'properties/' . $property->id);
                 
                 PropertyPhoto::create([
                     'property_id' => $property->id,
-                    'photo_path' => $path,
-                    'photo_url' => Storage::url($path),
+                    'photo_path' => $stored['path'],
+                    'photo_url' => $stored['url'],
                     'order' => $index,
                     'is_cover' => $index === 0,
                 ]);
@@ -457,12 +459,12 @@ class PropertyController extends Controller
         $currentOrder = $property->photos()->max('order') + 1;
 
         foreach ($request->file('photos') as $index => $photo) {
-            $path = $photo->store('properties/' . $property->id, 'public');
+            $stored = app(PhotoStorage::class)->upload($photo, 'properties/' . $property->id);
             
             $propertyPhoto = PropertyPhoto::create([
                 'property_id' => $property->id,
-                'photo_path' => $path,
-                'photo_url' => Storage::url($path),
+                'photo_path' => $stored['path'],
+                'photo_url' => $stored['url'],
                 'order' => $currentOrder + $index,
                 'is_cover' => $property->photos()->count() === 0 && $index === 0,
             ]);

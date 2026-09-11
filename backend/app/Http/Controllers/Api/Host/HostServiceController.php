@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Host;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -140,8 +142,8 @@ class HostServiceController extends Controller
 
         $images = $service->images ?? [];
         foreach ($request->file('images') as $file) {
-            $path = $file->store('services/' . $service->id, 'public');
-            $images[] = Storage::url($path);
+            $stored = app(PhotoStorage::class)->upload($file, 'services/' . $service->id);
+            $images[] = $stored['url'];
         }
 
         $service->update(['images' => $images]);

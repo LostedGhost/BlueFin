@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Host;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use App\Models\ExperienceAvailability;
@@ -254,8 +256,8 @@ class HostExperienceController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                $path = $file->store('experiences/' . $experience->id, 'public');
-                $images[] = Storage::url($path);
+                $stored = app(PhotoStorage::class)->upload($file, 'experiences/' . $experience->id);
+                $images[] = $stored['url'];
             }
         }
 
@@ -267,8 +269,8 @@ class HostExperienceController extends Controller
             foreach (array_values($stepTexts) as $index => $description) {
                 $imageUrl = null;
                 if (isset($stepFiles[$index])) {
-                    $path = $stepFiles[$index]->store('experiences/' . $experience->id . '/steps', 'public');
-                    $imageUrl = Storage::url($path);
+                    $stored = app(PhotoStorage::class)->upload($stepFiles[$index], 'experiences/' . $experience->id . '/steps');
+                    $imageUrl = $stored['url'];
                 }
                 $steps[] = ['order' => $index + 1, 'description' => $description, 'image_url' => $imageUrl];
             }

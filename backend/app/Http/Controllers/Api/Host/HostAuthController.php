@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Host;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\NotificationService;
@@ -262,7 +264,7 @@ class HostAuthController extends Controller
 
         $user = $request->user();
         
-        $path = $request->file('identity_document')->store('identity-documents', 'private');
+        $path = app(PhotoStorage::class)->uploadPrivate($request->file('identity_document'), 'identity-documents');
         
         $user->update([
             'identity_document' => $path,

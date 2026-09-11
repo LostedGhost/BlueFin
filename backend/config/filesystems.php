@@ -38,6 +38,27 @@ return [
             'report' => false,
         ],
 
+        /*
+         * Documents sensibles : pièces d'identité des hôtes.
+         *
+         * Ce disque était utilisé par le code (store(..., 'private')) sans
+         * avoir jamais été déclaré — l'envoi levait donc une exception et le
+         * parcours de vérification des hôtes était inutilisable.
+         *
+         * `root` est configurable et DOIT pointer, en production, vers un
+         * dossier situé HORS du répertoire de l'application : sinon ces
+         * documents disparaissent à chaque redéploiement, exactement comme les
+         * photos de logements. Rien ici n'est servi publiquement : l'accès
+         * passe forcément par le contrôleur, jamais par une URL directe.
+         */
+        'private' => [
+            'driver' => 'local',
+            'root' => env('PRIVATE_STORAGE_ROOT', storage_path('app/private')),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Host;
 
+use App\Services\PhotoStorage;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -30,8 +32,8 @@ class HostUploadController extends Controller
 
         $urls = [];
         foreach ($request->file('images') as $file) {
-            $path = $file->store($folder, 'public');
-            $urls[] = Storage::url($path);
+            $stored = app(PhotoStorage::class)->upload($file, $folder);
+            $urls[] = $stored['url'];
         }
 
         return response()->json(['success' => true, 'urls' => $urls]);

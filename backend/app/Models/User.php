@@ -163,9 +163,17 @@ class User extends Authenticatable
 
     public function getProfilePhotoUrlAttribute()
     {
-        return $this->profile_photo 
-            ? asset('storage/' . $this->profile_photo)
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->full_name) . '&color=7F9CF5&background=EBF4FF';
+        if (blank($this->profile_photo)) {
+            return 'https://ui-avatars.com/api/?name='.urlencode($this->full_name).'&color=7F9CF5&background=EBF4FF';
+        }
+
+        // Une photo stockée hors du serveur (Cloudinary) est déjà une URL
+        // absolue : la préfixer produirait « …/storage/https://res.cloudinary… ».
+        if (str_starts_with($this->profile_photo, 'http://') || str_starts_with($this->profile_photo, 'https://')) {
+            return $this->profile_photo;
+        }
+
+        return asset('storage/'.$this->profile_photo);
     }
 
     public function getIsAdminAttribute()

@@ -1,127 +1,31 @@
-import { useState, useEffect, useCallback } from 'react';
-import authService from '../../services/auth.service';
-import type { User, UserType, LoginData, RegisterData } from '../../services/auth.service';
+// Ancien point d'entrée d'authentification, conservé pour ses utilisateurs
+// (cartes d'annonce, widgets de réservation, favoris, ProtectedRoute…).
+//
+// Il s'appuyait sur services/auth.service, qui jugeait la session d'après le
+// cookie Laravel lu en JavaScript. Ce cookie étant HttpOnly (invisible au JS),
+// l'utilisateur était considéré déconnecté en production : ses données
+// locales étaient effacées dès l'affichage d'une carte d'annonce, puis toutes
+// les 60 s — il était déconnecté au rechargement suivant. Il relaie désormais
+// le contexte d'authentification : une seule source de vérité.
+import { useAuth as useAuthContext } from '../../contexts/AuthContext';
 
 export const useAuth = () => {
-    const [user, setUser] = useState<User | null>(authService.getCurrentUser());
-    const [loading, setLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
-
-    // ✅ Écouter les changements d'authentification
-    useEffect(() => {
-        const listener = (authStatus: boolean, userData: User | null) => {
-            setIsAuthenticated(authStatus);
-            setUser(userData);
-            setLoading(false);
-        };
-
-        authService.addAuthListener(listener);
-        setLoading(false);
-
-        return () => {
-            authService.removeAuthListener(listener);
-        };
-    }, []);
-
-    // ✅ Login
-    const login = useCallback(async (email: string, password: string, remember: boolean = false) => {
-        console.log('🔐 useAuth.login - Tentative de connexion...');
-        setLoading(true);
-        
-        try {
-            const response = await authService.login({ email, password, remember });
-            setUser(response.user);
-            setIsAuthenticated(true);
-            console.log('✅ useAuth.login - Connexion réussie');
-            return response;
-        } catch (error) {
-            console.error('❌ useAuth.login - Erreur:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    // ✅ Register
-    const register = useCallback(async (data: RegisterData) => {
-        console.log('📝 useAuth.register - Tentative d\'inscription...');
-        setLoading(true);
-        
-        try {
-            const response = await authService.register(data);
-            setUser(response.user);
-            setIsAuthenticated(true);
-            console.log('✅ useAuth.register - Inscription réussie');
-            return response;
-        } catch (error) {
-            console.error('❌ useAuth.register - Erreur:', error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    // ✅ Logout
-    const logout = useCallback(async () => {
-        console.log('🚪 useAuth.logout - Déconnexion...');
-        setLoading(true);
-        
-        try {
-            await authService.logout();
-            setUser(null);
-            setIsAuthenticated(false);
-            console.log('✅ useAuth.logout - Déconnexion réussie');
-        } catch (error) {
-            console.error('❌ useAuth.logout - Erreur:', error);
-            // ✅ Même en cas d'erreur, nettoyer les données locales
-            authService.clearLocalData();
-            setUser(null);
-            setIsAuthenticated(false);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    // ✅ Refresh user
-    const refreshUser = useCallback(async () => {
-        try {
-            const userData = await authService.refreshUser();
-            setUser(userData);
-            setIsAuthenticated(!!userData);
-            return userData;
-        } catch (error) {
-            console.error('❌ useAuth.refreshUser - Erreur:', error);
-            return null;
-        }
-    }, []);
-
-    // ✅ Update user type
-    const updateUserType = useCallback((type: UserType) => {
-        authService.updateUserType(type);
-        const currentUser = authService.getCurrentUser();
-        setUser(currentUser);
-    }, []);
-
-    // ✅ Getters
-    const isHost = user?.user_type === 'host';
-    const isTraveler = user?.user_type === 'traveler';
-    const isAdmin = user?.user_type === 'admin';
+    const ctx = useAuthContext();
+    const user = ctx.user;
 
     return {
         user,
-        loading,
-        isAuthenticated,
-        isHost,
-        isTraveler,
-        isAdmin,
-        login,
-        logout,
-        register,
-        refreshUser,
-        updateUserType,
-        getToken: authService.getToken,
-        getUserType: authService.getUserType,
-        getCurrentUser: authService.getCurrentUser,
+        loading: ctx.loading,
+        isAuthenticated: ctx.isAuthenticated,
+        isHost: user?.user_type === 'hote',
+        isTraveler: user?.user_type === 'traveler',
+        isAdmin: user?.user_type === 'admin',
+        login: (email: string, password: string) => ctx.login(email, password),
+        logout: ctx.logout,
+        register: ctx.register,
+        refreshUser: ctx.refreshUser,
+        getToken: () => localStorage.getItem('token'),
+        getUserType: () => user?.user_type ?? null,
+        getCurrentUser: () => user,
     };
 };

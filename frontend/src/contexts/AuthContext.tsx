@@ -145,24 +145,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             try {
                 setLoading(true);
                 
-                // ✅ EN DÉVELOPPEMENT : Simulation de session
-                if (import.meta.env.DEV) {
-                    console.log('🔧 DEV MODE: Simulation de session');
-                    const storedUser = localStorage.getItem('user');
-                    if (storedUser) {
-                        const userData = JSON.parse(storedUser);
-                        setUser(userData);
-                        setIsAuthenticated(true);
-                        console.log('✅ Session DEV active pour:', userData.email);
-                        console.log('📋 Type utilisateur:', userData.user_type);
-                        console.log('📋 Type hôte:', userData.host_type);
-                        setLoading(false);
-                        return;
-                    }
-                    setLoading(false);
-                    return;
-                }
-                
+                // Plus de « session simulée » en développement : elle masquait
+                // en local les problèmes de session visibles en production.
+                // Local et production vérifient la même chose (GET /api/user).
                 const storedUser = localStorage.getItem('user');
                 
                 console.log('🔍 Vérification session:', {

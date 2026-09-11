@@ -81,10 +81,7 @@ class AuthService {
 
     private constructor() {
         this.loadUserFromStorage();
-        
-        setInterval(() => {
-            this.checkSession();
-        }, 60000);
+        // Plus de vérification périodique par cookie : voir hasValidSession().
     }
 
     // ============================================
@@ -125,41 +122,24 @@ class AuthService {
                 this.currentUserType = userType;
             }
 
-            // ✅ En développement, ignorer la vérification des cookies
-            if (import.meta.env.DEV) {
-                console.log('🔧 DEV MODE: Ignorer la vérification des cookies');
-                if (this.currentUser && !this.hasValidSession()) {
-                    console.log('🔧 DEV MODE: Création d\'un cookie de session factice');
-                    document.cookie = 'laravel_session=dev_session_12345; path=/; max-age=3600';
-                    document.cookie = 'XSRF-TOKEN=dev_token_67890; path=/; max-age=3600';
-                }
-                return;
-            }
-            
-            const hasSession = this.hasValidSession();
-            if (!hasSession && this.currentUser) {
-                console.warn('⚠️ Session cookie manquant, nettoyage...');
-                this.clearLocalData();
-            }
+            // Plus de faux cookies en développement ni d'effacement en production :
+            // la validité réelle de la session est vérifiée par AuthContext
+            // (GET /api/user) et par les réponses 401 de l'API.
         } catch (error) {
             console.error('❌ Erreur lors du chargement de l\'utilisateur:', error);
         }
     }
 
+    /**
+     * Le cookie de session Laravel est HttpOnly : invisible en JavaScript.
+     * L'ancien test par document.cookie concluait donc toujours « déconnecté »
+     * en production et effaçait les données locales dès qu'une carte
+     * d'annonce s'affichait, puis toutes les 60 s (en développement, de faux
+     * cookies masquaient le problème). Comme AuthContext, on s'appuie sur
+     * l'utilisateur enregistré localement.
+     */
     private hasValidSession(): boolean {
-        return !!(getCookie('laravel_session') || getCookie('PHPSESSID') || getCookie('bluefin_session') || getCookie('bluefin_immo_session'));
-    }
-
-    private async checkSession() {
-        try {
-            if (!this.hasValidSession() && this.currentUser) {
-                console.warn('⚠️ Session cookie perdu, nettoyage...');
-                this.clearLocalData();
-                this.notifyListeners();
-            }
-        } catch (error) {
-            console.error('❌ Erreur checkSession:', error);
-        }
+        return !!localStorage.getItem('user');
     }
 
     public getCurrentUser(): User | null {
@@ -171,17 +151,7 @@ class AuthService {
     }
 
     public isAuthenticated(): boolean {
-        const hasUser = !!this.currentUser;
-        const hasSession = this.hasValidSession();
-        const isAuth = hasUser && hasSession;
-        
-        if (hasUser && !hasSession) {
-            console.warn('⚠️ Incohérence: user présent mais pas de session cookie');
-            this.clearLocalData();
-            return false;
-        }
-        
-        return isAuth;
+        return !!this.currentUser && this.hasValidSession();
     }
 
     public getToken(): string | null {

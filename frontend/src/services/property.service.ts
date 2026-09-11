@@ -124,131 +124,54 @@ class PropertyService {
 
     // ==================== RÉCUPÉRATION DES DISPONIBILITÉS POUR LE CALENDRIER ====================
     
-    // ✅ Version simplifiée : utilise l'API checkAvailability pour chaque jour
+    /**
+     * Disponibilités d'un mois pour le calendrier : UNE requête par mois.
+     *
+     * L'ancienne version envoyait une requête par jour (≈30 par mois, et le
+     * calendrier se monte deux fois) : l'ouverture d'une annonce épuisait le
+     * quota de 60 requêtes/minute de l'utilisateur, et tout le reste du site
+     * (messagerie, favoris…) répondait ensuite 429 pendant une minute. Le
+     * dernier jour du mois produisait en plus une date invalide (« 2026-09-31 »).
+     * Le serveur renvoie déjà la liste des dates indisponibles de la période :
+     * c'est la même source que son contrôle de disponibilité.
+     *
+     * En cas d'échec, l'erreur remonte : le calendrier n'affiche alors aucun
+     * statut, plutôt que des dates réservées inventées (ancien repli aléatoire).
+     */
     async getAvailability(propertyId: number, year: number, month: number) {
-        try {
-            console.log(`📅 Récupération disponibilités pour ${year}/${month}`);
-            
-            // ✅ Utiliser l'API checkAvailability pour chaque jour du mois
-            const daysInMonth = new Date(year, month, 0).getDate();
-            const availability: any[] = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            // Vérifier chaque jour du mois
-            const promises = [];
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month - 1, day);
-                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const nextDay = new Date(year, month - 1, day + 1);
-                const nextDateStr = `${year}-${String(month).padStart(2, '0')}-${String(day + 1).padStart(2, '0')}`;
-                
-                // Si la date est passée, marquer comme réservée
-                if (date < today) {
-                    availability.push({
-                        date: dateStr,
-                        status: 'booked',
-                        is_available: false,
-                        special_price: null
-                    });
-                    continue;
-                }
-                
-                // Vérifier la disponibilité pour ce jour
-                promises.push(
-                    v1Api.post(`/properties/${propertyId}/availability`, {
-                        check_in: dateStr,
-                        check_out: nextDateStr,
-                        guests_count: 1
-                    })
-                    .then(response => {
-                        const isAvailable = response.data?.available === true;
-                        availability.push({
-                            date: dateStr,
-                            status: isAvailable ? 'available' : 'booked',
-                            is_available: isAvailable,
-                            special_price: null
-                        });
-                    })
-                    .catch(() => {
-                        // En cas d'erreur, marquer comme non disponible
-                        availability.push({
-                            date: dateStr,
-                            status: 'booked',
-                            is_available: false,
-                            special_price: null
-                        });
-                    })
-                );
-            }
-            
-            // Attendre que toutes les vérifications soient terminées
-            await Promise.all(promises);
-            
-            console.log(`📊 Disponibilités récupérées: ${availability.length} jours`);
-            return { data: availability };
-            
-        } catch (error) {
-            console.error('❌ Erreur récupération disponibilités:', error);
-            // ✅ En cas d'erreur, générer des données simulées
-            return this.generateMockAvailability(propertyId, year, month);
-        }
-    }
-
-    // ==================== GÉNÉRATION DE DONNÉES SIMULÉES ====================
-    
-    generateMockAvailability(propertyId: number, year: number, month: number) {
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        const firstDay = new Date(year, month - 1, 1);
+        const nextMonth = new Date(year, month, 1);
         const daysInMonth = new Date(year, month, 0).getDate();
-        const mockData: any[] = [];
-        
-        // Générer des dates réservées aléatoires
-        const bookedDates = new Set();
-        const blockedDates = new Set();
-        
-        // 3 à 10 jours réservés
-        const bookedCount = Math.floor(Math.random() * 8) + 3;
-        for (let i = 0; i < bookedCount; i++) {
-            const day = Math.floor(Math.random() * daysInMonth) + 1;
+
+        let unavailable = new Set<string>();
+        if (nextMonth > today) {
+            const from = firstDay < today ? today : firstDay;
+            const response = await v1Api.post(`/properties/${propertyId}/availability`, {
+                check_in: iso(from),
+                check_out: iso(nextMonth),
+                guests_count: 1,
+            });
+            const dates: string[] = response.data?.unavailable_dates || response.data?.data?.unavailable_dates || [];
+            unavailable = new Set(dates.map((d) => String(d).slice(0, 10)));
+        }
+
+        const availability = [];
+        for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month - 1, day);
-            if (date >= today) {
-                bookedDates.add(day);
-            }
-        }
-        
-        // 2 à 7 jours bloqués
-        const blockedCount = Math.floor(Math.random() * 5) + 2;
-        for (let i = 0; i < blockedCount; i++) {
-            const day = Math.floor(Math.random() * daysInMonth) + 1;
-            if (!bookedDates.has(day) && !blockedDates.has(day)) {
-                blockedDates.add(day);
-            }
-        }
-        
-        for (let i = 1; i <= daysInMonth; i++) {
-            const date = new Date(year, month - 1, i);
-            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            
-            let status = 'available';
-            if (date < today) {
-                status = 'booked';
-            } else if (bookedDates.has(i)) {
-                status = 'booked';
-            } else if (blockedDates.has(i)) {
-                status = 'blocked';
-            }
-            
-            mockData.push({
+            const dateStr = iso(date);
+            const isAvailable = date >= today && !unavailable.has(dateStr);
+            availability.push({
                 date: dateStr,
-                status: status,
-                is_available: status === 'available',
-                special_price: i % 3 === 0 ? 50000 + (i * 1000) : null
+                status: isAvailable ? 'available' : 'booked',
+                is_available: isAvailable,
+                special_price: null,
             });
         }
-        
-        console.log(`📊 Données simulées générées: ${mockData.length} jours`);
-        return { data: mockData };
+        return { data: availability };
     }
 
     // ==================== RECHERCHE AVANCÉE ====================

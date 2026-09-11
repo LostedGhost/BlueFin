@@ -70,6 +70,7 @@ import { MapPage } from './pages/MapPage';
 import { NeedsPage } from './pages/NeedsPage';
 import { FavoritesScreen } from './pages/Favorites';
 import { SiteChromeContext } from './siteChrome';
+import { AppSidebar, SIDEBAR_WIDTH } from './components/account/AppSidebar';
 import { parseRoute, routeToPath, tabFromPage, routeFromTab, type Route, type Page } from './router';
 import { AdminSidebar } from './components/AdminSidebar';
 import { AdminHeader } from './components/AdminHeader';
@@ -179,7 +180,15 @@ function AppContent() {
   const [isBookingSheetOpen, setIsBookingSheetOpen] = useState(false);
   // Une page peut masquer l'en-tête et le pied de page (voir siteChrome.ts).
   const [siteChromeHidden, setSiteChromeHidden] = useState(false);
-  const { user, isAuthenticated, loading, refreshUser } = useAuth();
+  // Barre latérale (écrans larges, utilisateur connecté) : état replié mémorisé.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    try { return localStorage.getItem('bf.sidebar.collapsed') === '1'; } catch { return false; }
+  });
+  const toggleSidebar = () => setSidebarCollapsed((v) => {
+    try { localStorage.setItem('bf.sidebar.collapsed', v ? '0' : '1'); } catch { /* stockage indisponible */ }
+    return !v;
+  });
+  const { user, isAuthenticated, loading, refreshUser, logout } = useAuth();
   const routerNavigate = useRouterNavigate();
   const location = useLocation();
 
@@ -518,6 +527,10 @@ function AppContent() {
   const isAuthScreen = route.name === 'auth' || siteChromeHidden;
   const showNavbar = route.name !== 'home' && route.name !== 'listing' && route.name !== 'booking' && !isAuthScreen;
   const showFooter = route.name !== 'listing' && route.name !== 'booking' && route.name !== 'map' && !isAuthScreen;
+  // Barre latérale : utilisateurs connectés (hors admin, qui a la sienne),
+  // hors pages de connexion. Affichée par CSS sur écrans larges seulement.
+  const showSidebar = Boolean(isAuthenticated && user && user.user_type !== 'admin' && !isAuthScreen);
+  const sidebarWidth = sidebarCollapsed ? SIDEBAR_WIDTH.collapsed : SIDEBAR_WIDTH.expanded;
   const showMobileBottomNav = route.name !== 'listing' && route.name !== 'booking';
 
   // Certaines pages (home, listing) définissent leurs propres balises Seo plus
@@ -527,7 +540,20 @@ function AppContent() {
 
   return (
     <SiteChromeContext.Provider value={setSiteChromeHidden}>
-    <div className="min-h-screen bg-white">
+    <div
+      className="min-h-screen bg-white lg:pl-[var(--app-sidebar)] transition-[padding] duration-200"
+      style={{ ['--app-sidebar' as any]: showSidebar ? `${sidebarWidth}px` : '0px' }}
+    >
+      {showSidebar && user && (
+        <AppSidebar
+          user={user}
+          currentPage={route.name}
+          collapsed={sidebarCollapsed}
+          onToggle={toggleSidebar}
+          onNavigate={navigate}
+          onLogout={async () => { await logout(); navigate({ name: 'home' }); }}
+        />
+      )}
       {!hasOwnSeo && (
         <Seo
           title="Bluefin Immo — Location de logements vérifiés au Bénin"

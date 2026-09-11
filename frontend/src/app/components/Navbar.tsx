@@ -29,13 +29,13 @@ interface NavbarProps {
   allLogements?: Logement[];
 }
 
-export function Navbar({ 
-  onGoHome, 
-  onNavigate, 
-  currentPage, 
-  onSearch, 
+export function Navbar({
+  onGoHome,
+  onNavigate,
+  currentPage,
+  onSearch,
   onRealTimeSearch,
-  allLogements = [] 
+  allLogements = [],
 }: NavbarProps) {
   // Session : un utilisateur connecté voit son avatar et son menu de compte
   // à la place de « S'inscrire » ; « Devenir hôte » reste proposé aux seuls
@@ -43,6 +43,9 @@ export function Navbar({
   const { user, isAuthenticated, logout } = useAuth();
   const signedIn = Boolean(isAuthenticated && user);
   const showBecomeHost = !signedIn || (user?.user_type !== 'hote' && user?.user_type !== 'admin');
+  // Même règle que la barre latérale (App.tsx) : sur grand écran, le logo y
+  // est déjà affiché en tête.
+  const logoInSidebar = signedIn && user?.user_type !== 'admin';
   const handleLogout = async () => {
     await logout();
     onNavigate?.({ name: 'home' });
@@ -361,7 +364,8 @@ export function Navbar({
         
         {/* Première ligne - Logo et navigation */}
         <div className="flex items-center justify-between gap-4">
-          <button onClick={onGoHome} className="flex items-center gap-3 flex-shrink-0 group">
+          {logoInSidebar && <span aria-hidden className="hidden lg:block w-px" />}
+          <button onClick={onGoHome} className={`flex items-center gap-3 flex-shrink-0 group ${logoInSidebar ? 'lg:hidden' : ''}`}>
             <img src={Logo} alt="Logo" className="w-10 h-10 lg:w-12 lg:h-12 object-contain rounded-xl shadow-md group-hover:shadow-lg transition-all" />
             <div className="hidden sm:block">
               <div className="font-bold text-lg lg:text-xl text-[#0f2940]">Bluefin-Immo</div>

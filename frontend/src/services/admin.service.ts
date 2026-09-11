@@ -409,6 +409,30 @@ class AdminService {
     return response.data;
   }
 
+  /**
+   * Récupère la pièce d'identité d'un hôte pour consultation.
+   *
+   * L'endpoint diffuse le fichier lui-même — il ne renvoie aucune URL du
+   * document. On en fait donc une URL d'objet locale, à révoquer après usage
+   * (`revokeIdentityDocument`) pour ne pas laisser le contenu en mémoire.
+   *
+   * Chaque appel est journalisé côté serveur : consulter la pièce d'identité
+   * de quelqu'un est un accès à une donnée personnelle.
+   */
+  async getIdentityDocument(id: number): Promise<{ objectUrl: string; contentType: string }> {
+    const response = await this.api.get(`/admin/users/${id}/identity-document`, {
+      responseType: 'blob',
+    });
+    return {
+      objectUrl: URL.createObjectURL(response.data),
+      contentType: response.data.type || 'application/octet-stream',
+    };
+  }
+
+  revokeIdentityDocument(objectUrl: string) {
+    URL.revokeObjectURL(objectUrl);
+  }
+
   async suspendUser(id: number, durationDays: number, reason?: string) {
     const response = await this.api.post(`/admin/users/${id}/suspend`, {
       duration_days: durationDays,

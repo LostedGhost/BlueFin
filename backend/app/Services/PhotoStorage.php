@@ -104,10 +104,14 @@ class PhotoStorage
                 'signature' => $signature,
             ]));
 
-        // Un document authentifié n'a pas d'URL publique exploitable : on
-        // conserve son public_id, seul élément permettant de signer plus tard
-        // une consultation à durée limitée.
-        $expected = $authenticated ? 'public_id' : 'secure_url';
+        // Pour un document authentifié, Cloudinary renvoie une secure_url déjà
+        // signée. On la conserve telle quelle plutôt que de recalculer la
+        // signature nous-mêmes : moins de code à se tromper, et cette URL ne
+        // sort jamais du serveur — seul l'endpoint admin la consomme, en
+        // diffusant le fichier. À défaut, on se rabat sur le public_id.
+        $expected = $authenticated
+            ? (filled($response->json('secure_url')) ? 'secure_url' : 'public_id')
+            : 'secure_url';
 
         if ($response->failed() || blank($response->json($expected))) {
             Log::error('Envoi Cloudinary en échec', [

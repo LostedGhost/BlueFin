@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Host\HostFavoriteController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\PropertyModerationController;
 use App\Http\Controllers\Api\Admin\UserManagementController;
+use App\Http\Controllers\Api\Admin\IdentityDocumentController;
 use App\Http\Controllers\Api\Admin\BookingMonitoringController;
 use App\Http\Controllers\Api\Admin\PaymentMonitoringController;
 use App\Http\Controllers\Api\Admin\MessageMonitoringController;
@@ -356,6 +357,9 @@ Route::prefix('v1')->group(function () {
 
             Route::apiResource('users', UserManagementController::class)->only(['index', 'show', 'destroy']);
             Route::post('/users/{id}/verify', [UserManagementController::class, 'verify']);
+            // Diffuse la pièce d'identité elle-même : aucune URL du document
+            // n'est renvoyée au navigateur. Chaque consultation est journalisée.
+            Route::get('/users/{id}/identity-document', [IdentityDocumentController::class, 'show']);
             Route::post('/users/{id}/suspend', [UserManagementController::class, 'suspend']);
             Route::post('/users/{id}/activate', [UserManagementController::class, 'activate']);
             

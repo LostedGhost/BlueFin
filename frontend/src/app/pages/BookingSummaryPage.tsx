@@ -160,19 +160,19 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex justify-center items-center bg-[#eefbfd]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#12b8c9]"></div>
+            <div className="min-h-screen flex justify-center items-center bg-[#f4fffe]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00c9a7]"></div>
             </div>
         );
     }
 
     if (!property) {
         return (
-            <div className="min-h-screen flex justify-center items-center bg-[#eefbfd] p-4">
+            <div className="min-h-screen flex justify-center items-center bg-[#f4fffe] p-4">
                 <div className="text-center bg-white rounded-2xl p-8 max-w-md">
                     <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <p className="text-red-500 mb-4">Propriété introuvable</p>
-                    <button onClick={() => onNavigate?.({ name: 'home' })} className="text-[#12b8c9] underline">Retour à l'accueil</button>
+                    <button onClick={() => onNavigate?.({ name: 'home' })} className="text-[#00c9a7] underline">Retour à l'accueil</button>
                 </div>
             </div>
         );
@@ -182,7 +182,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
     const serviceFee = subtotal * 0.10;
 
     return (
-        <div className="bg-[#eefbfd] min-h-screen pb-32 md:pb-12">
+        <div className="bg-[#f4fffe] min-h-screen pb-32 md:pb-12">
             <div className="sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 shadow-sm">
                 <div className="flex items-center gap-3">
                     <button 
@@ -256,7 +256,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                         {/* Détail des prix */}
                         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                             <h4 className="font-semibold text-[#0F2940] mb-3 flex items-center gap-2">
-                                <Receipt className="w-4 h-4 text-[#12b8c9]" />
+                                <Receipt className="w-4 h-4 text-[#00c9a7]" />
                                 Détail des prix
                             </h4>
                             <div className="space-y-2">
@@ -271,7 +271,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                 <div className="border-t pt-2 mt-2">
                                     <div className="flex justify-between font-bold">
                                         <span>Total</span>
-                                        <span className="text-[#12b8c9] text-lg">{total.toLocaleString()} FCFA</span>
+                                        <span className="text-[#00c9a7] text-lg">{total.toLocaleString()} FCFA</span>
                                     </div>
                                 </div>
                             </div>
@@ -304,12 +304,12 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                 <div className="border-t pt-3 mb-6">
                                     <div className="flex justify-between font-bold">
                                         <span>Total à payer</span>
-                                        <span className="text-[#12b8c9] text-xl">{total.toLocaleString()} FCFA</span>
+                                        <span className="text-[#00c9a7] text-xl">{total.toLocaleString()} FCFA</span>
                                     </div>
                                 </div>
                                 <button 
                                     onClick={() => setShowPaymentStep(true)}
-                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[#12b8c9] to-[#00a887] text-white font-semibold hover:shadow-lg transition-all"
+                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00c9a7] to-[#00a887] text-white font-semibold hover:shadow-lg transition-all"
                                 >
                                     Confirmer et payer
                                 </button>
@@ -321,24 +321,24 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                         ) : (
                             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 sticky top-20">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <button onClick={() => setShowPaymentStep(false)} className="text-[#12b8c9] hover:underline text-sm">← Retour</button>
+                                    <button onClick={() => setShowPaymentStep(false)} className="text-[#00c9a7] hover:underline text-sm">← Retour</button>
                                 </div>
                                 <h2 className="text-xl font-bold text-[#0F2940] mb-4">Paiement</h2>
                                 
-                                <div className="bg-gradient-to-r from-[#12b8c9]/10 to-[#0F2940]/10 rounded-xl p-4 text-center mb-4">
+                                <div className="bg-gradient-to-r from-[#00c9a7]/10 to-[#0F2940]/10 rounded-xl p-4 text-center mb-4">
                                     <p className="text-sm text-gray-600">Montant à payer</p>
-                                    <p className="text-2xl font-bold text-[#12b8c9]">{total.toLocaleString()} FCFA</p>
+                                    <p className="text-2xl font-bold text-[#00c9a7]">{total.toLocaleString()} FCFA</p>
                                 </div>
 
                                 <div className="mb-4">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Méthode de paiement</label>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <button onClick={() => { setPaymentMethod('mobile_money'); setPaymentError(''); }} className={`flex flex-col items-center gap-2 p-3 border-2 rounded-xl transition-all ${paymentMethod === 'mobile_money' ? 'border-[#12b8c9] bg-[#12b8c9]/5' : 'border-gray-200'}`}>
-                                            <Smartphone className={`w-5 h-5 ${paymentMethod === 'mobile_money' ? 'text-[#12b8c9]' : 'text-gray-400'}`} />
+                                        <button onClick={() => { setPaymentMethod('mobile_money'); setPaymentError(''); }} className={`flex flex-col items-center gap-2 p-3 border-2 rounded-xl transition-all ${paymentMethod === 'mobile_money' ? 'border-[#00c9a7] bg-[#00c9a7]/5' : 'border-gray-200'}`}>
+                                            <Smartphone className={`w-5 h-5 ${paymentMethod === 'mobile_money' ? 'text-[#00c9a7]' : 'text-gray-400'}`} />
                                             <span className="text-xs">Mobile Money</span>
                                         </button>
-                                        <button onClick={() => { setPaymentMethod('card'); setPaymentError(''); }} className={`flex flex-col items-center gap-2 p-3 border-2 rounded-xl transition-all ${paymentMethod === 'card' ? 'border-[#12b8c9] bg-[#12b8c9]/5' : 'border-gray-200'}`}>
-                                            <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#12b8c9]' : 'text-gray-400'}`} />
+                                        <button onClick={() => { setPaymentMethod('card'); setPaymentError(''); }} className={`flex flex-col items-center gap-2 p-3 border-2 rounded-xl transition-all ${paymentMethod === 'card' ? 'border-[#00c9a7] bg-[#00c9a7]/5' : 'border-gray-200'}`}>
+                                            <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-[#00c9a7]' : 'text-gray-400'}`} />
                                             <span className="text-xs">Carte bancaire</span>
                                         </button>
                                     </div>
@@ -350,7 +350,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Opérateur</label>
                                             <div className="grid grid-cols-3 gap-2">
                                                 {(['MTN', 'Moov', 'Orange'] as const).map((provider) => (
-                                                    <button key={provider} onClick={() => { setMobileProvider(provider); setPaymentError(''); }} className={`py-2 rounded-xl border transition-all text-sm ${mobileProvider === provider ? 'border-[#12b8c9] bg-[#12b8c9]/5 text-[#12b8c9]' : 'border-gray-200'}`}>
+                                                    <button key={provider} onClick={() => { setMobileProvider(provider); setPaymentError(''); }} className={`py-2 rounded-xl border transition-all text-sm ${mobileProvider === provider ? 'border-[#00c9a7] bg-[#00c9a7]/5 text-[#00c9a7]' : 'border-gray-200'}`}>
                                                         {provider}
                                                     </button>
                                                 ))}
@@ -358,7 +358,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Numéro Mobile Money</label>
-                                            <input type="tel" value={mobileMoneyNumber} onChange={(e) => { setMobileMoneyNumber(e.target.value); setPaymentError(''); }} placeholder="97 00 00 00" className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]" />
+                                            <input type="tel" value={mobileMoneyNumber} onChange={(e) => { setMobileMoneyNumber(e.target.value); setPaymentError(''); }} placeholder="97 00 00 00" className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#00c9a7]" />
                                         </div>
                                     </div>
                                 )}
@@ -367,31 +367,31 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                     <div className="space-y-3">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de carte</label>
-                                            <input type="text" value={cardNumber} onChange={handleCardNumberChange} placeholder="1234 5678 9012 3456" maxLength={19} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]" />
+                                            <input type="text" value={cardNumber} onChange={handleCardNumberChange} placeholder="1234 5678 9012 3456" maxLength={19} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#00c9a7]" />
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">Expiration</label>
-                                                <input type="text" value={cardExpiry} onChange={handleExpiryChange} placeholder="MM/AA" maxLength={5} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]" />
+                                                <input type="text" value={cardExpiry} onChange={handleExpiryChange} placeholder="MM/AA" maxLength={5} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#00c9a7]" />
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
                                                 <div className="relative">
-                                                    <input type={showCvv ? 'text' : 'password'} value={cardCvv} onChange={(e) => setCardCvv(e.target.value)} placeholder="123" maxLength={4} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#12b8c9] pr-8" />
+                                                    <input type={showCvv ? 'text' : 'password'} value={cardCvv} onChange={(e) => setCardCvv(e.target.value)} placeholder="123" maxLength={4} className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#00c9a7] pr-8" />
                                                     <button type="button" onClick={() => setShowCvv(!showCvv)} className="absolute right-2 top-1/2 -translate-y-1/2">{showCvv ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Nom sur la carte</label>
-                                            <input type="text" value={cardName} onChange={(e) => setCardName(e.target.value.toUpperCase())} placeholder="JEAN DUPONT" className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#12b8c9] uppercase" />
+                                            <input type="text" value={cardName} onChange={(e) => setCardName(e.target.value.toUpperCase())} placeholder="JEAN DUPONT" className="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#00c9a7] uppercase" />
                                         </div>
                                     </div>
                                 )}
 
                                 {paymentError && <div className="p-2 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 text-center">{paymentError}</div>}
 
-                                <button onClick={handleConfirmPayment} disabled={isPaying} className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[#12b8c9] to-[#00a887] text-white font-semibold disabled:opacity-50">
+                                <button onClick={handleConfirmPayment} disabled={isPaying} className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[#00c9a7] to-[#00a887] text-white font-semibold disabled:opacity-50">
                                     {isPaying ? <div className="flex justify-center gap-2"><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Paiement...</div> : `Payer ${total.toLocaleString()} FCFA`}
                                 </button>
                             </div>

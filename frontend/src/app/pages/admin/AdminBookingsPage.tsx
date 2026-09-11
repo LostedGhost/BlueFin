@@ -64,7 +64,7 @@ export function AdminBookingsPage() {
       <div className="p-3 sm:p-4 md:p-6">
         {/* En-tête */}
         <div className="mb-5">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent">
             Réservations
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">Gérez toutes les réservations de la plateforme</p>
@@ -89,14 +89,14 @@ export function AdminBookingsPage() {
                 placeholder="Rechercher par référence, propriété ou voyageur..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
+                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
               />
             </div>
             <div className="flex gap-2">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] bg-white"
+                className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] bg-white"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="confirmed">Confirmées</option>
@@ -194,7 +194,7 @@ const BookingCard = ({ booking, isExpanded, onToggle, onCancel }: any) => {
           </div>
           <div className="flex items-center justify-between w-full sm:w-auto gap-3">
             <div className="text-left sm:text-right">
-              <p className="text-base sm:text-lg font-bold text-[#12b8c9]">{booking.total_amount?.toLocaleString()} FCFA</p>
+              <p className="text-base sm:text-lg font-bold text-[#00c9a7]">{booking.total_amount?.toLocaleString()} FCFA</p>
               <p className="text-[10px] sm:text-xs text-gray-400">{nights} nuit{nights > 1 ? 's' : ''}</p>
             </div>
             {isExpanded ? (
@@ -213,7 +213,7 @@ const BookingCard = ({ booking, isExpanded, onToggle, onCancel }: any) => {
             {/* Voyageur */}
             <div className="bg-white rounded-xl p-3 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-4 h-4 text-[#12b8c9]" />
+                <Users className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className="font-semibold text-sm">Voyageur</h4>
               </div>
               <p className="font-medium text-sm">{booking.user?.full_name || 'Non renseigné'}</p>
@@ -230,7 +230,7 @@ const BookingCard = ({ booking, isExpanded, onToggle, onCancel }: any) => {
             {/* Détails séjour */}
             <div className="bg-white rounded-xl p-3 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <Calendar className="w-4 h-4 text-[#12b8c9]" />
+                <Calendar className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className="font-semibold text-sm">Séjour</h4>
               </div>
               <div className="space-y-1 text-xs">
@@ -256,7 +256,7 @@ const BookingCard = ({ booking, isExpanded, onToggle, onCancel }: any) => {
             {/* Paiement */}
             <div className="bg-white rounded-xl p-3 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <CreditCard className="w-4 h-4 text-[#12b8c9]" />
+                <CreditCard className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className="font-semibold text-sm">Paiement</h4>
               </div>
               <div className="space-y-1 text-xs">
@@ -272,7 +272,7 @@ const BookingCard = ({ booking, isExpanded, onToggle, onCancel }: any) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Total</span>
-                  <span className="font-medium text-[#12b8c9]">{booking.total_amount?.toLocaleString()} FCFA</span>
+                  <span className="font-medium text-[#00c9a7]">{booking.total_amount?.toLocaleString()} FCFA</span>
                 </div>
               </div>
             </div>

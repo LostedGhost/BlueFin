@@ -109,7 +109,7 @@ export function AdminHostPaymentsPage(_props: { onNavigate?: unknown }) {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
           <div>
             <h1 className={`text-2xl md:text-3xl font-bold flex items-center gap-2 ${strong}`}>
-              <Wallet className="w-6 h-6 text-[#12b8c9]" />
+              <Wallet className="w-6 h-6 text-[#00c9a7]" />
               Paiements Hôtes
             </h1>
             <p className={`text-sm mt-1 max-w-2xl ${muted}`}>
@@ -127,7 +127,7 @@ export function AdminHostPaymentsPage(_props: { onNavigate?: unknown }) {
             <button
               onClick={() => generate.mutate(undefined)}
               disabled={generate.isPending}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#12b8c9] hover:bg-[#0fa0b0] disabled:opacity-60"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#00c9a7] hover:bg-[#00b396] disabled:opacity-60"
               title="Crée un versement « à verser » pour chaque hôte dont le solde dû atteint le minimum"
             >
               {generate.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <PlusCircle className="w-4 h-4" />}
@@ -174,7 +174,7 @@ export function AdminHostPaymentsPage(_props: { onNavigate?: unknown }) {
               <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${muted}`} />
               <input value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder={tab === 'payouts' ? 'Hôte, téléphone ou référence…' : 'Nom, e-mail ou téléphone…'}
-                className={`w-full pl-9 pr-3 py-2 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#12b8c9] ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'}`} />
+                className={`w-full pl-9 pr-3 py-2 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#00c9a7] ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'}`} />
             </div>
             {tab === 'payouts' && (
               <select value={status} onChange={(e) => setStatus(e.target.value as StatusFilter)}
@@ -214,7 +214,7 @@ function Stat({ icon: Icon, label, value, hint, tone, isDark }: {
 }) {
   const tones = {
     amber: 'text-amber-600 bg-amber-50',
-    teal: 'text-[#0c7f8c] bg-[#eefbfd]',
+    teal: 'text-[#00806b] bg-[#f4fffe]',
     green: 'text-emerald-600 bg-emerald-50',
     slate: 'text-slate-600 bg-slate-100',
   };
@@ -251,7 +251,7 @@ function TableState({ loading, error, empty, colSpan, isDark }: {
   return (
     <tr>
       <td colSpan={colSpan} className={`px-4 py-10 text-center text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-        {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#12b8c9]" />
+        {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#00c9a7]" />
           : error ? <span className="text-red-600">{errorMessage(error)}</span>
           : empty}
       </td>
@@ -359,7 +359,7 @@ function HostsTable({ hosts, loading, error, isDark, onEditAccount, onGenerate, 
                 {h.last_paid_at && <p className="text-xs opacity-70">dernier : {dateFr(h.last_paid_at)}</p>}
               </td>
               <td className={`${td} tabular-nums whitespace-nowrap`}>{fcfa(h.balance.open)}</td>
-              <td className={`${td} font-semibold tabular-nums whitespace-nowrap ${h.balance.owed > 0 ? 'text-[#0c7f8c]' : ''}`}>
+              <td className={`${td} font-semibold tabular-nums whitespace-nowrap ${h.balance.owed > 0 ? 'text-[#00806b]' : ''}`}>
                 {fcfa(h.balance.owed)}
               </td>
               <td className={td}>
@@ -377,7 +377,7 @@ function HostsTable({ hosts, loading, error, isDark, onEditAccount, onGenerate, 
                   <button onClick={() => onGenerate(h)}
                     disabled={generating || !h.account || h.balance.owed <= 0 || h.balance.owed < minimum}
                     title={!h.account ? 'Renseignez d\'abord les coordonnées' : h.balance.owed < minimum ? `Solde inférieur au minimum (${fcfa(minimum)})` : 'Préparer le versement du solde dû'}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#12b8c9] hover:bg-[#0fa0b0] disabled:opacity-40 disabled:cursor-not-allowed">
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#00c9a7] hover:bg-[#00b396] disabled:opacity-40 disabled:cursor-not-allowed">
                     <PlusCircle className="w-3.5 h-3.5" /> Préparer
                   </button>
                 </div>
@@ -414,7 +414,7 @@ function Modal({ title, subtitle, isDark, onClose, children }: {
 }
 
 const inputClass = (isDark: boolean) =>
-  `w-full px-3 py-2 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#12b8c9] ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'}`;
+  `w-full px-3 py-2 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#00c9a7] ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'}`;
 
 function PayoutActionDialog({ dialog, isDark, onClose, onDone }: {
   dialog: Exclude<ActionDialog, null | { kind: 'account' }>; isDark: boolean; onClose: () => void; onDone: () => void;
@@ -458,7 +458,7 @@ function PayoutActionDialog({ dialog, isDark, onClose, onDone }: {
   return (
     <Modal title={config.title} subtitle={`${payout.host?.name ?? ''} · ${fcfa(payout.amount)}`} isDark={isDark} onClose={onClose}>
       {dialog.kind === 'mark-paid' && (
-        <div className={`mb-4 p-3 rounded-xl text-sm ${isDark ? 'bg-slate-900' : 'bg-[#eefbfd]'}`}>
+        <div className={`mb-4 p-3 rounded-xl text-sm ${isDark ? 'bg-slate-900' : 'bg-[#f4fffe]'}`}>
           <p>Envoyer <strong>{fcfa(payout.amount)}</strong> par {payout.method === 'mobile_money' ? 'Mobile Money' : 'virement'} à :</p>
           <p className="font-mono mt-1">{payout.destination || '—'}</p>
           {payout.beneficiary && <p className="text-xs mt-1 opacity-80">au nom de {payout.beneficiary}</p>}
@@ -548,7 +548,7 @@ function AccountDialog({ host, isDark, onClose, onSaved }: {
         <div className="flex justify-end gap-2 pt-2">
           <button type="button" onClick={onClose} className={`px-4 py-2 rounded-xl text-sm ${isDark ? 'hover:bg-slate-700' : 'hover:bg-slate-100'}`}>Retour</button>
           <button type="submit" disabled={mutation.isPending}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#12b8c9] hover:bg-[#0fa0b0] disabled:opacity-50">
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-[#00c9a7] hover:bg-[#00b396] disabled:opacity-50">
             {mutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Enregistrer
           </button>
         </div>

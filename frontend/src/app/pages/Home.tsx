@@ -228,7 +228,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (route: any) => void }) 
         <div className="px-4 mb-3">
           <button
             onClick={() => onNavigate?.({ name: 'search-logements' })}
-            className="w-full flex items-center gap-3 bg-white border-[1.5px] border-[#12b8c9] rounded-full pl-4 pr-4 py-2.5 text-left"
+            className="w-full flex items-center gap-3 bg-white border-[1.5px] border-[#00c9a7] rounded-full pl-4 pr-4 py-2.5 text-left"
           >
             <svg className="w-5 h-5 text-[#0f2940] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />

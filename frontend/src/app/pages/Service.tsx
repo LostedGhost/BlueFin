@@ -180,13 +180,13 @@ export default function Services() {
     <div className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1" onClick={() => setSelectedService(service)}>
       <div className="relative h-48 overflow-hidden">
         <img src={encodeURI(service.images[0])} alt={service.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2 py-1 text-xs font-semibold text-[#12b8c9]">{service.sousCategorie}</div>
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2 py-1 text-xs font-semibold text-[#00c9a7]">{service.sousCategorie}</div>
         <div className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">{service.location}</div>
       </div>
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-[#0F2940] text-base leading-tight line-clamp-2">{service.title}</h3>
-          <div className="flex items-center gap-1 ml-2"><Star className="w-3 h-3 fill-current text-[#12b8c9]" /><span className="text-xs font-medium">{service.rating}</span></div>
+          <div className="flex items-center gap-1 ml-2"><Star className="w-3 h-3 fill-current text-[#00c9a7]" /><span className="text-xs font-medium">{service.rating}</span></div>
         </div>
         <p className="text-xs text-gray-500 mb-2">{service.duration}</p>
         <p className="text-sm text-gray-600 line-clamp-2 mb-3">{service.description}</p>
@@ -249,12 +249,12 @@ export default function Services() {
               </div>
               <div><h3 className="text-xl font-semibold text-[#0F2940] mb-4">Description</h3><p className="text-gray-700 leading-relaxed">{service.longDescription || service.description}</p></div>
               <div><h3 className="text-xl font-semibold text-[#0F2940] mb-4">Déroulement</h3><div className="space-y-3">{programSteps.map((step, idx) => (<div key={idx} className="rounded-3xl border border-gray-200 bg-gray-50 p-4"><p className="font-semibold">{`Étape ${idx + 1}`}</p><p className="mt-2 text-sm">{step}</p></div>))}</div></div>
-              <div><h3 className="text-xl font-semibold text-[#0F2940] mb-4">Avis des clients</h3><div className="space-y-4">{reviews.map((review, idx) => (<div key={idx} className="rounded-3xl border border-gray-200 p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-semibold text-[#0F2940]">{review.name}</p><p className="text-sm text-gray-500">{review.location} · {review.daysAgo}</p></div><span className="rounded-full bg-[#12b8c9]/10 px-3 py-1 text-sm text-[#0F2940]">{review.rating.toFixed(1)}</span></div><p className="mt-3 text-sm text-gray-700">{review.text}</p></div>))}</div></div>
+              <div><h3 className="text-xl font-semibold text-[#0F2940] mb-4">Avis des clients</h3><div className="space-y-4">{reviews.map((review, idx) => (<div key={idx} className="rounded-3xl border border-gray-200 p-4"><div className="flex items-center justify-between gap-3"><div><p className="font-semibold text-[#0F2940]">{review.name}</p><p className="text-sm text-gray-500">{review.location} · {review.daysAgo}</p></div><span className="rounded-full bg-[#00c9a7]/10 px-3 py-1 text-sm text-[#0F2940]">{review.rating.toFixed(1)}</span></div><p className="mt-3 text-sm text-gray-700">{review.text}</p></div>))}</div></div>
             </div>
             <aside className="space-y-6 rounded-3xl border border-gray-200 bg-[#f8fafb] p-6">
               <div><p className="text-sm font-semibold text-gray-700">À savoir</p><ul className="mt-4 space-y-3 text-sm text-gray-600"><li>Durée : {service.duration}</li><li>Langue : Français, Anglais sur demande</li><li>Service professionnel certifié</li><li>Annulation gratuite 24h avant</li></ul></div>
               <div className="rounded-3xl bg-white p-4 shadow-sm"><p className="text-sm text-gray-500">Lieu du service</p><p className="mt-2 font-medium text-[#0F2940]">{service.location}</p></div>
-              <button className="w-full rounded-full bg-[#12b8c9] px-5 py-3 text-sm font-semibold text-[#0F2940] hover:bg-[#00b892] transition-colors">Réserver ce service</button>
+              <button className="w-full rounded-full bg-[#00c9a7] px-5 py-3 text-sm font-semibold text-[#0F2940] hover:bg-[#00b892] transition-colors">Réserver ce service</button>
             </aside>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function Services() {
                       <div className="text-xs font-medium text-gray-700">Destination</div>
                       <div className="text-sm text-gray-900 truncate">{destination || "Rechercher une destination"}</div>
                     </button>
-                    {activeTab === "destination" && (<><div className="fixed inset-0 z-40" onClick={() => setActiveTab(null)}></div><div className="absolute top-full left-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50"><div className="p-4"><div className="flex items-center justify-between mb-4"><h3 className="text-lg font-semibold">Où souhaitez-vous un service ?</h3><button onClick={() => setActiveTab(null)} className="p-1 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></button></div><input type="text" placeholder="Rechercher une ville" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#12b8c9]" value={destination} onChange={(e) => setDestination(e.target.value)} /><div className="mt-4 space-y-2 max-h-96 overflow-y-auto"><div className="font-semibold text-sm text-gray-500 mb-2">Destinations populaires</div>{travelDestinations.map((place) => (<button key={place} onClick={() => { setDestination(place); setActiveTab(null); }} className="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"><div className="font-medium">{place}</div><div className="text-sm text-gray-500">Bénin</div></button>))}</div></div></div></>)}
+                    {activeTab === "destination" && (<><div className="fixed inset-0 z-40" onClick={() => setActiveTab(null)}></div><div className="absolute top-full left-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50"><div className="p-4"><div className="flex items-center justify-between mb-4"><h3 className="text-lg font-semibold">Où souhaitez-vous un service ?</h3><button onClick={() => setActiveTab(null)} className="p-1 rounded-full hover:bg-gray-100"><X className="w-5 h-5" /></button></div><input type="text" placeholder="Rechercher une ville" className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00c9a7]" value={destination} onChange={(e) => setDestination(e.target.value)} /><div className="mt-4 space-y-2 max-h-96 overflow-y-auto"><div className="font-semibold text-sm text-gray-500 mb-2">Destinations populaires</div>{travelDestinations.map((place) => (<button key={place} onClick={() => { setDestination(place); setActiveTab(null); }} className="w-full text-left px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"><div className="font-medium">{place}</div><div className="text-sm text-gray-500">Bénin</div></button>))}</div></div></div></>)}
                   </div>
                   <div className="hidden sm:block w-px h-8 bg-gray-200"></div><div className="sm:hidden h-px w-full bg-gray-200"></div>
                   {/* Dates */}
@@ -292,7 +292,7 @@ export default function Services() {
                     {serviceTypeOpen && (<><div className="fixed inset-0 z-40" onClick={() => setServiceTypeOpen(false)}></div><div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50"><div className="p-2"><div className="flex items-center justify-between p-2 border-b"><span className="font-semibold">Choisissez un type</span><button onClick={() => setServiceTypeOpen(false)}><X className="w-4 h-4" /></button></div><div className="py-2">{serviceCategories.filter(c => c !== "Tous").map((cat) => (<button key={cat} onClick={() => { setSelectedServiceType(cat); setSelectedCategory(cat); setServiceTypeOpen(false); }} className="w-full text-left px-4 py-2 rounded-xl hover:bg-gray-100 transition-colors text-sm">{cat}</button>))}</div></div></div></>)}
                   </div>
                   {/* Bouton recherche */}
-                  <button className="bg-[#12b8c9] text-[#0F2940] rounded-full p-4 hover:bg-[#00b892] transition-colors ml-0 sm:ml-2 mt-2 sm:mt-0"><Search className="w-5 h-5" /></button>
+                  <button className="bg-[#00c9a7] text-[#0F2940] rounded-full p-4 hover:bg-[#00b892] transition-colors ml-0 sm:ml-2 mt-2 sm:mt-0"><Search className="w-5 h-5" /></button>
                 </div>
               </div>
             </div>
@@ -312,7 +312,7 @@ export default function Services() {
       <div className="sticky top-[73px] z-20 bg-white border-b border-gray-200 py-3 overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-2 sm:gap-4">
-            {serviceCategories.map((cat) => (<button key={cat} onClick={() => { setSelectedCategory(cat); setSelectedServiceType(cat === "Tous" ? "" : cat); }} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat ? "bg-[#12b8c9] text-[#0F2940] shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>{cat}</button>))}
+            {serviceCategories.map((cat) => (<button key={cat} onClick={() => { setSelectedCategory(cat); setSelectedServiceType(cat === "Tous" ? "" : cat); }} className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat ? "bg-[#00c9a7] text-[#0F2940] shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>{cat}</button>))}
           </div>
         </div>
       </div>

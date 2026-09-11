@@ -195,8 +195,8 @@ export function SignupWizard({
   };
 
   const input = (hasError?: string) =>
-    `w-full pl-9 pr-3 py-2.5 border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-[#12b8c9]/40 ${hasError ? 'border-red-500' : 'border-gray-200'}`;
-  const primary = 'w-full bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-2.5 rounded-xl font-semibold disabled:opacity-50 transition-all hover:shadow-lg inline-flex items-center justify-center gap-2';
+    `w-full pl-9 pr-3 py-2.5 border rounded-xl text-[15px] focus:outline-none focus:ring-2 focus:ring-[#00c9a7]/40 ${hasError ? 'border-red-500' : 'border-gray-200'}`;
+  const primary = 'w-full bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-2.5 rounded-xl font-semibold disabled:opacity-50 transition-all hover:shadow-lg inline-flex items-center justify-center gap-2';
   const FieldError = ({ name }: { name: string }) => (errors[name] ? <p className="text-xs text-red-600 mt-1">{errors[name]}</p> : null);
 
   return (
@@ -209,7 +209,7 @@ export function SignupWizard({
           return (
             <li key={s} className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
               <span
-                className={`h-1.5 w-full rounded-full ${done || active ? 'bg-[#12b8c9]' : 'bg-gray-200'}`}
+                className={`h-1.5 w-full rounded-full ${done || active ? 'bg-[#00c9a7]' : 'bg-gray-200'}`}
                 aria-hidden="true"
               />
               <span className={`text-[11px] truncate ${active ? 'text-[#0F2940] font-semibold' : 'text-gray-400'}`}
@@ -250,9 +250,9 @@ export function SignupWizard({
               </div>
               <FieldError name="email" />
               {emailTaken && (
-                <p className="text-sm text-[#0F2940] mt-2 p-3 bg-[#eefbfd] rounded-xl">
+                <p className="text-sm text-[#0F2940] mt-2 p-3 bg-[#f4fffe] rounded-xl">
                   Un compte existe déjà avec cette adresse.{' '}
-                  <button type="button" onClick={() => onSwitchToLogin(email.trim())} className="font-semibold text-[#0c7f8c] hover:underline">
+                  <button type="button" onClick={() => onSwitchToLogin(email.trim())} className="font-semibold text-[#00806b] hover:underline">
                     Se connecter
                   </button>
                 </p>
@@ -356,7 +356,7 @@ export function SignupWizard({
                   <dd className="text-[#0F2940] font-medium truncate">{value}</dd>
                 </div>
                 {!(method === 'google' && label === 'E-mail') && (
-                  <button type="button" onClick={() => setStep(target as Step)} className="text-xs font-medium text-[#0c7f8c] hover:underline shrink-0">
+                  <button type="button" onClick={() => setStep(target as Step)} className="text-xs font-medium text-[#00806b] hover:underline shrink-0">
                     Modifier
                   </button>
                 )}
@@ -366,10 +366,10 @@ export function SignupWizard({
 
           <label className="flex items-start gap-2.5 text-sm text-gray-600 cursor-pointer">
             <input type="checkbox" checked={acceptTerms} onChange={(e) => { setAcceptTerms(e.target.checked); clearError('terms'); }}
-              className="mt-0.5 w-4 h-4 accent-[#12b8c9]" />
+              className="mt-0.5 w-4 h-4 accent-[#00c9a7]" />
             <span>
-              J’accepte les <a href="/cgu" target="_blank" rel="noreferrer" className="text-[#0c7f8c] underline">conditions générales</a> et la{' '}
-              <a href="/confidentialite" target="_blank" rel="noreferrer" className="text-[#0c7f8c] underline">politique de confidentialité</a>.
+              J’accepte les <a href="/cgu" target="_blank" rel="noreferrer" className="text-[#00806b] underline">conditions générales</a> et la{' '}
+              <a href="/confidentialite" target="_blank" rel="noreferrer" className="text-[#00806b] underline">politique de confidentialité</a>.
             </span>
           </label>
           <FieldError name="terms" />

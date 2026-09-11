@@ -238,7 +238,7 @@ const CheckoutModal = ({ property, checkIn, checkOut, guests, totalPrice, onClos
             <div>
               <h3 className="font-semibold text-lg mb-2">Choisissez quand vous souhaitez payer</h3>
               <div className="space-y-2">
-                <div className="border rounded-lg p-3 border-[#12b8c9] bg-[#12b8c9]/5">
+                <div className="border rounded-lg p-3 border-[#00c9a7] bg-[#00c9a7]/5">
                   <div className="flex justify-between"><span className="font-medium">Payez {totalPrice.toLocaleString()} FCFA maintenant</span><span>✓</span></div>
                   <div className="text-xs text-gray-500">Paiement immédiat, non remboursable</div>
                 </div>
@@ -250,13 +250,13 @@ const CheckoutModal = ({ property, checkIn, checkOut, guests, totalPrice, onClos
             <div>
               <h3 className="font-semibold text-lg mb-2">Ajoutez un mode de paiement</h3>
               <div className="flex gap-3 flex-wrap mb-4">
-                <button onClick={() => setPaymentMethod("mtn")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "mtn" ? "border-[#12b8c9] bg-[#12b8c9]/5" : "border-gray-300"}`}>
+                <button onClick={() => setPaymentMethod("mtn")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "mtn" ? "border-[#00c9a7] bg-[#00c9a7]/5" : "border-gray-300"}`}>
                   <Smartphone className="w-4 h-4"/> MTN Mobile Money
                 </button>
-                <button onClick={() => setPaymentMethod("orange")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "orange" ? "border-[#12b8c9] bg-[#12b8c9]/5" : "border-gray-300"}`}>
+                <button onClick={() => setPaymentMethod("orange")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "orange" ? "border-[#00c9a7] bg-[#00c9a7]/5" : "border-gray-300"}`}>
                   <Smartphone className="w-4 h-4"/> Orange Money
                 </button>
-                <button onClick={() => setPaymentMethod("card")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "card" ? "border-[#12b8c9] bg-[#12b8c9]/5" : "border-gray-300"}`}>
+                <button onClick={() => setPaymentMethod("card")} className={`flex items-center gap-2 px-4 py-2 rounded-full border ${paymentMethod === "card" ? "border-[#00c9a7] bg-[#00c9a7]/5" : "border-gray-300"}`}>
                   <CreditCard className="w-4 h-4"/> Carte bancaire
                 </button>
               </div>
@@ -282,7 +282,7 @@ const CheckoutModal = ({ property, checkIn, checkOut, guests, totalPrice, onClos
                     </div>
                   </>
                 )}
-                <button type="submit" className="w-full bg-[#12b8c9] text-[#0F2940] py-3 rounded-lg font-semibold mt-4 hover:bg-[#00b892] transition-colors">Confirmer et payer</button>
+                <button type="submit" className="w-full bg-[#00c9a7] text-[#0F2940] py-3 rounded-lg font-semibold mt-4 hover:bg-[#00b892] transition-colors">Confirmer et payer</button>
               </form>
               <p className="text-xs text-gray-500 text-center mt-3">Vos informations sont sécurisées.</p>
             </div>
@@ -292,14 +292,14 @@ const CheckoutModal = ({ property, checkIn, checkOut, guests, totalPrice, onClos
               <img src={property.images?.[0] || property.image || '/placeholder.jpg'} alt={property.title} className="w-20 h-20 rounded-lg object-cover" onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }} />
               <div>
                 <h3 className="font-semibold">{property.title}</h3>
-                <div className="flex items-center gap-1 text-sm"><Star className="w-4 h-4 fill-current text-[#12b8c9]"/>{property.rating} ({property.reviews} commentaires)</div>
-                <div className="text-xs text-[#12b8c9] font-semibold mt-1">Coup de cœur voyageurs</div>
+                <div className="flex items-center gap-1 text-sm"><Star className="w-4 h-4 fill-current text-[#00c9a7]"/>{property.rating} ({property.reviews} commentaires)</div>
+                <div className="text-xs text-[#00c9a7] font-semibold mt-1">Coup de cœur voyageurs</div>
               </div>
             </div>
             <div className="border-t pt-3">
               <div className="flex justify-between text-sm"><span>Dates</span><span className="font-medium">{checkIn} – {checkOut}</span></div>
               <div className="flex justify-between text-sm mt-2"><span>Voyageurs</span><span className="font-medium">{guests} adulte{guests > 1 ? 's' : ''}</span></div>
-              <button className="text-[#12b8c9] text-sm mt-2 underline">Modifier</button>
+              <button className="text-[#00c9a7] text-sm mt-2 underline">Modifier</button>
             </div>
             <div className="border-t pt-3">
               <h4 className="font-semibold mb-2">Détail du prix</h4>
@@ -383,17 +383,17 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
                 <div className="text-sm text-gray-500">Logement entier · {property.bedrooms} chambre · {property.beds} lits · {property.baths} salle de bain</div>
                 <h1 className="text-3xl font-semibold text-[#0F2940] mt-2">{property.title}</h1>
                 <div className="flex items-center gap-2 mt-2">
-                  <Star className="w-5 h-5 fill-current text-[#12b8c9]" />
+                  <Star className="w-5 h-5 fill-current text-[#00c9a7]" />
                   <span className="font-medium">{property.rating}</span>
                   <span className="text-gray-500">· {property.reviews} commentaires</span>
                   <span className="text-gray-500">·</span>
-                  <span className="text-[#12b8c9] font-medium">Superhôte</span>
+                  <span className="text-[#00c9a7] font-medium">Superhôte</span>
                 </div>
               </div>
 
-              <div className="bg-[#12b8c9]/10 rounded-xl p-5 flex gap-4 items-center overflow-hidden relative group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#12b8c9]/20 rounded-full -mr-16 -mt-16 animate-pulse"></div>
-                <Crown className="w-10 h-10 text-[#12b8c9] animate-bounce" />
+              <div className="bg-[#00c9a7]/10 rounded-xl p-5 flex gap-4 items-center overflow-hidden relative group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00c9a7]/20 rounded-full -mr-16 -mt-16 animate-pulse"></div>
+                <Crown className="w-10 h-10 text-[#00c9a7] animate-bounce" />
                 <div>
                   <div className="font-semibold text-lg text-[#0F2940]">Coup de cœur · voyageurs</div>
                   <div className="text-gray-600">Un des logements préférés des voyageurs</div>
@@ -402,13 +402,13 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
 
               <div className="flex gap-5 items-start">
                 <img
-                  src={`https://ui-avatars.com/api/?background=12b8c9&color=fff&name=${encodeURIComponent(property.host || 'Hôte')}&bold=true&size=128`}
+                  src={`https://ui-avatars.com/api/?background=00c9a7&color=fff&name=${encodeURIComponent(property.host || 'Hôte')}&bold=true&size=128`}
                   alt={property.host || 'Hôte'}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-[#12b8c9] shadow-lg animate-pulse"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-[#00c9a7] shadow-lg animate-pulse"
                 />
                 <div>
                   <div className="font-semibold text-xl text-[#0F2940]">Hôte : {property.host}</div>
-                  <div className="flex items-center gap-1 text-[#12b8c9]"><Award className="w-4 h-4"/>Superhôte · {property.hostSince}</div>
+                  <div className="flex items-center gap-1 text-[#00c9a7]"><Award className="w-4 h-4"/>Superhôte · {property.hostSince}</div>
                   <div className="text-sm text-gray-600">Taux de réponse {property.responseRate}% · Répond {property.responseTime}</div>
                 </div>
               </div>
@@ -418,30 +418,30 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="font-semibold text-xl text-[#0F2940]">Équipements</h3>
-                  <button onClick={()=>setShowAllAmenities(!showAllAmenities)} className="text-[#12b8c9] text-sm underline hover:no-underline">Voir tout</button>
+                  <button onClick={()=>setShowAllAmenities(!showAllAmenities)} className="text-[#00c9a7] text-sm underline hover:no-underline">Voir tout</button>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {(showAllAmenities ? property.amenities : property.amenities.slice(0,6)).map((a,i)=>(
-                    <div key={i} className="flex items-center gap-3 text-gray-700"><Check className="w-5 h-5 text-[#12b8c9]"/>{a}</div>
+                    <div key={i} className="flex items-center gap-3 text-gray-700"><Check className="w-5 h-5 text-[#00c9a7]"/>{a}</div>
                   ))}
                 </div>
               </div>
 
               {testimonials.length > 0 && (
-                <div className="bg-gradient-to-r from-[#0F2940]/5 to-[#12b8c9]/5 rounded-2xl p-6 overflow-hidden">
+                <div className="bg-gradient-to-r from-[#0F2940]/5 to-[#00c9a7]/5 rounded-2xl p-6 overflow-hidden">
                   <h3 className="font-semibold text-xl text-[#0F2940] mb-4 flex items-center gap-2">
-                    <Sparkles className="w-6 h-6 text-[#12b8c9] animate-pulse" />
+                    <Sparkles className="w-6 h-6 text-[#00c9a7] animate-pulse" />
                     Ce que nos clients disent
                   </h3>
                   <div className={`transition-all duration-300 transform ${animate ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
                     <div className="flex flex-col md:flex-row gap-6 items-start">
                       <div className="relative">
                         <img 
-                          src={`https://ui-avatars.com/api/?background=12b8c9&color=fff&name=${testimonials[currentTestimonial].name.charAt(0)}`}
+                          src={`https://ui-avatars.com/api/?background=00c9a7&color=fff&name=${testimonials[currentTestimonial].name.charAt(0)}`}
                           alt={testimonials[currentTestimonial].name}
-                          className="w-20 h-20 rounded-full object-cover border-4 border-[#12b8c9] shadow-xl animate-spin-slow"
+                          className="w-20 h-20 rounded-full object-cover border-4 border-[#00c9a7] shadow-xl animate-spin-slow"
                         />
-                        <div className="absolute -bottom-2 -right-2 bg-[#12b8c9] rounded-full p-1">
+                        <div className="absolute -bottom-2 -right-2 bg-[#00c9a7] rounded-full p-1">
                           <Star className="w-4 h-4 fill-white text-white" />
                         </div>
                       </div>
@@ -452,7 +452,7 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
                         </div>
                         <div className="flex items-center gap-1 mt-1">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-4 h-4 ${i < Math.floor(testimonials[currentTestimonial].rating) ? 'fill-current text-[#12b8c9]' : 'text-gray-300'}`} />
+                            <Star key={i} className={`w-4 h-4 ${i < Math.floor(testimonials[currentTestimonial].rating) ? 'fill-current text-[#00c9a7]' : 'text-gray-300'}`} />
                           ))}
                           <span className="text-sm text-gray-500 ml-2">{testimonials[currentTestimonial].rating}</span>
                         </div>
@@ -464,7 +464,7 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
                         <button 
                           key={idx} 
                           onClick={() => { setAnimate(true); setTimeout(() => { setCurrentTestimonial(idx); setAnimate(false); }, 300); }}
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${currentTestimonial === idx ? 'w-6 bg-[#12b8c9]' : 'bg-gray-300'}`}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${currentTestimonial === idx ? 'w-6 bg-[#00c9a7]' : 'bg-gray-300'}`}
                         />
                       ))}
                     </div>
@@ -475,13 +475,13 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
               <div className="border rounded-xl p-5">
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold text-lg text-[#0F2940]">2 nuits à {property.city}</h3>
-                  <button onClick={()=>setShowCalendar(!showCalendar)} className="text-[#12b8c9] text-sm underline">Sélectionner</button>
+                  <button onClick={()=>setShowCalendar(!showCalendar)} className="text-[#00c9a7] text-sm underline">Sélectionner</button>
                 </div>
                 {showCalendar && (
                   <div className="mt-4 border rounded-lg p-4">
                     <div className="grid grid-cols-7 gap-1 text-center text-sm">
                       {["L","M","M","J","V","S","D"].map(d=> <div key={d} className="font-medium text-gray-500">{d}</div>)}
-                      {Array.from({length: 35}).map((_,i)=> <button key={i} className="aspect-square rounded-full hover:bg-[#12b8c9]/20">{i+1}</button>)}
+                      {Array.from({length: 35}).map((_,i)=> <button key={i} className="aspect-square rounded-full hover:bg-[#00c9a7]/20">{i+1}</button>)}
                     </div>
                   </div>
                 )}
@@ -493,7 +493,7 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
               <div className="sticky top-24 border rounded-2xl p-6 shadow-xl bg-white">
                 <div className="flex justify-between items-center">
                   <div><span className="text-3xl font-bold text-[#0F2940]">{property.priceNumber.toLocaleString()} FCFA</span><span className="text-gray-500"> / nuit</span></div>
-                  <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"><Star className="w-4 h-4 fill-current text-[#12b8c9]"/>{property.rating}</div>
+                  <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full"><Star className="w-4 h-4 fill-current text-[#00c9a7]"/>{property.rating}</div>
                 </div>
                 <div className="border rounded-xl my-5 overflow-hidden">
                   <div className="flex">
@@ -503,7 +503,7 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
                   <div className="p-3 border-t"><div className="text-xs font-bold text-gray-500 uppercase">Voyageurs</div><div className="font-medium">{guests} adulte</div></div>
                 </div>
                 <div className="space-y-3 mb-5">
-                  <div className={`border rounded-xl p-3 cursor-pointer transition-all ${selectedPriceOption==="non-remboursable"?"border-[#12b8c9] bg-[#12b8c9]/5 shadow-md":""}`} onClick={()=>setSelectedPriceOption("non-remboursable")}>
+                  <div className={`border rounded-xl p-3 cursor-pointer transition-all ${selectedPriceOption==="non-remboursable"?"border-[#00c9a7] bg-[#00c9a7]/5 shadow-md":""}`} onClick={()=>setSelectedPriceOption("non-remboursable")}>
                     <div className="flex justify-between font-medium"><span>Non remboursable</span><span>{nonRefundableTotal.toLocaleString()} FCFA</span></div>
                     <div className="text-xs text-gray-500">Paiement immédiat</div>
                   </div>
@@ -512,7 +512,7 @@ const PropertyDetailModal = ({ property, onClose, onReserve }: { property: Popul
                     <div className="text-xs text-gray-500">Annulation gratuite avant le 10 mai</div>
                   </div>
                 </div>
-                <button onClick={onReserve} className="w-full bg-[#12b8c9] text-[#0F2940] py-3 rounded-xl font-bold text-lg hover:bg-[#00b892] transition-all hover:scale-105 transform shadow-md">Réserver</button>
+                <button onClick={onReserve} className="w-full bg-[#00c9a7] text-[#0F2940] py-3 rounded-xl font-bold text-lg hover:bg-[#00b892] transition-all hover:scale-105 transform shadow-md">Réserver</button>
                 <p className="text-center text-xs text-gray-500 mt-3">Aucun débit pour le moment</p>
               </div>
             </div>
@@ -580,13 +580,13 @@ export default function Popular({ onNavigate }: PopularPageProps) {
       {/* Barre de filtres */}
       <div className="sticky top-[73px] bg-white border-b px-4 py-2 z-10">
         <div className="relative inline-block">
-          <button onClick={()=>setShowFilterDropdown(!showFilterDropdown)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 hover:border-[#12b8c9] transition-colors">
-            <Filter className="w-4 h-4 text-[#12b8c9]"/><span className="text-sm">Trier : {selectedFilter}</span><ChevronDown className="w-4 h-4"/>
+          <button onClick={()=>setShowFilterDropdown(!showFilterDropdown)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 hover:border-[#00c9a7] transition-colors">
+            <Filter className="w-4 h-4 text-[#00c9a7]"/><span className="text-sm">Trier : {selectedFilter}</span><ChevronDown className="w-4 h-4"/>
           </button>
           {showFilterDropdown && (
             <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-xl border w-40 z-20">
               {filters.map(f=>(
-                <div key={f} className="p-2 hover:bg-[#12b8c9]/10 cursor-pointer transition-colors" onClick={()=>{setSelectedFilter(f); setShowFilterDropdown(false);}}>
+                <div key={f} className="p-2 hover:bg-[#00c9a7]/10 cursor-pointer transition-colors" onClick={()=>{setSelectedFilter(f); setShowFilterDropdown(false);}}>
                   {f}
                 </div>
               ))}
@@ -603,23 +603,23 @@ export default function Popular({ onNavigate }: PopularPageProps) {
             {displayedProperties.map(property => (
               <div 
                 key={property.id} 
-                className="border rounded-2xl p-4 hover:shadow-xl transition-all duration-300 cursor-pointer bg-white group hover:border-[#12b8c9] hover:scale-[1.02]" 
+                className="border rounded-2xl p-4 hover:shadow-xl transition-all duration-300 cursor-pointer bg-white group hover:border-[#00c9a7] hover:scale-[1.02]" 
                 onClick={()=>setDetailProperty(property)}
               >
                 <div className="relative overflow-hidden rounded-xl">
                   <img src={property.images?.[0] || property.image || '/placeholder.jpg'} className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.jpg'; }} />
-                  <div className="absolute top-3 right-3 bg-[#12b8c9] text-[#0F2940] text-xs font-bold px-2 py-1 rounded-full">Coup de cœur</div>
+                  <div className="absolute top-3 right-3 bg-[#00c9a7] text-[#0F2940] text-xs font-bold px-2 py-1 rounded-full">Coup de cœur</div>
                 </div>
                 <div className="mt-3">
                   <div className="flex justify-between">
                     <div><h3 className="font-semibold text-[#0F2940] text-lg">{property.title}</h3><p className="text-sm text-gray-500">{property.location}</p></div>
-                    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><Star className="w-3 h-3 fill-current text-[#12b8c9]"/><span className="text-sm font-medium">{property.rating}</span></div>
+                    <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><Star className="w-3 h-3 fill-current text-[#00c9a7]"/><span className="text-sm font-medium">{property.rating}</span></div>
                   </div>
                   <p className="text-sm text-gray-600 mt-2 line-clamp-2">{property.description}</p>
                   <div className="flex gap-3 text-sm text-gray-500 mt-2"><Bed className="w-4 h-4"/>{property.beds} lits <Bath className="w-4 h-4"/>{property.baths} sdb</div>
                   <div className="mt-3 flex justify-between items-center">
                     <span className="font-bold text-[#0F2940] text-lg">{property.price}</span>
-                    <button className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Heart className="w-5 h-5 text-gray-500 hover:text-[#12b8c9]" /></button>
+                    <button className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Heart className="w-5 h-5 text-gray-500 hover:text-[#00c9a7]" /></button>
                   </div>
                 </div>
               </div>

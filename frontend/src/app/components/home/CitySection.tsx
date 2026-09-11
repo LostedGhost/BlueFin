@@ -20,14 +20,14 @@ export function CitySection({
   if (listings.length === 0) return null;
 
   return (
-    <section className={tinted ? 'bg-[#f6fdfe] py-1' : 'py-1'}>
+    <section className={tinted ? 'bg-[#f4fffe] py-1' : 'py-1'}>
       <div className="flex items-baseline justify-between px-4 pt-6 pb-3">
         <h3 className="font-display text-[26px] text-[#0f2940] leading-none">{title}</h3>
         {seeAllRoute && (
           <button
             onClick={() => onNavigate?.(seeAllRoute)}
             aria-label={`Tout voir — ${title}`}
-            className="inline-flex items-center gap-1 text-[12px] font-bold text-[#12b8c9] hover:text-[#0fa0b0] transition-colors"
+            className="inline-flex items-center gap-1 text-[12px] font-bold text-[#00c9a7] hover:text-[#00b396] transition-colors"
           >
             Tout voir
             <ArrowRight className="w-3.5 h-3.5" />

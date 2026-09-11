@@ -70,7 +70,7 @@ export function AdminSettingsPage(_props: { onNavigate?: unknown }) {
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Settings className="w-6 h-6 text-[#12b8c9]" /> Réglages
+            <Settings className="w-6 h-6 text-[#00c9a7]" /> Réglages
           </h1>
           <p className={`text-sm mt-1 ${muted}`}>
             Règles financières de la plateforme.
@@ -78,7 +78,7 @@ export function AdminSettingsPage(_props: { onNavigate?: unknown }) {
           </p>
         </div>
 
-        {isLoading && <Loader2 className="w-6 h-6 animate-spin text-[#12b8c9]" />}
+        {isLoading && <Loader2 className="w-6 h-6 animate-spin text-[#00c9a7]" />}
         {error && (
           <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 text-red-700 text-sm">
             <AlertCircle className="w-4 h-4" /> Impossible de charger les réglages.
@@ -103,7 +103,7 @@ export function AdminSettingsPage(_props: { onNavigate?: unknown }) {
                         disabled={!canEdit}
                         value={draft[s.key] ?? ''}
                         onChange={(e) => setDraft((d) => ({ ...d, [s.key]: e.target.value }))}
-                        className={`w-full px-3 py-2 rounded-xl text-sm border tabular-nums text-right focus:outline-none focus:ring-2 focus:ring-[#12b8c9] disabled:opacity-60 ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-300'}`} />
+                        className={`w-full px-3 py-2 rounded-xl text-sm border tabular-nums text-right focus:outline-none focus:ring-2 focus:ring-[#00c9a7] disabled:opacity-60 ${isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-300'}`} />
                       <span className={`text-sm w-12 ${muted}`}>{meta?.unit}</span>
                     </div>
                     {canEdit && !isDefault && (
@@ -120,7 +120,7 @@ export function AdminSettingsPage(_props: { onNavigate?: unknown }) {
               <div className="p-4 flex items-center justify-end gap-3">
                 {changed.length > 0 && <span className={`text-sm ${muted}`}>{changed.length} modification(s) non enregistrée(s)</span>}
                 <button type="submit" disabled={!changed.length || save.isPending}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-[#12b8c9] hover:bg-[#0fa0b0] disabled:opacity-40">
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-[#00c9a7] hover:bg-[#00b396] disabled:opacity-40">
                   {save.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Enregistrer
                 </button>
               </div>

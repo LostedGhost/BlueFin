@@ -29,7 +29,7 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../../contexts/AuthContext';
 
-const COLORS = ['#12b8c9', '#0f2940', '#ff6b6b', '#f5a623', '#4a90e2'];
+const COLORS = ['#00c9a7', '#0f2940', '#ff6b6b', '#f5a623', '#4a90e2'];
 
 export function AdminDashboardPage({ onNavigate }: { onNavigate?: (route: any) => void }) {
   const { data, isLoading, error, refetch } = useQuery({
@@ -261,7 +261,7 @@ export function AdminDashboardPage({ onNavigate }: { onNavigate?: (route: any) =
               </ResponsiveContainer>
               <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { label: 'Appartements', value: 45, color: '#12b8c9' },
+                  { label: 'Appartements', value: 45, color: '#00c9a7' },
                   { label: 'Villas', value: 25, color: '#0f2940' },
                   { label: 'Studios', value: 15, color: '#ff6b6b' },
                   { label: 'Maisons', value: 10, color: '#f5a623' },

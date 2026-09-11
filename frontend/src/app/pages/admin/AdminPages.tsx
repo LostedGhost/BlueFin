@@ -132,7 +132,7 @@ export function AdminPropertiesPage({ onNavigate }: { onNavigate?: (route: any) 
   return (
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="mb-6">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Modération des propriétés
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -155,7 +155,7 @@ export function AdminPropertiesPage({ onNavigate }: { onNavigate?: (route: any) 
             placeholder="Rechercher par titre, ville ou hôte..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+            className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
               isDark 
                 ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                 : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'
@@ -361,7 +361,7 @@ export function AdminUsersPage() {
   return (
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="mb-6">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Gestion des utilisateurs
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -388,7 +388,7 @@ export function AdminUsersPage() {
               placeholder="Rechercher par nom, email ou téléphone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                   : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'
@@ -399,7 +399,7 @@ export function AdminUsersPage() {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
@@ -413,7 +413,7 @@ export function AdminUsersPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
@@ -475,7 +475,7 @@ const UserCard = ({ user, isDark, onView, onSuspend, onActivate }: any) => {
     <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-xl sm:rounded-2xl p-4 shadow-sm hover:shadow-md transition-all border`}>
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#12b8c9] to-[#0f2940] flex items-center justify-center text-white font-bold text-lg shrink-0">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00c9a7] to-[#0f2940] flex items-center justify-center text-white font-bold text-lg shrink-0">
             {getInitials()}
           </div>
           <div className="sm:hidden">
@@ -584,7 +584,7 @@ const UserDetailModal = ({ user, onClose, isDark }: any) => {
 
         <div className="p-5 space-y-5">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#12b8c9] to-[#0f2940] flex items-center justify-center text-white font-bold text-2xl">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00c9a7] to-[#0f2940] flex items-center justify-center text-white font-bold text-2xl">
               {getInitials()}
             </div>
             <div>
@@ -637,19 +637,19 @@ const UserDetailModal = ({ user, onClose, isDark }: any) => {
             <p className={`font-semibold text-sm mb-3 ${isDark ? 'text-white' : 'text-gray-800'}`}>📊 Statistiques</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
               <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-lg p-2`}>
-                <p className="text-lg font-bold text-[#12b8c9]">{user.total_properties || 0}</p>
+                <p className="text-lg font-bold text-[#00c9a7]">{user.total_properties || 0}</p>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Propriétés</p>
               </div>
               <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-lg p-2`}>
-                <p className="text-lg font-bold text-[#12b8c9]">{user.total_bookings || 0}</p>
+                <p className="text-lg font-bold text-[#00c9a7]">{user.total_bookings || 0}</p>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Réservations</p>
               </div>
               <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-lg p-2`}>
-                <p className="text-lg font-bold text-[#12b8c9]">{user.total_reviews || 0}</p>
+                <p className="text-lg font-bold text-[#00c9a7]">{user.total_reviews || 0}</p>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Avis</p>
               </div>
               <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-lg p-2`}>
-                <p className="text-lg font-bold text-[#12b8c9]">{user.average_rating || 0}★</p>
+                <p className="text-lg font-bold text-[#00c9a7]">{user.average_rating || 0}★</p>
                 <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Note moyenne</p>
               </div>
             </div>
@@ -755,7 +755,7 @@ export function AdminBookingsPage() {
   return (
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="mb-5">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Réservations
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -780,7 +780,7 @@ export function AdminBookingsPage() {
               placeholder="Rechercher..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                   : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'
@@ -791,7 +791,7 @@ export function AdminBookingsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
@@ -878,7 +878,7 @@ const BookingCard = ({ booking, isDark, isExpanded, onToggle, onCancel }: any) =
           </div>
           <div className="flex items-center justify-between w-full sm:w-auto gap-3">
             <div className="text-left sm:text-right">
-              <p className="text-base sm:text-lg font-bold text-[#12b8c9]">{booking.total_amount?.toLocaleString()} FCFA</p>
+              <p className="text-base sm:text-lg font-bold text-[#00c9a7]">{booking.total_amount?.toLocaleString()} FCFA</p>
               <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-400'}`}>{booking.check_in} → {booking.check_out}</p>
             </div>
             <ChevronRight className={`w-5 h-5 ${isDark ? 'text-slate-400' : 'text-gray-400'} transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`} />
@@ -891,7 +891,7 @@ const BookingCard = ({ booking, isDark, isExpanded, onToggle, onCancel }: any) =
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-xl p-3 shadow-sm`}>
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-4 h-4 text-[#12b8c9]" />
+                <Users className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>Voyageur</h4>
               </div>
               <p className={`font-medium text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>{booking.user?.full_name}</p>
@@ -907,7 +907,7 @@ const BookingCard = ({ booking, isDark, isExpanded, onToggle, onCancel }: any) =
 
             <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-xl p-3 shadow-sm`}>
               <div className="flex items-center gap-2 mb-2">
-                <CalendarIcon className="w-4 h-4 text-[#12b8c9]" />
+                <CalendarIcon className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>Séjour</h4>
               </div>
               <div className="space-y-1 text-xs">
@@ -932,7 +932,7 @@ const BookingCard = ({ booking, isDark, isExpanded, onToggle, onCancel }: any) =
 
             <div className={`${isDark ? 'bg-slate-800' : 'bg-white'} rounded-xl p-3 shadow-sm`}>
               <div className="flex items-center gap-2 mb-2">
-                <CreditCard className="w-4 h-4 text-[#12b8c9]" />
+                <CreditCard className="w-4 h-4 text-[#00c9a7]" />
                 <h4 className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>Paiement</h4>
               </div>
               <div className="space-y-1 text-xs">
@@ -1010,7 +1010,7 @@ export function AdminPaymentsPage() {
   return (
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="mb-6">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Suivi des paiements
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -1027,7 +1027,7 @@ export function AdminPaymentsPage() {
         <StatCard icon={TrendingUp} label="Taux succès" value={`${successRate}%`} color="emerald" isDark={isDark} />
       </div>
 
-      <div className={`bg-gradient-to-r from-[#12b8c9] to-[#0f2940] rounded-xl sm:rounded-2xl p-4 mb-6 text-white`}>
+      <div className={`bg-gradient-to-r from-[#00c9a7] to-[#0f2940] rounded-xl sm:rounded-2xl p-4 mb-6 text-white`}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <p className="text-white/80 text-sm">Transactions aujourd'hui</p>
@@ -1055,7 +1055,7 @@ export function AdminPaymentsPage() {
               placeholder="Rechercher par transaction ID ou réservation..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                   : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'
@@ -1066,7 +1066,7 @@ export function AdminPaymentsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
@@ -1149,7 +1149,7 @@ const PaymentCardComponent = ({ payment, isDark, onView }: any) => {
         </div>
         <div className="flex items-center justify-between w-full sm:w-auto gap-3">
           <div className="text-left sm:text-right">
-            <p className="text-base sm:text-lg font-bold text-[#12b8c9]">{payment.amount?.toLocaleString()} FCFA</p>
+            <p className="text-base sm:text-lg font-bold text-[#00c9a7]">{payment.amount?.toLocaleString()} FCFA</p>
             <div className="flex items-center gap-1 mt-1">
               <Smartphone className={`w-3 h-3 ${isDark ? 'text-slate-500' : 'text-gray-400'}`} />
               <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-400'}`}>{payment.payment_method || 'Mobile Money'}</p>
@@ -1184,7 +1184,7 @@ const PaymentDetailModalComponent = ({ payment, onClose, isDark }: any) => {
         <div className="p-5 space-y-4">
           <div className="text-center">
             <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>Montant total</p>
-            <p className="text-3xl font-bold text-[#12b8c9]">{payment.amount?.toLocaleString()} FCFA</p>
+            <p className="text-3xl font-bold text-[#00c9a7]">{payment.amount?.toLocaleString()} FCFA</p>
           </div>
 
           <div className="space-y-3">
@@ -1266,7 +1266,7 @@ export function AdminMessagesPage() {
   return (
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="mb-6">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Surveillance des messages
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -1290,7 +1290,7 @@ export function AdminMessagesPage() {
               placeholder="Rechercher par expéditeur, destinataire ou contenu..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                   : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'
@@ -1354,7 +1354,7 @@ const FilterButton = ({ active, onClick, label, isDark }: any) => (
     onClick={onClick}
     className={`px-3 py-2 rounded-xl text-sm transition ${
       active 
-        ? 'bg-[#12b8c9] text-white shadow-md' 
+        ? 'bg-[#00c9a7] text-white shadow-md' 
         : isDark 
           ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -1375,7 +1375,7 @@ const MessageCardComponent = ({ message, isDark, isSelected, onClick }: any) => 
     <div
       onClick={onClick}
       className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-xl p-3 sm:p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border-2 ${
-        isSelected ? 'border-[#12b8c9]' : 'border-transparent'
+        isSelected ? 'border-[#00c9a7]' : 'border-transparent'
       } ${isUnread ? `${isDark ? 'border-l-4 border-l-yellow-500' : 'border-l-4 border-l-yellow-400'}` : ''}`}
     >
       <div className="flex items-start gap-3">
@@ -1499,7 +1499,7 @@ const MessageDetailComponent = ({ message, onClose, isDark }: any) => {
         </div>
 
         <div className={`flex gap-3 pt-4 border-t ${isDark ? 'border-slate-700' : 'border-gray-200'}`}>
-          <button className={`flex-1 py-2 ${isDark ? 'bg-[#12b8c9] hover:bg-[#00b892]' : 'bg-[#12b8c9] hover:bg-[#00b892]'} text-white rounded-xl transition text-sm flex items-center justify-center gap-2`}>
+          <button className={`flex-1 py-2 ${isDark ? 'bg-[#00c9a7] hover:bg-[#00b892]' : 'bg-[#00c9a7] hover:bg-[#00b892]'} text-white rounded-xl transition text-sm flex items-center justify-center gap-2`}>
             <Reply className="w-4 h-4" />
             Répondre
           </button>
@@ -1562,7 +1562,7 @@ export function AdminReportsPage() {
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+          <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
             Rapports & analyses
           </h1>
           <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -1592,13 +1592,13 @@ export function AdminReportsPage() {
           </div>
           {selectedPeriod === 'custom' && (
             <div className="flex flex-col sm:flex-row gap-2">
-              <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
               }`} />
               <span className={`${isDark ? 'text-slate-500' : 'text-gray-400'} self-center hidden sm:inline`}>→</span>
-              <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+              <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className={`px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
                 isDark 
                   ? 'bg-slate-700 border-slate-600 text-white' 
                   : 'bg-white border-gray-200 text-gray-800'
@@ -1622,7 +1622,7 @@ export function AdminReportsPage() {
 
       <div className={`mt-6 ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-xl sm:rounded-2xl p-5 shadow-sm border transition-colors duration-300`}>
         <h3 className={`font-semibold text-base mb-3 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-          <Download className="w-5 h-5 text-[#12b8c9]" />
+          <Download className="w-5 h-5 text-[#00c9a7]" />
           Exporter le rapport
         </h3>
         <div className="flex flex-wrap gap-3">
@@ -1643,7 +1643,7 @@ const PeriodButton = ({ active, onClick, label, isDark }: any) => (
     onClick={onClick} 
     className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
       active 
-        ? 'bg-[#12b8c9] text-white shadow-md' 
+        ? 'bg-[#00c9a7] text-white shadow-md' 
         : isDark 
           ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -1661,7 +1661,7 @@ const TabButton = ({ active, onClick, label, isDark }: any) => (
     onClick={onClick} 
     className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
       active 
-        ? 'bg-[#12b8c9] text-white' 
+        ? 'bg-[#00c9a7] text-white' 
         : isDark 
           ? 'text-slate-400 hover:bg-slate-800' 
           : 'text-gray-600 hover:bg-gray-100'
@@ -1705,22 +1705,22 @@ const OverviewTabComponent = ({ report, chartData, isDark }: any) => (
 
     <div className={`${isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-100'} rounded-xl p-5 shadow-sm border transition-colors duration-300`}>
       <h3 className={`font-semibold text-base mb-4 flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-        <TrendingUp className="w-5 h-5 text-[#12b8c9]" />
+        <TrendingUp className="w-5 h-5 text-[#00c9a7]" />
         Évolution des revenus
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={chartData}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#12b8c9" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#12b8c9" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#00c9a7" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="#00c9a7" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#334155' : '#f0f0f0'} />
           <XAxis dataKey="name" tick={{ fontSize: 12, fill: isDark ? '#94a3b8' : '#666' }} />
           <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} tick={{ fill: isDark ? '#94a3b8' : '#666' }} />
           <Tooltip contentStyle={{ backgroundColor: isDark ? '#1e293b' : '#fff', color: isDark ? '#fff' : '#000', borderRadius: 12, border: 'none' }} />
-          <Area type="monotone" dataKey="revenue" stroke="#12b8c9" fill="url(#revenueGradient)" name="CA (FCFA)" />
+          <Area type="monotone" dataKey="revenue" stroke="#00c9a7" fill="url(#revenueGradient)" name="CA (FCFA)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -1755,7 +1755,7 @@ const FinancialTabComponent = ({ report, chartData, isDark }: any) => (
           <XAxis dataKey="name" tick={{ fontSize: 12, fill: isDark ? '#94a3b8' : '#666' }} />
           <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} tick={{ fill: isDark ? '#94a3b8' : '#666' }} />
           <Tooltip contentStyle={{ backgroundColor: isDark ? '#1e293b' : '#fff', color: isDark ? '#fff' : '#000', borderRadius: 12, border: 'none' }} />
-          <Bar dataKey="revenue" fill="#12b8c9" name="CA" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="revenue" fill="#00c9a7" name="CA" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

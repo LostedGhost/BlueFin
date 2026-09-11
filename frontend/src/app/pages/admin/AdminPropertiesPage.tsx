@@ -214,7 +214,7 @@ export function AdminPropertiesPage({ onNavigate }: { onNavigate?: (route: any) 
     <div className={`p-3 sm:p-4 md:p-6 ${isDark ? 'bg-slate-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'} min-h-screen transition-colors duration-300`}>
       {/* En-tête */}
       <div className="mb-6">
-        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent'}`}>
+        <h1 className={`text-xl sm:text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent'}`}>
           Modération des propriétés
         </h1>
         <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
@@ -259,7 +259,7 @@ export function AdminPropertiesPage({ onNavigate }: { onNavigate?: (route: any) 
             placeholder="Rechercher par titre, ville ou hôte..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9] transition-colors duration-300 ${
+            className={`w-full pl-9 pr-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7] transition-colors duration-300 ${
               isDark 
                 ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
                 : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'

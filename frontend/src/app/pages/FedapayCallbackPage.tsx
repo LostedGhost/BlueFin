@@ -108,9 +108,9 @@ export function FedapayCallbackPage({ onNavigate }: FedapayCallbackPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eefbfd]">
+      <div className="min-h-screen flex items-center justify-center bg-[#f4fffe]">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#12b8c9] animate-spin mx-auto mb-4" />
+          <Loader2 className="w-16 h-16 text-[#00c9a7] animate-spin mx-auto mb-4" />
           <p className="text-gray-600 text-lg font-medium">Vérification du paiement en cours...</p>
           <p className="text-gray-400 text-sm mt-2">Veuillez patienter</p>
         </div>
@@ -119,8 +119,8 @@ export function FedapayCallbackPage({ onNavigate }: FedapayCallbackPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#eefbfd] p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center shadow-xl border border-[#d5eef2]">
+    <div className="min-h-screen flex items-center justify-center bg-[#f4fffe] p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center shadow-xl border border-[#e2f5f2]">
         {status === 'success' ? (
           <>
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -139,7 +139,7 @@ export function FedapayCallbackPage({ onNavigate }: FedapayCallbackPageProps) {
                     navigate('/');
                   }
                 }}
-                className="px-6 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2"
+                className="px-6 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2"
               >
                 <Home className="w-4 h-4" />
                 Accueil
@@ -163,7 +163,7 @@ export function FedapayCallbackPage({ onNavigate }: FedapayCallbackPageProps) {
                     navigate('/payment/fedapay');
                   }
                 }}
-                className="w-full px-6 py-3 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b892] transition flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b892] transition flex items-center justify-center gap-2"
               >
                 Réessayer
               </button>
@@ -197,7 +197,7 @@ export function FedapayCallbackPage({ onNavigate }: FedapayCallbackPageProps) {
                   navigate('/');
                 }
               }}
-              className="mt-6 px-6 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2"
+              className="mt-6 px-6 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b892] transition flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
               Accueil

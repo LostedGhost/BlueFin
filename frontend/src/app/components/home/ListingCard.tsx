@@ -66,7 +66,7 @@ export function ListingCard({
         {listing.title}
       </h4>
       <p className="text-[12.5px] text-[#6b7280] truncate mt-0.5">{listing.location}</p>
-      <p className="mt-2 inline-flex items-baseline gap-1 px-2.5 py-1 rounded-full bg-[#eefbfd] text-[#075f69]">
+      <p className="mt-2 inline-flex items-baseline gap-1 px-2.5 py-1 rounded-full bg-[#f4fffe] text-[#005c4d]">
         <span className="text-[14px] font-extrabold tabular-nums">{listing.priceDisplay}</span>
         <span className="text-[11px] font-semibold opacity-75">{listing.priceUnit}</span>
       </p>

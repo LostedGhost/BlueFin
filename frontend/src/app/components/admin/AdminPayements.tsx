@@ -91,7 +91,7 @@ export function AdminPayments() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#12b8c9]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00c9a7]"></div>
       </div>
     );
   }
@@ -100,7 +100,7 @@ export function AdminPayments() {
     <div className="space-y-6">
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-yellow-100 rounded-xl">
               <DollarSign className="w-5 h-5 text-yellow-600" />
@@ -112,7 +112,7 @@ export function AdminPayments() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-green-100 rounded-xl">
               <CheckCircle className="w-5 h-5 text-green-600" />
@@ -124,7 +124,7 @@ export function AdminPayments() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-xl">
               <Users className="w-5 h-5 text-blue-600" />
@@ -150,7 +150,7 @@ export function AdminPayments() {
               onClick={() => setFilter(option.value as any)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                 filter === option.value
-                  ? 'bg-[#12b8c9] text-white'
+                  ? 'bg-[#00c9a7] text-white'
                   : 'bg-white text-[#6b7280] hover:bg-gray-50'
               }`}
             >
@@ -161,10 +161,10 @@ export function AdminPayments() {
       </div>
 
       {/* Liste des paiements */}
-      <div className="bg-white rounded-2xl border border-[#d5eef2] overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#e2f5f2] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#f8fffe] border-b border-[#d5eef2]">
+            <thead className="bg-[#f8fffe] border-b border-[#e2f5f2]">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#0f2940]">Hôte</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-[#0f2940]">Méthode</th>
@@ -175,7 +175,7 @@ export function AdminPayments() {
                 <th className="px-6 py-4 text-center text-sm font-semibold text-[#0f2940]">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#d5eef2]">
+            <tbody className="divide-y divide-[#e2f5f2]">
               {filteredPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-[#f8fffe] transition-colors">
                   <td className="px-6 py-4">
@@ -234,7 +234,7 @@ export function AdminPayments() {
                             if (ref) markAsPaid(historyId, ref);
                           }
                         }}
-                        className="px-4 py-2 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b898] transition-colors text-sm font-medium"
+                        className="px-4 py-2 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b898] transition-colors text-sm font-medium"
                       >
                         Marquer payé
                       </button>

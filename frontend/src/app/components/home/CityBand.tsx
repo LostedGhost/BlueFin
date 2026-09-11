@@ -51,7 +51,7 @@ export function CityBand({
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className="w-full h-full bg-[#0c3f53]" />
+        <div className="w-full h-full bg-[#0f2940]" />
       )}
 
       {/* Voile de lisibilité — nécessaire même sans photo pour garder une

@@ -60,7 +60,7 @@ export function UserAvatar({ user, size = 36, showStatus = true }: { user: User;
         <img src={photo} alt="" onError={() => setBroken(true)}
           className="w-full h-full rounded-full object-cover ring-2 ring-white" />
       ) : (
-        <span className="w-full h-full rounded-full bg-[#0c3f53] text-white font-semibold flex items-center justify-center ring-2 ring-white"
+        <span className="w-full h-full rounded-full bg-[#0f2940] text-white font-semibold flex items-center justify-center ring-2 ring-white"
           style={{ fontSize: Math.round(size * 0.38) }} aria-hidden="true">
           {initials(user)}
         </span>
@@ -103,7 +103,7 @@ export function ProfileMenu({
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={`Compte de ${user.first_name} — connecté`}
-        className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-[#d5eef2] hover:shadow-md transition bg-white"
+        className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-[#e2f5f2] hover:shadow-md transition bg-white"
       >
         <UserAvatar user={user} size={34} />
         <span className="text-sm font-medium text-[#0f2940] max-w-[120px] truncate">{user.first_name}</span>
@@ -122,7 +122,7 @@ export function ProfileMenu({
           </div>
           {accountLinks(user).map(({ label, icon: Icon, route }) => (
             <button key={label} role="menuitem" type="button" onClick={() => go(route)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0f2940] hover:bg-[#eefbfd]">
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0f2940] hover:bg-[#f4fffe]">
               <Icon className="w-4 h-4 text-gray-500" /> {label}
             </button>
           ))}

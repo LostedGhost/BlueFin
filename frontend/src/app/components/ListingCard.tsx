@@ -84,7 +84,7 @@ export function ListingCard({ onNavigate }: ListingCardProps) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#12b8c9] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00c9a7] mx-auto mb-4"></div>
           <p className="text-gray-500">Chargement du logement...</p>
         </div>
       </div>
@@ -102,7 +102,7 @@ export function ListingCard({ onNavigate }: ListingCardProps) {
           </p>
           <button 
             onClick={() => navigate('/')}
-            className="px-6 py-3 bg-[#12b8c9] text-[#0F2940] rounded-full font-semibold hover:bg-[#00b892] transition-colors"
+            className="px-6 py-3 bg-[#00c9a7] text-[#0F2940] rounded-full font-semibold hover:bg-[#00b892] transition-colors"
           >
             Retour à l'accueil
           </button>

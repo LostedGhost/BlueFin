@@ -66,7 +66,7 @@ export function MobileListingCard({ property }: MobileListingCardProps) {
           <Heart className={`w-4 h-4 ${isFav ? 'fill-red-500 text-red-500' : 'text-[#0f2940]'}`} />
         </button>
         {badge && (
-          <div className="absolute top-2 left-2 bg-[#12b8c9] text-white px-2 py-1 rounded-full text-xs font-medium">
+          <div className="absolute top-2 left-2 bg-[#00c9a7] text-white px-2 py-1 rounded-full text-xs font-medium">
             {badge}
           </div>
         )}
@@ -77,12 +77,12 @@ export function MobileListingCard({ property }: MobileListingCardProps) {
           <span className="text-[13px] font-bold text-[#0f2940] line-clamp-1">{property.title}</span>
           {rating > 0 && (
             <div className="flex items-center gap-1">
-              <Star className="w-3 h-3 fill-[#12b8c9] text-[#12b8c9]" />
+              <Star className="w-3 h-3 fill-[#00c9a7] text-[#00c9a7]" />
               <span className="text-xs font-medium text-[#0f2940]">{rating.toFixed(1)}</span>
             </div>
           )}
         </div>
-        <div className="text-sm font-bold text-[#12b8c9]">
+        <div className="text-sm font-bold text-[#00c9a7]">
           {property.price_per_night.toLocaleString()} XOF <span className="text-xs font-normal text-[#6b7280]">/nuit</span>
         </div>
       </div>

@@ -181,7 +181,7 @@ export function AdminReportsPage() {
       {/* En-tête */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent">
             Rapports & analyses
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">Analysez la performance de votre plateforme</p>
@@ -210,9 +210,9 @@ export function AdminReportsPage() {
           </div>
           {selectedPeriod === 'custom' && (
             <div className="flex flex-col sm:flex-row gap-2">
-              <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]" />
+              <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]" />
               <span className="text-gray-400 self-center hidden sm:inline">→</span>
-              <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]" />
+              <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]" />
             </div>
           )}
         </div>
@@ -309,13 +309,13 @@ const DataModal = ({ title, data, onClose, searchTerm, setSearchTerm, statusFilt
             placeholder="Rechercher..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
+            className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
+          className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
         >
           <option value="all">Tous les statuts</option>
           <option value="active">Actif</option>
@@ -405,7 +405,7 @@ const DataModal = ({ title, data, onClose, searchTerm, setSearchTerm, statusFilt
                       <td className="p-3">{item.guest_name}</td>
                       <td className="p-3">{item.property_title}</td>
                       <td className="p-3">{item.check_in} → {item.check_out}</td>
-                      <td className="p-3 font-semibold text-[#12b8c9]">{item.total_amount?.toLocaleString()} FCFA</td>
+                      <td className="p-3 font-semibold text-[#00c9a7]">{item.total_amount?.toLocaleString()} FCFA</td>
                       <td className="p-3"><StatusBadge status={item.status} /></td>
                     </>
                   )}
@@ -460,22 +460,22 @@ const OverviewTab = ({ report, chartData, onViewUsers, onViewBookings, onViewPro
 
     <div className="bg-white rounded-xl p-5 shadow-sm">
       <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
-        <TrendingUp className="w-5 h-5 text-[#12b8c9]" />
+        <TrendingUp className="w-5 h-5 text-[#00c9a7]" />
         Évolution des revenus
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={chartData}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#12b8c9" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#12b8c9" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#00c9a7" stopOpacity={0.3}/>
+              <stop offset="95%" stopColor="#00c9a7" stopOpacity={0}/>
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="name" tick={{ fontSize: 12 }} />
           <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
           <Tooltip formatter={(value) => `${value.toLocaleString()} FCFA`} />
-          <Area type="monotone" dataKey="revenue" stroke="#12b8c9" fill="url(#revenueGradient)" name="CA (FCFA)" />
+          <Area type="monotone" dataKey="revenue" stroke="#00c9a7" fill="url(#revenueGradient)" name="CA (FCFA)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>
@@ -487,7 +487,7 @@ const OverviewTab = ({ report, chartData, onViewUsers, onViewBookings, onViewPro
           <div className="flex justify-between"><span className="text-gray-500">Nouveaux utilisateurs</span><span className="font-semibold">{report.new_users || 0}</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Nouvelles propriétés</span><span className="font-semibold">{report.new_properties || 0}</span></div>
           <div className="flex justify-between"><span className="text-gray-500">Réservations</span><span className="font-semibold">{report.bookings_count || 0}</span></div>
-          <div className="flex justify-between"><span className="text-gray-500">Chiffre d'affaires</span><span className="font-semibold text-[#12b8c9]">{(report.revenue || 0).toLocaleString()} FCFA</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">Chiffre d'affaires</span><span className="font-semibold text-[#00c9a7]">{(report.revenue || 0).toLocaleString()} FCFA</span></div>
         </div>
       </div>
       <div className="bg-white rounded-xl p-4 shadow-sm">
@@ -502,7 +502,7 @@ const OverviewTab = ({ report, chartData, onViewUsers, onViewBookings, onViewPro
           <button onClick={() => onViewBookings?.()} className="flex justify-between w-full hover:bg-gray-50 p-1 rounded transition">
             <span className="text-gray-500">Total réservations</span><span className="font-semibold">{report.total_bookings || 0}</span>
           </button>
-          <div className="flex justify-between"><span className="text-gray-500">CA total</span><span className="font-semibold text-[#12b8c9]">{(report.total_revenue || 0).toLocaleString()} FCFA</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">CA total</span><span className="font-semibold text-[#00c9a7]">{(report.total_revenue || 0).toLocaleString()} FCFA</span></div>
         </div>
       </div>
     </div>
@@ -521,7 +521,7 @@ const PropertiesTab = ({ report, onViewAll }: any) => (
       <PropertyStatCard title="Publiées" value={report.published_properties || 0} icon={<Zap className="w-5 h-5" />} color="purple" />
     </div>
     
-    <button onClick={onViewAll} className="w-full bg-white rounded-xl p-4 shadow-sm text-[#12b8c9] hover:bg-gray-50 transition flex items-center justify-center gap-2">
+    <button onClick={onViewAll} className="w-full bg-white rounded-xl p-4 shadow-sm text-[#00c9a7] hover:bg-gray-50 transition flex items-center justify-center gap-2">
       <Eye className="w-4 h-4" /> Voir toutes les propriétés
     </button>
   </div>
@@ -538,7 +538,7 @@ const UsersTab = ({ report, onViewAll }: any) => (
       <UserStatCard title="Voyageurs" value={report.total_travelers || 0} icon={<Users className="w-5 h-5" />} color="purple" />
       <UserStatCard title="Nouveaux aujourd'hui" value={report.new_users || 0} icon={<Users className="w-5 h-5" />} color="orange" />
     </div>
-    <button onClick={onViewAll} className="w-full bg-white rounded-xl p-4 shadow-sm text-[#12b8c9] hover:bg-gray-50 transition flex items-center justify-center gap-2">
+    <button onClick={onViewAll} className="w-full bg-white rounded-xl p-4 shadow-sm text-[#00c9a7] hover:bg-gray-50 transition flex items-center justify-center gap-2">
       <Eye className="w-4 h-4" /> Voir tous les utilisateurs
     </button>
   </div>
@@ -570,7 +570,7 @@ const FinancialTab = ({ report, chartData }: any) => (
           <XAxis dataKey="name" tick={{ fontSize: 12 }} />
           <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
           <Tooltip formatter={(value) => `${value.toLocaleString()} FCFA`} />
-          <Bar dataKey="revenue" fill="#12b8c9" name="CA" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="revenue" fill="#00c9a7" name="CA" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -579,13 +579,13 @@ const FinancialTab = ({ report, chartData }: any) => (
 
 // Composants auxiliaires
 const PeriodButton = ({ active, onClick, label }: any) => (
-  <button onClick={onClick} className={`px-4 py-2 rounded-xl text-sm font-medium transition ${active ? 'bg-[#12b8c9] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+  <button onClick={onClick} className={`px-4 py-2 rounded-xl text-sm font-medium transition ${active ? 'bg-[#00c9a7] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
     {label}
   </button>
 );
 
 const TabButton = ({ active, onClick, label }: any) => (
-  <button onClick={onClick} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${active ? 'bg-[#12b8c9] text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
+  <button onClick={onClick} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${active ? 'bg-[#00c9a7] text-white' : 'text-gray-600 hover:bg-gray-100'}`}>
     {label}
   </button>
 );

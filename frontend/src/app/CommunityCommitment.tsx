@@ -69,12 +69,12 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#eefbfd]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#f4fffe]">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 sm:px-5 py-4">
         <button 
           onClick={onBack} 
-          className="text-sm text-gray-500 mb-3 flex items-center gap-2 hover:text-[#12b8c9] transition-colors group"
+          className="text-sm text-gray-500 mb-3 flex items-center gap-2 hover:text-[#00c9a7] transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
           Retour
@@ -86,8 +86,8 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
       <div className="max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12">
         {/* Hero Section */}
         <div className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#12b8c9]/10 mb-4">
-            <Heart className="w-8 h-8 text-[#12b8c9]" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#00c9a7]/10 mb-4">
+            <Heart className="w-8 h-8 text-[#00c9a7]" />
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#0F2940] mb-3">
             Bienvenue dans la communauté
@@ -139,8 +139,8 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
                         onClick={() => commitment.setAccepted(!commitment.accepted)}
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200 ${
                           commitment.accepted
-                            ? 'bg-[#12b8c9] border-[#12b8c9]'
-                            : 'border-gray-300 hover:border-[#12b8c9]'
+                            ? 'bg-[#00c9a7] border-[#00c9a7]'
+                            : 'border-gray-300 hover:border-[#00c9a7]'
                         }`}
                       >
                         {commitment.accepted && <CheckCircle className="w-4 h-4 text-white" />}
@@ -148,7 +148,7 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <Icon className="w-5 h-5 text-[#12b8c9]" />
+                        <Icon className="w-5 h-5 text-[#00c9a7]" />
                         <h4 className="font-semibold text-[#0F2940] text-sm sm:text-base">
                           {commitment.title}
                         </h4>
@@ -184,7 +184,7 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
                 disabled={!allAccepted}
                 className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold transition-all duration-300 ${
                   allAccepted
-                    ? 'bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white shadow-lg hover:shadow-xl active:scale-95'
+                    ? 'bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white shadow-lg hover:shadow-xl active:scale-95'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -198,9 +198,9 @@ export function CommunityCommitment({ onAccept, onBack }: CommunityCommitmentPro
         <div className="text-center text-xs text-gray-400">
           <p>
             En acceptant ces engagements, vous confirmez avoir lu et compris les{' '}
-            <a href="#" className="text-[#12b8c9] hover:underline">conditions générales</a>
+            <a href="#" className="text-[#00c9a7] hover:underline">conditions générales</a>
             {' '}et la{' '}
-            <a href="#" className="text-[#12b8c9] hover:underline">politique de confidentialité</a>.
+            <a href="#" className="text-[#00c9a7] hover:underline">politique de confidentialité</a>.
           </p>
         </div>
       </div>

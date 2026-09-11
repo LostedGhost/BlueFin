@@ -149,24 +149,24 @@ export function PaymentInfoModal({
 
         {/* Statistiques rapides */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#12b8c9]/20">
+          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#00c9a7]/20">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="w-4 h-4 text-[#12b8c9]" />
+              <DollarSign className="w-4 h-4 text-[#00c9a7]" />
               <span className="text-xs text-[#6b7280]">Total reçu</span>
             </div>
             <p className="text-xl font-bold text-[#0f2940]">{formatCurrency(paymentInfo.totalAllTime)} FCFA</p>
           </div>
-          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#12b8c9]/20">
+          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#00c9a7]/20">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="w-4 h-4 text-[#12b8c9]" />
+              <TrendingUp className="w-4 h-4 text-[#00c9a7]" />
               <span className="text-xs text-[#6b7280]">Cette semaine</span>
             </div>
             <p className="text-xl font-bold text-[#0f2940]">{formatCurrency(paymentInfo.totalWeekAmount)} FCFA</p>
             <p className="text-xs text-[#6b7280]">{paymentInfo.weeklyReservations || 0} réservations</p>
           </div>
-          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#12b8c9]/20">
+          <div className="bg-[#f0fdfb] rounded-xl p-4 border border-[#00c9a7]/20">
             <div className="flex items-center gap-2 mb-1">
-              <Calendar className="w-4 h-4 text-[#12b8c9]" />
+              <Calendar className="w-4 h-4 text-[#00c9a7]" />
               <span className="text-xs text-[#6b7280]">Prochain paiement</span>
             </div>
             <p className="text-xl font-bold text-[#0f2940]">
@@ -179,7 +179,7 @@ export function PaymentInfoModal({
         {/* Informations de paiement */}
         <div className="bg-gray-50 rounded-xl p-4 mb-6">
           <h3 className="font-semibold text-[#0f2940] mb-3 flex items-center gap-2">
-            <Wallet className="w-4 h-4 text-[#12b8c9]" />
+            <Wallet className="w-4 h-4 text-[#00c9a7]" />
             Coordonnées bancaires
           </h3>
           
@@ -240,7 +240,7 @@ export function PaymentInfoModal({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={onEdit}
-            className="flex-1 px-4 py-3 bg-[#12b8c9] text-white rounded-xl hover:bg-[#00b898] transition flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-3 bg-[#00c9a7] text-white rounded-xl hover:bg-[#00b898] transition flex items-center justify-center gap-2"
           >
             <Pencil className="w-4 h-4" />
             Modifier mes coordonnées
@@ -253,7 +253,7 @@ export function PaymentInfoModal({
                 await loadHistory();
               }
             }}
-            className="flex-1 px-4 py-3 border border-[#d5eef2] rounded-xl text-[#0f2940] hover:bg-gray-50 transition flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-3 border border-[#e2f5f2] rounded-xl text-[#0f2940] hover:bg-gray-50 transition flex items-center justify-center gap-2"
           >
             <Calendar className="w-4 h-4" />
             {showHistory ? 'Cacher l\'historique' : 'Voir l\'historique'}
@@ -262,7 +262,7 @@ export function PaymentInfoModal({
 
         {/* Historique des paiements */}
         {showHistory && (
-          <div className="mt-4 border-t border-[#d5eef2] pt-4">
+          <div className="mt-4 border-t border-[#e2f5f2] pt-4">
             <div className="flex justify-between items-center mb-3">
               <h4 className="font-semibold text-sm text-[#0f2940]">Historique des paiements</h4>
               <button
@@ -271,7 +271,7 @@ export function PaymentInfoModal({
                   await loadHistory();
                   setLoadingHistory(false);
                 }}
-                className="text-xs text-[#12b8c9] hover:underline flex items-center gap-1"
+                className="text-xs text-[#00c9a7] hover:underline flex items-center gap-1"
                 disabled={loadingHistory}
               >
                 <RefreshCw className={`w-3 h-3 ${loadingHistory ? 'animate-spin' : ''}`} />
@@ -281,7 +281,7 @@ export function PaymentInfoModal({
             
             {loadingHistory ? (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#12b8c9]"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00c9a7]"></div>
                 <span className="ml-3 text-sm text-[#6b7280]">Chargement...</span>
               </div>
             ) : history.length > 0 ? (

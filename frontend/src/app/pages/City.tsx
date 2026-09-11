@@ -163,7 +163,7 @@ const PropertyCard = ({ property, showDescription = false, onNavigate }: any) =>
           <p className="text-sm text-gray-500 mt-1">{property.location}</p>
         </div>
         <div className="flex items-center gap-1 text-sm text-gray-500">
-          <Star className="w-4 h-4 text-[#12b8c9] fill-current" />
+          <Star className="w-4 h-4 text-[#00c9a7] fill-current" />
           <span className="font-medium text-[#0F2940]">{property.rating}</span>
           <span>({property.reviews})</span>
         </div>
@@ -221,7 +221,7 @@ export default function City({ onNavigate }: { onNavigate?: (route: any) => void
         <div className="max-w-xl text-center p-8">
           <h1 className="text-2xl font-semibold text-[#222222]">Ville introuvable</h1>
           <p className="mt-4 text-gray-600">La ville demandée n'existe pas.</p>
-          <button onClick={() => navigate(-1)} className="mt-6 rounded-full bg-[#12b8c9] text-[#0F2940] px-6 py-3 font-semibold hover:bg-[#00b892] transition-colors shadow-md">
+          <button onClick={() => navigate(-1)} className="mt-6 rounded-full bg-[#00c9a7] text-[#0F2940] px-6 py-3 font-semibold hover:bg-[#00b892] transition-colors shadow-md">
             Retour
           </button>
         </div>
@@ -232,16 +232,16 @@ export default function City({ onNavigate }: { onNavigate?: (route: any) => void
   return (
     <div className="bg-white min-h-screen">
       {/* En-tête */}
-      <div className="bg-gradient-to-r from-[#12b8c9]/10 to-[#0f2940]/10 pt-8 pb-12">
+      <div className="bg-gradient-to-r from-[#00c9a7]/10 to-[#0f2940]/10 pt-8 pb-12">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => handleNavigate({ name: 'home' })}
-            className="text-[#12b8c9] hover:text-[#0fa0b0] transition-colors mb-4 inline-flex items-center gap-2"
+            className="text-[#00c9a7] hover:text-[#00b396] transition-colors mb-4 inline-flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
           </button>
           <div className="flex items-center gap-3 mb-3">
-            <MapPin className="w-8 h-8 text-[#12b8c9]" />
+            <MapPin className="w-8 h-8 text-[#00c9a7]" />
             <h1 className="text-3xl sm:text-4xl font-bold text-[#0f2940]">Logements à {category.title}</h1>
           </div>
           <p className="text-gray-600 text-lg">Découvrez les meilleurs hébergements à {category.title}, Bénin</p>
@@ -263,7 +263,7 @@ export default function City({ onNavigate }: { onNavigate?: (route: any) => void
                   <div className="fixed inset-0 z-40" onClick={() => setShowFilterDropdown(false)}></div>
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-50 py-2">
                     {filters.map(filter => (
-                      <button key={filter} onClick={() => { setSelectedFilter(filter); setShowFilterDropdown(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${selectedFilter === filter ? 'text-[#12b8c9] font-medium' : 'text-gray-700'}`}>
+                      <button key={filter} onClick={() => { setSelectedFilter(filter); setShowFilterDropdown(false); }} className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${selectedFilter === filter ? 'text-[#00c9a7] font-medium' : 'text-gray-700'}`}>
                         {filter}
                       </button>
                     ))}

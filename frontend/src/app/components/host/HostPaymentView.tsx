@@ -28,9 +28,9 @@ export function HostPaymentView({ hostId }: { hostId: string }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-5 h-5 text-[#12b8c9]" />
+            <DollarSign className="w-5 h-5 text-[#00c9a7]" />
             <h3 className="text-sm font-medium text-[#6b7280]}>Total gagné</h3>
           </div>
           <p className="text-2xl font-bold text-[#0f2940]">
@@ -38,9 +38,9 @@ export function HostPaymentView({ hostId }: { hostId: string }) {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-2 mb-2">
-            <Calendar className="w-5 h-5 text-[#12b8c9]" />
+            <Calendar className="w-5 h-5 text-[#00c9a7]" />
             <h3 className="text-sm font-medium text-[#6b7280]}>Cette semaine</h3>
           </div>
           <p className="text-2xl font-bold text-[#0f2940]">
@@ -51,7 +51,7 @@ export function HostPaymentView({ hostId }: { hostId: string }) {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 border border-[#d5eef2]">
+        <div className="bg-white rounded-2xl p-6 border border-[#e2f5f2]">
           <div className="flex items-center gap-2 mb-2">
             {paymentData.isPaid ? (
               <CheckCircle className="w-5 h-5 text-green-600" />
@@ -72,13 +72,13 @@ export function HostPaymentView({ hostId }: { hostId: string }) {
       </div>
 
       {/* Historique */}
-      <div className="bg-white rounded-2xl border border-[#d5eef2] p-6">
+      <div className="bg-white rounded-2xl border border-[#e2f5f2] p-6">
         <h3 className="font-semibold text-[#0f2940] mb-4">Historique des paiements</h3>
         <div className="space-y-3">
           {paymentData.payments?.map((payment: any) => (
             <div
               key={payment.id}
-              className="flex items-center justify-between p-3 rounded-xl border border-[#d5eef2]"
+              className="flex items-center justify-between p-3 rounded-xl border border-[#e2f5f2]"
             >
               <div>
                 <p className="font-medium text-[#0f2940]">

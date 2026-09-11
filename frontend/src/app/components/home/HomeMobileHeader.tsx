@@ -26,16 +26,16 @@ export function HomeMobileHeader({ onNavigate }: { onNavigate?: (route: any) => 
         <img src={Logo} alt="Bluefin Immo" className="w-9 h-9 rounded-lg object-contain" />
         <span className="leading-none">
           <span className="font-display block text-[20px] text-[#0f2940]">Bluefin-Immo</span>
-          <span className="block text-[9.5px] font-semibold text-[#12b8c9] mt-0.5">L'hébergement au Bénin</span>
+          <span className="block text-[9.5px] font-semibold text-[#00c9a7] mt-0.5">L'hébergement au Bénin</span>
         </span>
       </button>
 
       <div className="relative" ref={ref}>
         <button
           onClick={() => setCityMenuOpen((v) => !v)}
-          className="flex items-center gap-1.5 bg-[#eefbfd] border border-[#d5eef2] rounded-full pl-3 pr-2.5 py-1.5"
+          className="flex items-center gap-1.5 bg-[#f4fffe] border border-[#e2f5f2] rounded-full pl-3 pr-2.5 py-1.5"
         >
-          <MapPin className="w-3.5 h-3.5 text-[#12b8c9]" />
+          <MapPin className="w-3.5 h-3.5 text-[#00c9a7]" />
           <span className="text-xs font-medium text-[#0f2940]">Bénin</span>
           <ChevronDown className={`w-3 h-3 text-[#0f2940] transition-transform ${cityMenuOpen ? 'rotate-180' : ''}`} />
         </button>
@@ -47,9 +47,9 @@ export function HomeMobileHeader({ onNavigate }: { onNavigate?: (route: any) => 
               <button
                 key={city}
                 onClick={() => goToCity(city)}
-                className="w-full text-left px-3 py-2 text-sm text-[#0f2940] hover:bg-[#eefbfd] flex items-center gap-2"
+                className="w-full text-left px-3 py-2 text-sm text-[#0f2940] hover:bg-[#f4fffe] flex items-center gap-2"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#12b8c9]" />
+                <MapPin className="w-3.5 h-3.5 text-[#00c9a7]" />
                 {city}
               </button>
             ))}

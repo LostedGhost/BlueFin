@@ -149,16 +149,16 @@ export function MobileBookingSheet({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 bg-[#d5eef2] rounded-full"></div>
+          <div className="w-10 h-1 bg-[#e2f5f2] rounded-full"></div>
         </div>
-        <div className="sticky top-0 bg-white border-b border-[#d5eef2] px-6 py-3 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-[#e2f5f2] px-6 py-3 flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-xl font-bold text-[#0f2940]">{pricePerNight.toLocaleString()} XOF</span>
             <span className="text-sm text-[#0f2940]">/nuit</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-[#12b8c9]">≈ {Math.round(pricePerNight / 655)} €</span>
-            <button onClick={onClose} className="w-8 h-8 rounded-full border border-[#d5eef2] flex items-center justify-center">
+            <span className="text-sm text-[#00c9a7]">≈ {Math.round(pricePerNight / 655)} €</span>
+            <button onClick={onClose} className="w-8 h-8 rounded-full border border-[#e2f5f2] flex items-center justify-center">
               <X className="w-4 h-4 text-[#0f2940]" />
             </button>
           </div>
@@ -168,9 +168,9 @@ export function MobileBookingSheet({
           {/* Dates */}
           <div>
             <label className="text-sm font-medium text-[#0f2940] mb-3 block">Dates du séjour</label>
-            <div className="bg-[#eefbfd] rounded-2xl p-4 space-y-3">
+            <div className="bg-[#f4fffe] rounded-2xl p-4 space-y-3">
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-[#12b8c9]" />
+                <Calendar className="w-5 h-5 text-[#00c9a7]" />
                 <div className="flex-1">
                   <div className="text-xs text-[#6b7280]">Arrivée</div>
                   <input
@@ -182,9 +182,9 @@ export function MobileBookingSheet({
                   />
                 </div>
               </div>
-              <div className="h-px bg-[#d5eef2]"></div>
+              <div className="h-px bg-[#e2f5f2]"></div>
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-[#12b8c9]" />
+                <Calendar className="w-5 h-5 text-[#00c9a7]" />
                 <div className="flex-1">
                   <div className="text-xs text-[#6b7280]">Départ</div>
                   <input
@@ -203,22 +203,22 @@ export function MobileBookingSheet({
           {/* Voyageurs */}
           <div>
             <label className="text-sm font-medium text-[#0f2940] mb-3 block">Voyageurs</label>
-            <div className="bg-[#eefbfd] rounded-2xl p-4 flex items-center justify-between">
+            <div className="bg-[#f4fffe] rounded-2xl p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-[#12b8c9]" />
+                <Users className="w-5 h-5 text-[#00c9a7]" />
                 <span className="font-medium text-[#0f2940]">{guests} voyageur{guests > 1 ? 's' : ''}</span>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setGuests(Math.max(1, guests - 1))}
-                  className="w-10 h-10 rounded-full bg-white border border-[#d5eef2] flex items-center justify-center"
+                  className="w-10 h-10 rounded-full bg-white border border-[#e2f5f2] flex items-center justify-center"
                 >
                   <Minus className="w-5 h-5 text-[#0f2940]" />
                 </button>
                 <span className="w-8 text-center font-medium text-[#0f2940]">{guests}</span>
                 <button
                   onClick={() => setGuests(Math.min(maxGuests, guests + 1))}
-                  className="w-10 h-10 rounded-full bg-white border border-[#d5eef2] flex items-center justify-center"
+                  className="w-10 h-10 rounded-full bg-white border border-[#e2f5f2] flex items-center justify-center"
                 >
                   <Plus className="w-5 h-5 text-[#0f2940]" />
                 </button>
@@ -237,10 +237,10 @@ export function MobileBookingSheet({
           {/* Détail des prix */}
           {loading ? (
             <div className="flex justify-center py-4">
-              <Loader2 className="w-6 h-6 text-[#12b8c9] animate-spin" />
+              <Loader2 className="w-6 h-6 text-[#00c9a7] animate-spin" />
             </div>
           ) : priceDetails && isAvailable && (
-            <div className="bg-[#eefbfd] rounded-2xl p-4 space-y-3">
+            <div className="bg-[#f4fffe] rounded-2xl p-4 space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-[#6b7280]">{pricePerNight.toLocaleString()} XOF × {priceDetails.nights} nuits</span>
                 <span className="text-[#0f2940] font-medium">{priceDetails.subtotal.toLocaleString()} XOF</span>
@@ -249,12 +249,12 @@ export function MobileBookingSheet({
                 <span className="text-[#6b7280]">Frais de service</span>
                 <span className="text-[#0f2940] font-medium">{priceDetails.serviceFee.toLocaleString()} XOF</span>
               </div>
-              <div className="h-px bg-[#d5eef2]"></div>
+              <div className="h-px bg-[#e2f5f2]"></div>
               <div className="flex justify-between">
                 <span className="font-bold text-[#0f2940]">Total</span>
                 <div className="text-right">
                   <div className="font-bold text-lg text-[#0f2940]">{priceDetails.total.toLocaleString()} XOF</div>
-                  <div className="text-xs text-[#12b8c9]">≈ {Math.round(priceDetails.total / 655)} €</div>
+                  <div className="text-xs text-[#00c9a7]">≈ {Math.round(priceDetails.total / 655)} €</div>
                 </div>
               </div>
             </div>
@@ -274,8 +274,8 @@ export function MobileBookingSheet({
                   key={idx}
                   className={`p-4 rounded-xl border-2 font-medium text-sm transition-all ${
                     idx === 0
-                      ? 'border-[#12b8c9] ' + payment.color
-                      : 'border-[#d5eef2] bg-white'
+                      ? 'border-[#00c9a7] ' + payment.color
+                      : 'border-[#e2f5f2] bg-white'
                   }`}
                 >
                   {payment.name}
@@ -287,7 +287,7 @@ export function MobileBookingSheet({
           <button
             onClick={handleReservation}
             disabled={!isAvailable || !checkIn || !checkOut || loading || isSubmitting}
-            className="w-full bg-[#12b8c9] text-white py-4 rounded-full font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-[#00c9a7] text-white py-4 rounded-full font-medium text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
             {isSubmitting ? 'Traitement...' : 'Réserver maintenant'}

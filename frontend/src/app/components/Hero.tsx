@@ -218,7 +218,7 @@ export function Hero({ onSearch, onNavigate }: HeroProps) {
             onClick={() => setCurrentImageIndex(index)}
             className={`transition-all duration-300 ${
               index === currentImageIndex
-                ? 'w-6 h-1.5 bg-[#12b8c9] rounded-full'
+                ? 'w-6 h-1.5 bg-[#00c9a7] rounded-full'
                 : 'w-1.5 h-1.5 bg-white/50 rounded-full hover:bg-white/80'
             }`}
           />

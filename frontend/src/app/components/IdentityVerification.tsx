@@ -92,7 +92,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#eefbfd] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#f4fffe] flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-green-500" />
@@ -110,11 +110,11 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#eefbfd]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-[#f4fffe]">
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 py-4">
         <button 
           onClick={() => onNavigate?.({ name: 'host-listings' })} 
-          className="text-sm text-gray-500 flex items-center gap-2 hover:text-[#12b8c9] transition-colors group"
+          className="text-sm text-gray-500 flex items-center gap-2 hover:text-[#00c9a7] transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
           Retour
@@ -148,7 +148,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
                 onClick={() => setDocumentType('cni')}
                 className={`p-3 rounded-xl border-2 transition-all ${
                   documentType === 'cni'
-                    ? 'border-[#12b8c9] bg-[#12b8c9]/5'
+                    ? 'border-[#00c9a7] bg-[#00c9a7]/5'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -160,7 +160,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
                 onClick={() => setDocumentType('passeport')}
                 className={`p-3 rounded-xl border-2 transition-all ${
                   documentType === 'passeport'
-                    ? 'border-[#12b8c9] bg-[#12b8c9]/5'
+                    ? 'border-[#00c9a7] bg-[#00c9a7]/5'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -177,7 +177,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
                 Recto du document *
               </label>
               <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors ${
-                frontPreview ? 'border-[#12b8c9] bg-[#12b8c9]/5' : 'border-gray-300 hover:border-[#12b8c9]'
+                frontPreview ? 'border-[#00c9a7] bg-[#00c9a7]/5' : 'border-gray-300 hover:border-[#00c9a7]'
               }`}>
                 {frontPreview ? (
                   <div className="relative">
@@ -215,7 +215,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
                   Verso du document *
                 </label>
                 <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors ${
-                  backPreview ? 'border-[#12b8c9] bg-[#12b8c9]/5' : 'border-gray-300 hover:border-[#12b8c9]'
+                  backPreview ? 'border-[#00c9a7] bg-[#00c9a7]/5' : 'border-gray-300 hover:border-[#00c9a7]'
                 }`}>
                   {backPreview ? (
                     <div className="relative">
@@ -257,7 +257,7 @@ export function IdentityVerification({ onNavigate, onVerificationComplete }: Ide
           <button
             onClick={handleSubmit}
             disabled={isLoading || !frontDocument || (documentType === 'cni' && !backDocument)}
-            className="w-full mt-6 bg-gradient-to-r from-[#12b8c9] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-6 bg-gradient-to-r from-[#00c9a7] to-[#0f2940] text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Envoi en cours...' : 'Soumettre pour vérification'}
           </button>

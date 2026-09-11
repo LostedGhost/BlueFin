@@ -50,7 +50,7 @@ export function CategoryStrip({ onCategorySelect }: CategoryStripProps) {
   };
 
   return (
-    <div className="bg-[#eefbfd] border-y border-[#d5eef2] overflow-x-auto scrollbar-hide">
+    <div className="bg-[#f4fffe] border-y border-[#e2f5f2] overflow-x-auto scrollbar-hide">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 lg:py-4 flex gap-2 lg:gap-3">
         {categories.map((cat) => (
           <button
@@ -59,8 +59,8 @@ export function CategoryStrip({ onCategorySelect }: CategoryStripProps) {
             className={`
               flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-full font-medium text-sm transition-all
               ${activeCategory === cat.id
-                ? 'bg-[#12b8c9] text-white shadow-md'
-                : 'bg-white text-[#0f2940] border border-[#d5eef2] hover:border-[#12b8c9] hover:shadow-sm'
+                ? 'bg-[#00c9a7] text-white shadow-md'
+                : 'bg-white text-[#0f2940] border border-[#e2f5f2] hover:border-[#00c9a7] hover:shadow-sm'
               }
             `}
           >

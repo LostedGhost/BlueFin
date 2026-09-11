@@ -265,7 +265,7 @@ export function BookingWidget({
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden mt-6">
         <div className="bg-gradient-to-r from-[#0F2940] to-[#1a3a52] px-4 py-3">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#12b8c9]" />
+            <Calendar className="w-4 h-4 text-[#00c9a7]" />
             <h4 className="font-semibold text-white text-sm">Politique d'annulation</h4>
           </div>
         </div>
@@ -341,24 +341,24 @@ export function BookingWidget({
   };
 
   return (
-    <div className="bg-white border border-[#d5eef2] rounded-2xl p-6 shadow-[0_4px_24px_rgba(15,41,64,0.08)] sticky top-24">
+    <div className="bg-white border border-[#e2f5f2] rounded-2xl p-6 shadow-[0_4px_24px_rgba(15,41,64,0.08)] sticky top-24">
       <div className="mb-6">
         <div className="flex items-baseline gap-2 mb-1">
           <span className="text-3xl font-bold text-[#0f2940]">{pricePerNight.toLocaleString()} FCFA</span>
           <span className="text-[#0f2940]">/nuit</span>
         </div>
         {pricePerNightEur && (
-          <span className="text-sm text-[#12b8c9]">≈ {pricePerNightEur} €</span>
+          <span className="text-sm text-[#00c9a7]">≈ {pricePerNightEur} €</span>
         )}
       </div>
 
       {/* Sélecteur de dates */}
-      <div className="border border-[#d5eef2] rounded-xl overflow-hidden mb-4">
-        <div className="grid grid-cols-2 border-b border-[#d5eef2]">
-          <div className="p-3 border-r border-[#d5eef2]">
+      <div className="border border-[#e2f5f2] rounded-xl overflow-hidden mb-4">
+        <div className="grid grid-cols-2 border-b border-[#e2f5f2]">
+          <div className="p-3 border-r border-[#e2f5f2]">
             <label className="text-xs font-medium text-[#6b7280] block mb-1">Arrivée</label>
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#12b8c9]" />
+              <Calendar className="w-4 h-4 text-[#00c9a7]" />
               <input
                 type="date"
                 value={checkIn}
@@ -371,7 +371,7 @@ export function BookingWidget({
           <div className="p-3">
             <label className="text-xs font-medium text-[#6b7280] block mb-1">Départ</label>
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#12b8c9]" />
+              <Calendar className="w-4 h-4 text-[#00c9a7]" />
               <input
                 type="date"
                 value={checkOut}
@@ -387,19 +387,19 @@ export function BookingWidget({
           <label className="text-xs font-medium text-[#6b7280] block mb-2">Voyageurs</label>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#12b8c9]" />
+              <Users className="w-4 h-4 text-[#00c9a7]" />
               <span className="text-sm text-[#0f2940]">{guests} voyageur{guests > 1 ? 's' : ''}</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setGuests(Math.max(1, guests - 1))}
-                className="w-8 h-8 rounded-full border border-[#d5eef2] flex items-center justify-center hover:border-[#12b8c9] transition-colors"
+                className="w-8 h-8 rounded-full border border-[#e2f5f2] flex items-center justify-center hover:border-[#00c9a7] transition-colors"
               >
                 <Minus className="w-4 h-4 text-[#0f2940]" />
               </button>
               <button
                 onClick={() => setGuests(Math.min(maxGuests, guests + 1))}
-                className="w-8 h-8 rounded-full border border-[#d5eef2] flex items-center justify-center hover:border-[#12b8c9] transition-colors"
+                className="w-8 h-8 rounded-full border border-[#e2f5f2] flex items-center justify-center hover:border-[#00c9a7] transition-colors"
               >
                 <Plus className="w-4 h-4 text-[#0f2940]" />
               </button>
@@ -421,7 +421,7 @@ export function BookingWidget({
       {/* Détail des prix */}
       {priceDetails && isAvailable && (
         <>
-          <div className="space-y-3 mb-6 pb-6 border-b border-[#d5eef2]">
+          <div className="space-y-3 mb-6 pb-6 border-b border-[#e2f5f2]">
             <div className="flex justify-between text-sm">
               <span className="text-[#6b7280]">{pricePerNight.toLocaleString()} FCFA × {priceDetails.nights} nuits</span>
               <span className="text-[#0f2940]">{priceDetails.subtotal.toLocaleString()} FCFA</span>
@@ -436,7 +436,7 @@ export function BookingWidget({
             <span className="font-bold text-[#0f2940]">Total</span>
             <div className="text-right">
               <div className="text-xl font-bold text-[#0f2940]">{priceDetails.total.toLocaleString()} FCFA</div>
-              <div className="text-xs text-[#12b8c9]">≈ {Math.round(priceDetails.total / 655)} €</div>
+              <div className="text-xs text-[#00c9a7]">≈ {Math.round(priceDetails.total / 655)} €</div>
             </div>
           </div>
         </>
@@ -458,7 +458,7 @@ export function BookingWidget({
       <button
         onClick={handleReservation}
         disabled={!isAvailable || !checkIn || !checkOut || loading}
-        className="w-full bg-[#12b8c9] text-white py-4 rounded-full font-medium hover:bg-[#0fa0b0] transition-colors mb-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full bg-[#00c9a7] text-white py-4 rounded-full font-medium hover:bg-[#00b396] transition-colors mb-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {loading && <Loader2 className="w-5 h-5 animate-spin" />}
         {loading ? 'Vérification...' : 'Réserver maintenant'}

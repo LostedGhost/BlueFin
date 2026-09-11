@@ -1,27 +1,28 @@
 /**
- * Polices de Bluefin-Immo — deux familles, pas plus.
+ * Polices de Bluefin-Immo — charte d'origine, deux familles :
+ * Plus Jakarta Sans (texte) et EB Garamond (titres, graisse 600).
  *
- * Plus Jakarta Sans (corps) et Instrument Serif (affichage) sont chargées via
- * un <link> dans index.html, pas par @import ici : un @import CSS bloque le
- * rendu et s'exécute plus tard qu'un <link> dans le <head>.
+ * Chargées via un <link> dans index.html, pas par @import ici : un @import
+ * CSS bloque le rendu et s'exécute plus tard qu'un <link> dans le <head>.
  *
  * Historique : ce fichier importait aussi « Didot » (qui n'existe pas sur
  * Google Fonts — la requête échouait à chaque chargement) et « Bodoni Moda »
- * (jamais utilisée nulle part). Les deux ont été retirées.
+ * (jamais utilisée nulle part). Les deux ont été retirées. La refonte a un
+ * temps utilisé Instrument Serif avant le retour à la charte.
  */
 
 @layer base {
   :root {
     --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-display: 'EB Garamond', Garamond, Georgia, 'Times New Roman', serif;
   }
 
   body {
     font-family: var(--font-primary);
   }
 
-  /* Instrument Serif n'existe qu'en graisse 400 : demander 600 déclenchait une
-     graisse synthétique, épaissie par le navigateur et sale à l'écran. */
+  /* Graisse 600, comme dans la charte d'origine (EB Garamond la possède :
+     pas de graisse synthétique). */
   h1,
   h2,
   h3,
@@ -29,7 +30,7 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 600;
   }
 
   /* Tailles de repli sur mobile, pour les éléments qui ne portent aucune

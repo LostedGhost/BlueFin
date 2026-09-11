@@ -29,7 +29,7 @@ export function DestinationCard({ destination, onClick }: DestinationCardProps) 
 
   return (
     <div 
-      className="relative h-40 sm:h-52 lg:h-64 rounded-2xl overflow-hidden cursor-pointer group bg-[#eefbfd]" 
+      className="relative h-40 sm:h-52 lg:h-64 rounded-2xl overflow-hidden cursor-pointer group bg-[#f4fffe]" 
       onClick={handleClick}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-[#0f2940]/90 via-[#0f2940]/40 to-transparent z-10"></div>

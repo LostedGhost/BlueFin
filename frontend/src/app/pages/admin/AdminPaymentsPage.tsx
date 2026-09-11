@@ -49,7 +49,7 @@ export function AdminPaymentsPage() {
     <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* En-tête */}
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#12b8c9] bg-clip-text text-transparent">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#0f2940] to-[#00c9a7] bg-clip-text text-transparent">
           Suivi des paiements
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">Analysez et gérez toutes les transactions financières</p>
@@ -66,7 +66,7 @@ export function AdminPaymentsPage() {
       </div>
 
       {/* Résumé quotidien */}
-      <div className="bg-gradient-to-r from-[#12b8c9] to-[#0f2940] rounded-xl sm:rounded-2xl p-4 mb-6 text-white">
+      <div className="bg-gradient-to-r from-[#00c9a7] to-[#0f2940] rounded-xl sm:rounded-2xl p-4 mb-6 text-white">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <p className="text-white/80 text-sm">Transactions aujourd'hui</p>
@@ -95,14 +95,14 @@ export function AdminPaymentsPage() {
               placeholder="Rechercher par transaction ID ou réservation..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
             />
           </div>
           <div className="flex gap-2">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#12b8c9]"
+              className="px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00c9a7]"
             >
               <option value="all">Tous statuts</option>
               <option value="success">Succès</option>
@@ -181,7 +181,7 @@ const PaymentCard = ({ payment, index, onView }: any) => {
         </div>
         <div className="flex items-center justify-between w-full sm:w-auto gap-3">
           <div className="text-left sm:text-right">
-            <p className="text-base sm:text-lg font-bold text-[#12b8c9]">{payment.amount?.toLocaleString()} FCFA</p>
+            <p className="text-base sm:text-lg font-bold text-[#00c9a7]">{payment.amount?.toLocaleString()} FCFA</p>
             <div className="flex items-center gap-1 mt-1">
               <Smartphone className="w-3 h-3 text-gray-400" />
               <p className="text-xs text-gray-400">{payment.payment_method || 'Mobile Money'}</p>
@@ -215,7 +215,7 @@ const PaymentDetailModal = ({ payment, onClose }: any) => {
           {/* Montant */}
           <div className="text-center">
             <p className="text-gray-500 text-sm">Montant total</p>
-            <p className="text-3xl font-bold text-[#12b8c9]">{payment.amount?.toLocaleString()} FCFA</p>
+            <p className="text-3xl font-bold text-[#00c9a7]">{payment.amount?.toLocaleString()} FCFA</p>
           </div>
 
           {/* Détails */}

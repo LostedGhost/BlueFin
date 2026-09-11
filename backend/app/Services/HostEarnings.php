@@ -9,6 +9,7 @@ use App\Models\PlatformSetting;
 use App\Models\ServiceBooking;
 use App\Models\User;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Calcul unique de ce que la plateforme doit à un hôte.
@@ -56,21 +57,51 @@ class HostEarnings
     /** Montant brut et nombre de réservations terminées sur une période. */
     public function period(User $host, CarbonInterface $from, CarbonInterface $to): array
     {
-        $bookings = $this->propertyBookings($host)->whereBetween('check_out', [$from->toDateString(), $to->toDateString()]);
-        $experiences = $this->experienceBookings($host)->whereBetween('reservation_date', [$from->toDateString(), $to->toDateString()]);
-        $services = $this->serviceBookings($host)->whereBetween('reservation_date', [$from->toDateString(), $to->toDateString()]);
+        $range = [$from->toDateString(), $to->toDateString()];
+        $queries = [$this->propertyBookings($host)->whereBetween('check_out', $range)];
+        foreach ($this->offerBookings($host) as $query) {
+            $queries[] = $query->whereBetween('reservation_date', $range);
+        }
 
         return [
-            'gross' => (int) ((clone $bookings)->sum('total_amount') + (clone $experiences)->sum('total_amount') + (clone $services)->sum('total_amount')),
-            'reservations' => $bookings->count() + $experiences->count() + $services->count(),
+            'gross' => (int) array_sum(array_map(fn ($q) => (clone $q)->sum('total_amount'), $queries)),
+            'reservations' => array_sum(array_map(fn ($q) => $q->count(), $queries)),
         ];
     }
 
     private function gross(User $host): int
     {
-        return (int) ($this->propertyBookings($host)->sum('total_amount')
-            + $this->experienceBookings($host)->sum('total_amount')
-            + $this->serviceBookings($host)->sum('total_amount'));
+        $total = $this->propertyBookings($host)->sum('total_amount');
+        foreach ($this->offerBookings($host) as $query) {
+            $total += $query->sum('total_amount');
+        }
+
+        return (int) $total;
+    }
+
+    /**
+     * Réservations d'expériences et de services, seulement si leurs tables
+     * existent : la base de production a été montée hors migrations et ne
+     * les contient pas (encore). Sans ce garde-fou, tout calcul de solde —
+     * Paiements Hôtes, solde et demande de retrait côté hôte — plantait.
+     */
+    private function offerBookings(User $host): array
+    {
+        static $tables = null;
+        $tables ??= [
+            'experience_bookings' => Schema::hasTable('experience_bookings'),
+            'service_bookings' => Schema::hasTable('service_bookings'),
+        ];
+
+        $queries = [];
+        if ($tables['experience_bookings']) {
+            $queries[] = $this->experienceBookings($host);
+        }
+        if ($tables['service_bookings']) {
+            $queries[] = $this->serviceBookings($host);
+        }
+
+        return $queries;
     }
 
     private function propertyBookings(User $host)

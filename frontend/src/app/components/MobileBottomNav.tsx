@@ -84,7 +84,8 @@ export function MobileBottomNav({ active: propActive, onNavigate }: MobileBottom
         { id: 'admin-dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { id: 'admin-users', icon: Users, label: 'Utilisateurs' },
         { id: 'admin-properties', icon: Building2, label: 'Annonces' },
-        { id: 'admin-settings', icon: Settings, label: 'Paramètres' },
+        // « Paramètres » retiré : /admin/settings répond 404, le contrôleur
+        // correspondant étant une classe vide côté backend.
         { id: 'profile', icon: User, label: userName || 'Admin' },
       ];
     }

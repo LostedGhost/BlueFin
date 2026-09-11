@@ -35,7 +35,10 @@ const menuItems = [
   { to: '/admin/bookings-logements', icon: Calendar, label: 'Réservations logements' },
   { to: '/admin/bookings-offres', icon: Calendar, label: 'Réservations expériences/services' },
   { to: '/admin/payments', icon: CreditCard, label: 'Paiements' },
-  { to: '/admin/host-payments', icon: Wallet, label: 'Paiements Hôtes' },
+  // « Paiements Hôtes » retiré : la page existe côté interface mais AUCUNE
+  // des 8 routes /admin/hosts/* qu'elle appelle n'existe côté backend —
+  // elles répondent toutes 404. À remettre le jour où le module de
+  // versement aux hôtes sera réellement écrit.
   { to: '/admin/messages', icon: MessageSquare, label: 'Messages' },
   { to: '/admin/reports', icon: BarChart3, label: 'Rapports' },
 ];

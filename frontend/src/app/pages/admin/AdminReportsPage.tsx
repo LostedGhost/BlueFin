@@ -240,18 +240,10 @@ export function AdminReportsPage() {
       {activeTab === 'users' && <UsersTab report={report} onViewAll={openUsersModal} />}
       {activeTab === 'properties' && <PropertiesTab report={report} onViewAll={openPropertiesModal} />}
 
-      {/* Section export */}
-      <div className="mt-6 bg-white rounded-xl sm:rounded-2xl p-5 shadow-sm">
-        <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
-          <Download className="w-5 h-5 text-[#12b8c9]" />
-          Exporter le rapport
-        </h3>
-        <div className="flex flex-wrap gap-3">
-          <ExportButton onClick={() => exportReport('csv')} icon={<FileText className="w-4 h-4" />} label="CSV" color="green" />
-          <ExportButton onClick={() => exportReport('excel')} icon={<FileText className="w-4 h-4" />} label="Excel" color="blue" />
-          <ExportButton onClick={() => exportReport('pdf')} icon={<FileText className="w-4 h-4" />} label="PDF" color="red" />
-        </div>
-      </div>
+      {/* Bloc d'export retiré : les trois boutons appelaient
+          POST /admin/reports/export/{format}, route qui n'existe pas côté
+          backend (la méthode correspondante n'a jamais été écrite) — chaque
+          clic renvoyait donc une erreur 404. À rétablir avec la route. */}
 
       {/* Modal Propriétés */}
       {showPropertiesModal && (

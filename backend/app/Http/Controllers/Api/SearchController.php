@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\PublicPayload;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ class SearchController extends Controller
             ->with('coverPhoto')
             ->limit(20)
             ->get();
+        PublicPayload::properties($properties);
         
         return response()->json([
             'success' => true,
@@ -90,6 +92,7 @@ class SearchController extends Controller
             ->with('coverPhoto')
             ->limit(5)
             ->get();
+        PublicPayload::properties($properties);
         
         return response()->json([
             'success' => true,
@@ -260,6 +263,7 @@ class SearchController extends Controller
         
         $perPage = min((int) $request->get('per_page', 20), 100);
         $results = $query->paginate($perPage);
+        PublicPayload::properties($results->getCollection());
         
         return response()->json([
             'success' => true,

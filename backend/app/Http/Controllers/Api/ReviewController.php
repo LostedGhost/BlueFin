@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\PublicPayload;
 use App\Http\Controllers\Controller;
 use App\Models\Review;
 use App\Models\Booking;
@@ -29,6 +30,7 @@ class ReviewController extends Controller
             ->where('is_approved', true)
             ->orderBy('created_at', 'desc')
             ->paginate(15);
+        PublicPayload::reviews($reviews->getCollection());
         
         // Calculate average ratings
         $averages = Review::where('property_id', $propertyId)

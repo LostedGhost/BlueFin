@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\PublicPayload;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ class ServiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Service::with('host:id,first_name,last_name,phone')
+        $query = Service::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true);
 
@@ -20,19 +21,19 @@ class ServiceController extends Controller
 
         $services = $query->orderByDesc('created_at')->paginate($request->integer('per_page', 20));
 
-        return response()->json(['success' => true, 'data' => $services]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($services)]);
     }
 
     public function featured(Request $request)
     {
-        $services = Service::with('host:id,first_name,last_name,phone')
+        $services = Service::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true)
             ->orderByDesc('average_rating')
             ->limit($request->integer('limit', 10))
             ->get();
 
-        return response()->json(['success' => true, 'data' => ['data' => $services]]);
+        return response()->json(['success' => true, 'data' => ['data' => PublicPayload::offers($services)]]);
     }
 
     public function byCategory(Request $request, string $category)
@@ -42,7 +43,7 @@ class ServiceController extends Controller
             ->where('category', $category)
             ->paginate($request->integer('per_page', 20));
 
-        return response()->json(['success' => true, 'data' => $services]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($services)]);
     }
 
     public function byType(Request $request, string $serviceType)
@@ -52,12 +53,12 @@ class ServiceController extends Controller
             ->where('service_type', $serviceType)
             ->paginate($request->integer('per_page', 20));
 
-        return response()->json(['success' => true, 'data' => $services]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($services)]);
     }
 
     public function show($id)
     {
-        $service = Service::with('host:id,first_name,last_name,phone')
+        $service = Service::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true)
             ->find($id);
@@ -66,6 +67,6 @@ class ServiceController extends Controller
             return response()->json(['success' => false, 'message' => 'Service introuvable'], 404);
         }
 
-        return response()->json(['success' => true, 'data' => $service]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($service)]);
     }
 }

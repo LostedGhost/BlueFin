@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\PublicPayload;
 use App\Services\PhotoStorage;
 
 use App\Http\Controllers\Controller;
@@ -148,7 +149,7 @@ class PropertyController extends Controller
         $properties->getCollection()->transform(function($property) {
             $property->price_per_night_eur = $property->price_per_night_in_euro;
             $property->price_per_night_usd = $property->price_per_night_in_usd;
-            return $property;
+            return PublicPayload::property($property);
         });
 
         return response()->json([
@@ -297,6 +298,9 @@ class PropertyController extends Controller
                 ->limit(6)
                 ->get();
             
+            PublicPayload::property($property);
+            PublicPayload::properties($similar);
+
             return response()->json([
                 'success' => true,
                 'data' => $property,

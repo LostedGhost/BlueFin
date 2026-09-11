@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\PublicPayload;
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class ExperienceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Experience::with('host:id,first_name,last_name,phone')
+        $query = Experience::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true);
 
@@ -23,7 +24,7 @@ class ExperienceController extends Controller
 
         $experiences = $query->orderByDesc('created_at')->paginate($request->integer('per_page', 20));
 
-        return response()->json(['success' => true, 'data' => $experiences]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($experiences)]);
     }
 
     /**
@@ -31,7 +32,7 @@ class ExperienceController extends Controller
      */
     public function featured(Request $request)
     {
-        $experiences = Experience::with('host:id,first_name,last_name,phone')
+        $experiences = Experience::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true)
             ->orderByDesc('average_rating')
@@ -39,12 +40,12 @@ class ExperienceController extends Controller
             ->limit($request->integer('limit', 10))
             ->get();
 
-        return response()->json(['success' => true, 'data' => ['data' => $experiences]]);
+        return response()->json(['success' => true, 'data' => ['data' => PublicPayload::offers($experiences)]]);
     }
 
     public function show($id)
     {
-        $experience = Experience::with('host:id,first_name,last_name,phone')
+        $experience = Experience::with('host:id,first_name,last_name,profile_photo')
             ->where('status', 'active')
             ->where('is_published', true)
             ->find($id);
@@ -55,6 +56,6 @@ class ExperienceController extends Controller
 
         $experience->increment('views_count');
 
-        return response()->json(['success' => true, 'data' => $experience]);
+        return response()->json(['success' => true, 'data' => PublicPayload::offers($experience)]);
     }
 }

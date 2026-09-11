@@ -241,33 +241,38 @@ class TravelerMessageController extends Controller
         $user = $request->user();
         $property = Property::with('user')->findOrFail($request->property_id);
         
-        $messageText = "📝 *Demande d'information*\n\n";
-        
+        // Texte lisible dans la messagerie du site (l'ancien, formaté pour
+        // WhatsApp, y affichait des « *astérisques* »). Plus de téléphone ni
+        // d'e-mail du voyageur : l'échange se poursuit sur la plateforme.
+        $context = [];
         if ($request->check_in && $request->check_out) {
-            $messageText .= "📅 Dates souhaitées: " . date('d/m/Y', strtotime($request->check_in)) 
-                . " → " . date('d/m/Y', strtotime($request->check_out)) . "\n";
             $nights = \Carbon\Carbon::parse($request->check_in)->diffInDays(\Carbon\Carbon::parse($request->check_out));
-            $messageText .= "📆 Nuits: {$nights}\n";
+            $context[] = 'Du ' . date('d/m/Y', strtotime($request->check_in)) . ' au ' . date('d/m/Y', strtotime($request->check_out))
+                . " ({$nights} nuit" . ($nights > 1 ? 's' : '') . ')';
         }
-        
         if ($request->guests) {
-            $messageText .= "👥 Voyageurs: {$request->guests}\n";
+            $context[] = $request->guests . ' voyageur' . ($request->guests > 1 ? 's' : '');
         }
-        
-        $messageText .= "\n📝 Message:\n{$request->message}\n\n"
-            . "👤 Voyageur: {$user->full_name}\n"
-            . "📞 Téléphone: {$user->phone}\n"
-            . "📧 Email: {$user->email}";
-        
-        // Create message without booking
-        $message = Message::create([
+        $messageText = ($context ? implode(' · ', $context) . "\n\n" : '') . trim($request->message);
+
+        // Message hors réservation, rattaché au logement : le fil s'affiche
+        // ensuite chez l'hôte et chez le voyageur (InquiryMessageController).
+        $attributes = [
             'sender_id' => $user->id,
             'receiver_id' => $property->user_id,
             'booking_id' => null,
             'message' => $messageText,
             'message_type' => 'text',
             'is_read' => false,
-        ]);
+        ];
+        if (\Illuminate\Support\Facades\Schema::hasColumn('messages', 'property_id')) {
+            $attributes['property_id'] = $property->id;
+        }
+        if (\Illuminate\Support\Facades\Schema::hasColumn('messages', 'conversation_type')) {
+            $attributes['conversation_type'] = 'inquiry';
+        }
+        $message = new Message();
+        $message->forceFill($attributes)->save();
         
         // Send notification to host
         $this->notificationService->sendWhatsApp(
@@ -275,8 +280,7 @@ class TravelerMessageController extends Controller
             "💬 *NOUVELLE DEMANDE D'INFORMATION*\n\n"
             . "🏠 Propriété: {$property->title}\n"
             . "📍 {$property->district}, {$property->city}\n"
-            . "👤 Voyageur: {$user->full_name}\n"
-            . "📞 Téléphone: {$user->phone}\n\n"
+            . "👤 Voyageur: {$user->first_name}\n\n"
             . "📝 Message:\n{$request->message}\n\n"
             . "📱 Répondez directement dans l'application Bluefin Immo"
         );

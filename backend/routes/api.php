@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\NeedController;
+use App\Http\Controllers\Api\InquiryMessageController;
 use App\Http\Controllers\Api\PropertyController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
@@ -237,6 +238,11 @@ Route::prefix('v1')->group(function () {
             Route::get('/messages/booking/{bookingId}', [TravelerMessageController::class, 'getMessages']);
             Route::post('/messages/booking/{bookingId}', [TravelerMessageController::class, 'sendMessage']);
             Route::post('/messages/inquiry', [TravelerMessageController::class, 'sendInquiry']);
+            // Conversations avant réservation (appelées par le site, inexistantes jusqu'ici).
+            Route::get('/messages/inquiries', [InquiryMessageController::class, 'travelerThreads']);
+            Route::get('/messages/inquiry/{hostId}', [InquiryMessageController::class, 'travelerThread'])->whereNumber('hostId');
+            Route::post('/messages/inquiry/{hostId}', [InquiryMessageController::class, 'travelerReply'])->whereNumber('hostId')->middleware('throttle:30,1');
+            Route::post('/messages/inquiry/{hostId}/read', [InquiryMessageController::class, 'markRead'])->whereNumber('hostId');
             Route::post('/messages/{messageId}/read', [TravelerMessageController::class, 'markAsRead']);
             Route::post('/messages/conversation/{bookingId}/read', [TravelerMessageController::class, 'markConversationAsRead']);
             Route::get('/messages/unread/count', [TravelerMessageController::class, 'getUnreadCount']);
@@ -294,6 +300,9 @@ Route::prefix('v1')->group(function () {
             Route::get('/messages/booking/{bookingId}', [HostMessageController::class, 'getMessages']);
             Route::post('/messages/booking/{bookingId}', [HostMessageController::class, 'sendMessage']);
             Route::get('/messages/quick-replies', [HostMessageController::class, 'getQuickReplies']);
+            Route::get('/messages/inquiry/{guestId}', [InquiryMessageController::class, 'hostThread'])->whereNumber('guestId');
+            Route::post('/messages/inquiry/{guestId}', [InquiryMessageController::class, 'hostReply'])->whereNumber('guestId')->middleware('throttle:30,1');
+            Route::post('/messages/inquiry/{guestId}/read', [InquiryMessageController::class, 'markRead'])->whereNumber('guestId');
             Route::post('/messages/conversation/{bookingId}/read', [HostMessageController::class, 'markConversationAsRead']);
             Route::get('/messages/unread/count', [HostMessageController::class, 'getUnreadCount']);
             Route::get('/bookings', [HostBookingController::class, 'index']);

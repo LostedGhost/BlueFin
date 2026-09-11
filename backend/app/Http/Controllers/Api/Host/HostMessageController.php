@@ -78,19 +78,22 @@ class HostMessageController extends Controller
                 'last_message' => $lastMessage ? [
                     'message' => $lastMessage->message,
                     'preview' => $lastMessage->preview,
-                    'sent_at' => $lastMessage->created_at->diffForHumans(),
+                    'sent_at' => $lastMessage->created_at->locale('fr')->diffForHumans(),
                     'is_from_guest' => $lastMessage->sender_id !== $user->id,
                 ] : null,
                 'unread_count' => $unreadCount,
+                'sort_at' => ($lastMessage?->created_at ?? $booking->created_at)?->timestamp ?? 0,
             ];
         }
-        
-        // Sort by last message time (most recent first)
-        usort($conversations, function($a, $b) {
-            $timeA = $a['last_message']['sent_at'] ?? '';
-            $timeB = $b['last_message']['sent_at'] ?? '';
-            return strcmp($timeB, $timeA);
-        });
+
+        // Conversations avant réservation (« Discutez avec l'hôte »), absentes
+        // jusqu'ici : l'hôte ne voyait jamais ces messages.
+        foreach (app(\App\Http\Controllers\Api\InquiryMessageController::class)->hostThreads($user) as $thread) {
+            $conversations[] = $thread;
+        }
+
+        // Plus récent d'abord. L'ancien tri comparait des textes (« 2 hours ago »).
+        usort($conversations, fn ($a, $b) => ($b['sort_at'] ?? 0) <=> ($a['sort_at'] ?? 0));
         
         return response()->json([
             'success' => true,

@@ -184,6 +184,11 @@ function TravelerNeeds({ onNavigate }: { onNavigate?: (route: any) => void }) {
                   <div key={r.id} className="rounded-2xl bg-[#f4fffe] p-3">
                     <p className="text-sm font-semibold text-[#0f2940]">{r.host?.name ?? 'Un hôte'}</p>
                     <p className="text-sm text-slate-700 mt-1 whitespace-pre-line">{r.message}</p>
+                    {/* La réponse ouvre une conversation : on y poursuit l'échange. */}
+                    <button onClick={() => onNavigate?.({ name: 'messages' })}
+                      className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[#00806b]">
+                      <MessageSquareText className="w-4 h-4" /> Répondre dans Messages
+                    </button>
                     {r.property && (
                       <button onClick={() => onNavigate?.({ name: 'listing', id: String(r.property!.id) })}
                         className="mt-2 w-full flex items-center gap-3 rounded-xl bg-white border border-[#e2f5f2] p-2 text-left">
@@ -244,7 +249,7 @@ function RespondForm({ need, onDone }: { need: Need; onDone: () => void }) {
   );
 }
 
-function HostNeeds() {
+function HostNeeds({ onNavigate }: { onNavigate?: (route: any) => void }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<number | null>(null);
   const { data, isLoading } = useQuery({ queryKey: ['needs', 'host'], queryFn: () => needsService.forHost() });
@@ -275,9 +280,16 @@ function HostNeeds() {
           {open === need.id
             ? <RespondForm need={need} onDone={() => { setOpen(null); queryClient.invalidateQueries({ queryKey: ['needs'] }); }} />
             : (
-              <button onClick={() => setOpen(need.id)} className="inline-flex items-center gap-2 text-sm font-semibold text-[#00806b]">
-                <MessageSquareText className="w-4 h-4" /> {need.my_response ? 'Modifier ma réponse' : 'Répondre'}
-              </button>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                <button onClick={() => setOpen(need.id)} className="inline-flex items-center gap-2 text-sm font-semibold text-[#00806b]">
+                  <MessageSquareText className="w-4 h-4" /> {need.my_response ? 'Modifier ma réponse' : 'Répondre'}
+                </button>
+                {need.my_response && (
+                  <button onClick={() => onNavigate?.({ name: 'host-messages' })} className="text-sm font-medium text-slate-600 hover:text-[#0f2940]">
+                    Voir la conversation →
+                  </button>
+                )}
+              </div>
             )}
         </article>
       ))}
@@ -311,7 +323,7 @@ export function NeedsPage({ onNavigate }: { onNavigate?: (route: any) => void })
               Se connecter pour publier un besoin
             </button>
           </div>
-        ) : isHost ? <HostNeeds /> : <TravelerNeeds onNavigate={onNavigate} />}
+        ) : isHost ? <HostNeeds onNavigate={onNavigate} /> : <TravelerNeeds onNavigate={onNavigate} />}
       </div>
     </div>
   );

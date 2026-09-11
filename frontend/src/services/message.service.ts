@@ -183,7 +183,7 @@ sendMessage: async (bookingId: number, data: { message: string }): Promise<{ dat
 },
 
 // ✅ S'assurer que sendInquiryReply vérifie hostId
-sendInquiryReply: async (hostId: number, data: { message: string }): Promise<{ data: Message }> => {
+sendInquiryReply: async (hostId: number, data: { message: string; property_id?: number }): Promise<{ data: Message }> => {
   if (!hostId || isNaN(hostId)) {
     throw new Error('ID de l\'hôte invalide');
   }
@@ -191,7 +191,9 @@ sendInquiryReply: async (hostId: number, data: { message: string }): Promise<{ d
   
   try {
     const response = await v1Api.post(`/traveler/messages/inquiry/${hostId}`, {
-      message: data.message.trim()
+      message: data.message.trim(),
+      // Logement concerné (conversation ouverte depuis une annonce).
+      property_id: data.property_id,
     });
     return response.data;
   } catch (error: any) {

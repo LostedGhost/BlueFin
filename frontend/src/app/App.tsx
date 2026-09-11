@@ -544,7 +544,9 @@ function AppContent() {
         />
       )}
 
-      <WhatsAppButton />
+      {/* Masqué dans les messageries (il recouvrait le bouton d'envoi) et sur
+          la carte (il recouvrait ses commandes). */}
+      {!['messages', 'host-messages', 'host-experience-messages', 'host-service-messages', 'map'].includes(route.name) && <WhatsAppButton />}
 
       {/* Routes principales */}
       {route.name === 'home' && <HomePage onNavigate={navigate} />}

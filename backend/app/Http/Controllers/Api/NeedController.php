@@ -145,6 +145,13 @@ class NeedController extends Controller
             return $response;
         });
 
+        // La première réponse ouvre aussi une conversation dans « Messages » :
+        // le voyageur peut répondre, puis l'échange continue normalement
+        // (InquiryMessageController). Une réponse modifiée n'y est pas redoublée.
+        if ($response->wasRecentlyCreated) {
+            $this->openConversation($need, $host, $data['message'], $data['property_id'] ?? null);
+        }
+
         $this->notifyTraveler($need, $host);
 
         return response()->json([
@@ -250,6 +257,27 @@ class NeedController extends Controller
             'traveler_name' => $n->user ? $n->user->first_name . ' ' . mb_substr((string) $n->user->last_name, 0, 1) . '.' : 'Voyageur',
             'my_response' => $mine ? ['message' => $mine->message, 'property_id' => $mine->property_id, 'updated_at' => $mine->updated_at?->toIso8601String()] : null,
         ];
+    }
+
+    private function openConversation(Need $need, User $host, string $text, ?int $propertyId): void
+    {
+        $type = ['logement' => 'Logement', 'experience' => 'Expérience', 'service' => 'Service'][$need->type] ?? 'Besoin';
+        $attributes = [
+            'sender_id' => $host->id,
+            'receiver_id' => $need->user_id,
+            'booking_id' => null,
+            'message' => "Réponse à votre besoin « {$type} à {$need->city} » :\n\n" . trim($text),
+            'message_type' => 'text',
+            'is_read' => false,
+        ];
+        if (Schema::hasColumn('messages', 'property_id')) {
+            $attributes['property_id'] = $propertyId;
+        }
+        if (Schema::hasColumn('messages', 'conversation_type')) {
+            $attributes['conversation_type'] = 'inquiry';
+        }
+        $message = new \App\Models\Message();
+        $message->forceFill($attributes)->save();
     }
 
     private function notifyTraveler(Need $need, User $host): void

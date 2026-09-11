@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo ,useCallback   } from 'react';
+import { scrollToEnd, messageTime } from './utils/scrollToEnd';
 import { LocationPicker } from './components/map/LocationPicker';
 import { useHideSiteChrome } from './siteChrome';
 import { SignupWizard, type PendingGoogleSignup } from './components/auth/SignupWizard';
@@ -11885,7 +11886,7 @@ const ChatView = ({
   // ✅ Scroll automatique
   useEffect(() => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollToEnd(messagesEndRef.current);
     }, 100);
   }, [messages]);
 
@@ -11984,10 +11985,7 @@ const ChatView = ({
                 }`}>
                   <p className="text-sm sm:text-base whitespace-pre-wrap break-words">{msg.message}</p>
                   <p className={`text-xs mt-1 ${isFromMe ? 'text-white/70' : 'text-gray-400'}`}>
-                    {new Date(msg.created_at).toLocaleTimeString('fr-FR', { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                    {messageTime(msg.created_at)}
                   </p>
                 </div>
               </div>
@@ -12159,8 +12157,11 @@ export function HostExperienceMessagesPage({ onNavigate, id }: HostExperienceMes
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden border border-[#e2f5f2]">
           
           {/* Liste des conversations - version mobile avec toggle */}
+          {/* Sur mobile : la liste s'affiche d'office tant qu'aucune conversation
+              n'est ouverte (elle était cachée derrière un bouton ☰ et l'écran
+              n'affichait que « Sélectionnez une conversation »). */}
           <div className={`
-            ${mobileMenuOpen ? 'block' : 'hidden'} 
+            ${mobileMenuOpen || !selectedConversation ? 'block' : 'hidden'} 
             lg:block lg:w-1/3 border-r
             ${mobileMenuOpen ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto' : ''}
           `}>
@@ -14206,7 +14207,7 @@ const HostChatView = ({
 
   useEffect(() => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollToEnd(messagesEndRef.current);
     }, 100);
   }, [messages]);
 
@@ -14351,12 +14352,7 @@ const HostChatView = ({
                   )}
                   <p className="text-sm sm:text-base whitespace-pre-wrap break-words">{msg.message}</p>
                   <p className={`text-xs mt-1 ${isFromMe ? 'text-white/70' : 'text-gray-400'}`}>
-                    {msg.created_at ? new Date(msg.created_at).toLocaleString('fr-FR', { 
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    }) : 'à l\'instant'}
+                    {messageTime(msg.created_at)}
                   </p>
                 </div>
               </div>
@@ -14455,6 +14451,11 @@ export function HostMessagesPage({ onNavigate, id }: HostMessagesPageProps) {
 
   const conversations = conversationsData?.data || [];
   const messages = messagesData?.data?.messages || [];
+
+  // Ouvrir un fil le marque lu côté serveur : on rafraîchit la liste.
+  useEffect(() => {
+    if (messagesData) queryClient.invalidateQueries({ queryKey: ['host-messages-conversations'] });
+  }, [selectedConversation?.booking?.id, selectedGuestId, messages.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const currentBooking = messagesData?.data?.booking;
 
   // ✅ Sélectionner une conversation
@@ -14531,8 +14532,10 @@ export function HostMessagesPage({ onNavigate, id }: HostMessagesPageProps) {
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden border border-[#e2f5f2] min-h-[600px]">
           
           {/* Liste des conversations */}
+          {/* Sur mobile : la liste s'affiche d'office tant qu'aucune conversation
+              n'est ouverte (elle était cachée derrière un bouton ☰). */}
           <div className={`
-            ${mobileMenuOpen ? 'block' : 'hidden'} 
+            ${mobileMenuOpen || !selectedConversation ? 'block' : 'hidden'} 
             lg:block lg:w-1/3 border-r bg-[#f4fffe]
             ${mobileMenuOpen ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto' : ''}
           `}>
@@ -14622,7 +14625,7 @@ export function HostMessagesPage({ onNavigate, id }: HostMessagesPageProps) {
           </div>
 
           {/* Zone de chat avec HostChatView */}
-          <div className="lg:w-2/3 flex flex-col h-[500px] sm:h-[600px] relative">
+          <div className={`${selectedConversation ? 'flex' : 'hidden lg:flex'} lg:w-2/3 flex-col h-[calc(100dvh-13rem)] min-h-[420px] lg:h-[600px] relative`}>
             <button 
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden absolute top-3 left-3 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-50"
@@ -15085,7 +15088,7 @@ const MessagesChatView = ({
 
   useEffect(() => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollToEnd(messagesEndRef.current);
     }, 100);
   }, [messages]);
 
@@ -15214,12 +15217,7 @@ const MessagesChatView = ({
                 }`}>
                   <p className="text-sm sm:text-base whitespace-pre-wrap break-words">{msg.message}</p>
                   <p className={`text-xs mt-1 ${isFromMe ? 'text-white/70' : 'text-gray-400'}`}>
-                    {msg.created_at || new Date(msg.created_at).toLocaleString('fr-FR', { 
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+                    {messageTime(msg.created_at)}
                   </p>
                 </div>
               </div>
@@ -15303,27 +15301,50 @@ export function MessagesPage({ onNavigate, id, search }: MessagesPageProps) {
   const { data: conversationsData, isLoading: convLoading, refetch: refetchConversations } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
-      try {
-        const bookingsResponse = await messageService.getConversations();
-        const inquiriesResponse = await messageService.getInquiries();
-        const allConversations = [
-          ...(bookingsResponse?.data || []),
-          ...(inquiriesResponse?.data || [])
-        ];
-        allConversations.sort((a, b) => {
-          const timeA = a.last_message?.sent_at || '';
-          const timeB = b.last_message?.sent_at || '';
-          return timeB.localeCompare(timeA);
-        });
-        return { data: allConversations };
-      } catch (error) {
-        console.error('Erreur chargement conversations:', error);
-        return { data: [] };
-      }
+      // Chargements indépendants : auparavant, l'échec des demandes avant
+      // réservation (route alors inexistante) vidait TOUTE la liste, y
+      // compris les conversations de réservation (« Conversations (0) »).
+      const [bookingsResult, inquiriesResult] = await Promise.allSettled([
+        messageService.getConversations(),
+        messageService.getInquiries(),
+      ]);
+      const bookings = bookingsResult.status === 'fulfilled' ? bookingsResult.value?.data || [] : [];
+      const inquiries = inquiriesResult.status === 'fulfilled' ? inquiriesResult.value?.data || [] : [];
+      // Demandes (datées) d'abord, par date ; puis les réservations.
+      const sortedInquiries = [...inquiries].sort((a: any, b: any) => String(b.updated_at || '').localeCompare(String(a.updated_at || '')));
+      return { data: [...sortedInquiries, ...bookings] };
     },
     enabled: isAuthenticated,
   });
   const conversations = conversationsData?.data || [];
+
+  // Lien « Discutez avec l'hôte » depuis une annonce : /messages/inquiry?property=ID.
+  // Cette page ne savait ouvrir que les demandes de service : on arrivait sur
+  // « Sélectionnez une conversation », sans pouvoir écrire.
+  const propertyParam = new URLSearchParams(String(search || location.search || '').replace(/^\?/, '')).get('property');
+  useEffect(() => {
+    if (!propertyParam || !isAuthenticated || selectedConversation) return;
+    let cancelled = false;
+    propertyService.getById(Number(propertyParam))
+      .then((res: any) => {
+        const p = res?.data?.data || res?.data || res;
+        const hostId = p?.user?.id ?? p?.user_id;
+        if (cancelled || !hostId) return;
+        const existing = conversations.find((c: any) => c.type === 'inquiry' && c.booking?.host?.id === hostId);
+        const hostName = p?.user ? (p.user.full_name || `${p.user.first_name ?? ''} ${p.user.last_name ?? ''}`.trim()) : 'Hôte';
+        const conv = existing ?? {
+          type: 'inquiry',
+          booking: { id: null, reference: '', host: { id: hostId, name: hostName, photo: null }, property: { id: p.id, title: p.title, photo: null }, dates: null },
+          last_message: null,
+          unread_count: 0,
+        };
+        setSelectedConversation({ ...conv, booking: { ...conv.booking, property: { ...(conv.booking.property || {}), id: p.id, title: p.title } } });
+        setSelectedType('inquiry');
+        setSelectedId(hostId);
+      })
+      .catch(() => toast.error('Impossible d’ouvrir la conversation avec l’hôte.'));
+    return () => { cancelled = true; };
+  }, [propertyParam, isAuthenticated, conversations.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Mutations
   // Dans MessagesPage - inquiryMutation
@@ -15386,9 +15407,8 @@ const inquiryMutation = useMutation({
   });
 
   const sendInquiryReplyMutation = useMutation({
-    mutationFn: ({ hostId, message }: { hostId: number; message: string }) => {
-      console.log('📤 sendInquiryReply - hostId:', hostId);
-      return messageService.sendInquiryReply(hostId, { message });
+    mutationFn: ({ hostId, message, propertyId }: { hostId: number; message: string; propertyId?: number | null }) => {
+      return messageService.sendInquiryReply(hostId, { message, property_id: propertyId ?? undefined });
     },
     onSuccess: () => {
       console.log('✅ Message inquiry envoyé');
@@ -15444,7 +15464,12 @@ const inquiryMutation = useMutation({
   };
 
   const messages = getMessages();
-  console.log('📊 Messages extraits:', messages);
+
+  // Ouvrir un fil le marque lu côté serveur : on rafraîchit la liste pour
+  // retirer la pastille « non lu » sans attendre un rechargement.
+  useEffect(() => {
+    if (selectedId && messagesData) queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  }, [selectedId, messages.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Envoi automatique du premier message
   useEffect(() => {
@@ -15511,7 +15536,7 @@ const inquiryMutation = useMutation({
 
   // Auto-scroll
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToEnd(messagesEndRef.current);
   }, [messages]);
 
   // Dans MessagesPage - useEffect pour détecter les paramètres de service
@@ -15697,8 +15722,7 @@ useEffect(() => {
         toast.error('ID de l\'hôte introuvable');
         return;
       }
-      console.log('📤 Envoi inquiry à hostId:', hostId);
-      sendInquiryReplyMutation.mutate({ hostId, message });
+      sendInquiryReplyMutation.mutate({ hostId, message, propertyId: selectedConversation.booking.property?.id ?? null });
     } else {
       const bookingId = selectedConversation.booking?.id;
       if (!bookingId) {
@@ -15762,8 +15786,11 @@ useEffect(() => {
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 bg-white rounded-2xl sm:rounded-3xl shadow-md overflow-hidden border border-[#e2f5f2]">
           
           {/* Liste des conversations */}
+          {/* Sur mobile : la liste s'affiche d'office tant qu'aucune conversation
+              n'est ouverte (elle était cachée derrière un bouton ☰ et l'écran
+              n'affichait que « Sélectionnez une conversation »). */}
           <div className={`
-            ${mobileMenuOpen ? 'block' : 'hidden'} 
+            ${mobileMenuOpen || !selectedConversation ? 'block' : 'hidden'} 
             lg:block lg:w-1/3 border-r
             ${mobileMenuOpen ? 'fixed inset-0 z-50 bg-white p-4 overflow-y-auto' : ''}
           `}>
@@ -15852,7 +15879,7 @@ useEffect(() => {
           </div>
 
           {/* Zone de chat */}
-          <div className="lg:w-2/3 flex flex-col h-[500px] sm:h-[600px] relative">
+          <div className={`${selectedConversation ? 'flex' : 'hidden lg:flex'} lg:w-2/3 flex-col h-[calc(100dvh-13rem)] min-h-[420px] lg:h-[600px] relative`}>
             <button 
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden absolute top-3 left-3 z-10 p-2 rounded-full bg-white shadow-md hover:bg-gray-50"

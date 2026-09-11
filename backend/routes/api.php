@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\GoogleAuthController;
 use App\Http\Controllers\Api\PropertyController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
@@ -85,6 +86,16 @@ Route::get('/property-image/{id}/{filename}', function ($id, $filename) {
 Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'currentUser']);
 
 // ==================== ROUTES HORS V1 (AUTHENTIFICATION PUBLIQUE) ====================
+// Connexion / inscription avec Google, et vérification e-mail / téléphone
+// déjà utilisés pendant l'inscription par étapes.
+Route::prefix('auth')->group(function () {
+    Route::middleware('throttle:google-auth')->group(function () {
+        Route::post('/google', [GoogleAuthController::class, 'authenticate']);
+        Route::post('/google/register', [GoogleAuthController::class, 'register']);
+    });
+    Route::post('/availability', [GoogleAuthController::class, 'availability'])->middleware('throttle:availability');
+});
+
 // Authentification voyageur
 Route::prefix('traveler')->middleware('throttle:auth')->group(function () {
     Route::post('/register', [TravelerAuthController::class, 'register']);

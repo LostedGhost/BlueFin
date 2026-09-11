@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo ,useCallback   } from 'react';
+import { SignupWizard, type PendingGoogleSignup } from './components/auth/SignupWizard';
+import { GoogleSignInButton } from './components/auth/GoogleSignInButton';
 import type { ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams, useLocation  } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24365,8 +24367,46 @@ function HostOnlyAuthPage({
   hideBackButton = false,
   selectedHostType = 'logement'
 }: HostOnlyAuthPageProps) {
-  const { login, register } = useAuth();
+  const { login, register, googleAuthenticate } = useAuth();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+  // Google sans compte existant : bascule vers l'inscription en étapes.
+  const [pendingGoogle, setPendingGoogle] = useState<PendingGoogleSignup | null>(null);
+  const [googleBusy, setGoogleBusy] = useState(false);
+
+  const finishHostAuth = (signedUser: any) => {
+    if (onAuthSuccess) {
+      onAuthSuccess(signedUser);
+      return;
+    }
+    const dashboardMap: Record<string, string> = {
+      logement: 'host-dashboard',
+      experience: 'host-experience-dashboard',
+      service: 'host-service-dashboard',
+    };
+    onNavigate?.({ name: dashboardMap[signedUser?.host_type || selectedHostType] || 'host-dashboard' });
+  };
+
+  const handleGoogleLogin = async (credential: string) => {
+    setGoogleBusy(true);
+    setErrors({});
+    try {
+      const result = await googleAuthenticate(credential);
+      if (result.status === 'new') {
+        setPendingGoogle({ credential, profile: result.profile });
+        setMode('signup');
+        return;
+      }
+      if (result.user.user_type !== 'hote') {
+        setErrors({ general: 'Ce compte Google est un compte voyageur. Cet espace est réservé aux hôtes.' });
+        return;
+      }
+      finishHostAuth(result.user);
+    } catch (err: any) {
+      setErrors({ general: err?.response?.data?.message || 'Connexion Google impossible. Réessayez.' });
+    } finally {
+      setGoogleBusy(false);
+    }
+  };
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -24734,75 +24774,28 @@ function HostOnlyAuthPage({
               )}
 
               {/* Formulaire */}
+              {mode === 'signup' ? (
+                <SignupWizard
+                  key={pendingGoogle?.credential ?? 'email'}
+                  userType="hote"
+                  hostType={selectedHostType}
+                  initialGoogle={pendingGoogle}
+                  onSignedIn={finishHostAuth}
+                  onSwitchToLogin={(email) => {
+                    setPendingGoogle(null);
+                    setFormData(prev => ({ ...prev, email: email || prev.email }));
+                    setMode('login');
+                  }}
+                />
+              ) : (
+              <>
+              <div className="mb-5 space-y-5">
+                <GoogleSignInButton text="signin_with" onCredential={handleGoogleLogin} disabled={googleBusy} />
+                <div className="flex items-center gap-3 text-xs text-slate-400">
+                  <span className="h-px flex-1 bg-slate-200" /> ou avec votre e-mail <span className="h-px flex-1 bg-slate-200" />
+                </div>
+              </div>
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                {mode === 'signup' && (
-                  <>
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Prénom</label>
-                        <div className="relative group">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#12b8c9] transition-colors" />
-                          <input
-                            type="text"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleChange}
-                            placeholder="Jean"
-                            className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]/20 focus:border-[#12b8c9] outline-none transition-all ${errors.firstName ? 'border-red-500 bg-red-50/50' : 'border-slate-200 bg-slate-50/50'}`}
-                          />
-                        </div>
-                        {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Nom</label>
-                        <div className="relative group">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#12b8c9] transition-colors" />
-                          <input
-                            type="text"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleChange}
-                            placeholder="Dupont"
-                            className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]/20 focus:border-[#12b8c9] outline-none transition-all ${errors.lastName ? 'border-red-500 bg-red-50/50' : 'border-slate-200 bg-slate-50/50'}`}
-                          />
-                        </div>
-                        {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Téléphone</label>
-                      <div className="relative group">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#12b8c9] transition-colors" />
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+229 XX XX XX XX"
-                          className="w-full pl-10 pr-4 py-3 border border-slate-200 bg-slate-50/50 rounded-xl focus:ring-2 focus:ring-[#12b8c9]/20 focus:border-[#12b8c9] outline-none transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">Adresse de la propriété</label>
-                      <input
-                        type="text"
-                        name="property_address"
-                        value={formData.property_address}
-                        onChange={handleChange}
-                        placeholder="Rue, quartier, ville"
-                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]/20 focus:border-[#12b8c9] outline-none transition-all ${errors.property_address ? 'border-red-500 bg-red-50/50' : 'border-slate-200 bg-slate-50/50'}`}
-                      />
-                      {errors.property_address && <p className="text-xs text-red-500 mt-1">{errors.property_address}</p>}
-                    </div>
-
-                    {/* ✅ CHAMP DE SOUS-TYPE ADAPTÉ (sans le sélecteur principal) */}
-                    {renderSubTypeField()}
-                  </>
-                )}
-
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Email</label>
                   <div className="relative group">
@@ -24842,31 +24835,6 @@ function HostOnlyAuthPage({
                   {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
                 </div>
 
-                {mode === 'signup' && (
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Confirmer mot de passe</label>
-                    <div className="relative group">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#12b8c9] transition-colors" />
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        placeholder="••••••••"
-                        className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-[#12b8c9]/20 focus:border-[#12b8c9] outline-none transition-all ${errors.confirmPassword ? 'border-red-500 bg-red-50/50' : 'border-slate-200 bg-slate-50/50'}`}
-                      />
-                      <button 
-                        type="button" 
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
-                  </div>
-                )}
-
                 <button
                   type="submit"
                   disabled={loading}
@@ -24877,13 +24845,13 @@ function HostOnlyAuthPage({
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       <span>Chargement...</span>
                     </div>
-                  ) : mode === 'login' ? (
-                    'Se connecter'
                   ) : (
-                    'Créer mon compte hôte'
+                    'Se connecter'
                   )}
                 </button>
               </form>
+              </>
+              )}
 
               {/* Switch entre connexion et inscription */}
               <div className="text-center mt-8 pt-6 border-t border-slate-100">
@@ -24897,7 +24865,7 @@ function HostOnlyAuthPage({
                 ) : (
                   <p className="text-sm text-slate-500">
                     Déjà un compte hôte ?{' '}
-                    <button onClick={() => setMode('login')} className="text-[#12b8c9] font-semibold hover:underline">
+                    <button onClick={() => { setPendingGoogle(null); setMode('login'); }} className="text-[#12b8c9] font-semibold hover:underline">
                       Se connecter
                     </button>
                   </p>
@@ -24942,7 +24910,29 @@ export function AuthPage({
     search?: string;
 }) {
     // ✅ Utiliser le hook useAuth mis à jour pour les cookies
-    const { login, register } = useAuth();
+    const { login, register, googleAuthenticate } = useAuth();
+    // Connexion Google sans compte existant : on bascule vers l'inscription
+    // en étapes, pré-remplie avec le profil Google.
+    const [pendingGoogle, setPendingGoogle] = useState<PendingGoogleSignup | null>(null);
+    const [googleBusy, setGoogleBusy] = useState(false);
+
+    const handleGoogleLogin = async (credential: string) => {
+        setGoogleBusy(true);
+        setErrors({});
+        try {
+            const result = await googleAuthenticate(credential);
+            if (result.status === 'logged_in') {
+                handleSuccessfulAuth(result.user);
+                return;
+            }
+            setPendingGoogle({ credential, profile: result.profile });
+            setMode('signup');
+        } catch (err: any) {
+            setErrors({ general: err?.response?.data?.message || 'Connexion Google impossible. Réessayez.' });
+        } finally {
+            setGoogleBusy(false);
+        }
+    };
     const location = useLocation();
 
     // Le CTA "S'inscrire" (Navbar) doit ouvrir directement le formulaire
@@ -25396,39 +25386,29 @@ export function AuthPage({
                     </div>
                   )}
 
-                  <form onSubmit={mode === 'forgot' ? handleForgotPassword : handleSubmit} className="space-y-4">
-                    {mode === 'signup' && (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <input
-                              type="text"
-                              name="firstName"
-                              value={formData.firstName}
-                              onChange={handleChange}
-                              className={`w-full pl-9 pr-3 py-2 border rounded-xl ${errors.firstName ? 'border-red-500' : 'border-gray-200'}`}
-                            />
-                          </div>
-                          {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                            <input
-                              type="text"
-                              name="lastName"
-                              value={formData.lastName}
-                              onChange={handleChange}
-                              className={`w-full pl-9 pr-3 py-2 border rounded-xl ${errors.lastName ? 'border-red-500' : 'border-gray-200'}`}
-                            />
-                          </div>
-                          {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
-                        </div>
+                  {mode === 'signup' ? (
+                    <SignupWizard
+                      key={pendingGoogle?.credential ?? 'email'}
+                      userType="traveler"
+                      initialGoogle={pendingGoogle}
+                      onSignedIn={(signedUser) => handleSuccessfulAuth(signedUser)}
+                      onSwitchToLogin={(email) => {
+                        setPendingGoogle(null);
+                        setFormData(prev => ({ ...prev, email: email || prev.email }));
+                        setMode('login');
+                      }}
+                    />
+                  ) : (
+                  <>
+                  {mode === 'login' && (
+                    <div className="mb-5 space-y-5">
+                      <GoogleSignInButton text="signin_with" onCredential={handleGoogleLogin} disabled={googleBusy} />
+                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                        <span className="h-px flex-1 bg-gray-200" /> ou avec votre e-mail <span className="h-px flex-1 bg-gray-200" />
                       </div>
-                    )}
+                    </div>
+                  )}
+                  <form onSubmit={mode === 'forgot' ? handleForgotPassword : handleSubmit} className="space-y-4">
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
@@ -25446,21 +25426,6 @@ export function AuthPage({
                       {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
                     </div>
 
-                    {mode === 'signup' && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input
-                            type="tel"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-xl"
-                          />
-                        </div>
-                      </div>
-                    )}
 
                     {mode !== 'forgot' && (
                       <div>
@@ -25482,25 +25447,6 @@ export function AuthPage({
                       </div>
                     )}
 
-                    {mode === 'signup' && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirmer mot de passe *</label>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                          <input
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            className={`w-full pl-9 pr-10 py-2 border rounded-xl ${errors.confirmPassword ? 'border-red-500' : 'border-gray-200'}`}
-                          />
-                          <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          </button>
-                        </div>
-                        {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
-                      </div>
-                    )}
 
                     {mode === 'login' && (
                       <div className="text-right">
@@ -25519,11 +25465,11 @@ export function AuthPage({
                         ? 'Chargement...'
                         : mode === 'login'
                         ? 'Se connecter'
-                        : mode === 'signup'
-                        ? 'Créer mon compte voyageur'
                         : 'Envoyer le lien de réinitialisation'}
                     </button>
                   </form>
+                  </>
+                  )}
 
                   <div className="text-center mt-5">
                     {mode === 'login' && (
@@ -25537,7 +25483,7 @@ export function AuthPage({
                     {mode === 'signup' && (
                       <p className="text-xs text-gray-500">
                         Déjà un compte ?{' '}
-                        <button onClick={() => setMode('login')} className="text-[#12b8c9] font-medium hover:underline">
+                        <button onClick={() => { setPendingGoogle(null); setMode('login'); }} className="text-[#12b8c9] font-medium hover:underline">
                           Se connecter
                         </button>
                       </p>

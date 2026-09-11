@@ -48,4 +48,13 @@ return [
         'folder' => env('CLOUDINARY_FOLDER', 'bluefin'),
     ],
 
+    /*
+     * Connexion avec Google (Google Identity Services). Seul le Client ID est
+     * nécessaire : le jeton d'identité est vérifié avec les clés publiques
+     * de Google, sans secret.
+     */
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+    ],
+
 ];

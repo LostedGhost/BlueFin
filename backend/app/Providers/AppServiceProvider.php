@@ -33,5 +33,15 @@ class AppServiceProvider extends ServiceProvider
             $identifier = $request->input('email') ?? $request->input('phone') ?? 'anonymous';
             return Limit::perMinute(5)->by($request->ip().'|'.$identifier);
         });
+
+        // Connexion Google : pas de mot de passe à deviner (un faux jeton est
+        // rejeté par sa signature), mais beaucoup d'utilisateurs mobiles
+        // partagent la même IP opérateur. Limite par IP plus large que
+        // « auth », qui regroupait tous les appels Google sous « anonymous ».
+        RateLimiter::for('google-auth', fn ($request) => Limit::perMinute(30)->by($request->ip()));
+
+        // Vérification « e-mail / téléphone déjà utilisé » pendant
+        // l'inscription par étapes : bornée pour limiter l'énumération.
+        RateLimiter::for('availability', fn ($request) => Limit::perMinute(20)->by($request->ip()));
     }
 }

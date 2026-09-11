@@ -60,6 +60,23 @@ interface AuthContextType {
     isAdmin: () => boolean;
     getHostType: () => 'logement' | 'experience' | 'service' | null;
     getHostTypeLabel: () => string;
+    // Connexion / inscription avec Google (voir backend GoogleAuthController)
+    googleAuthenticate: (credential: string) => Promise<GoogleAuthResult>;
+    googleRegister: (data: GoogleRegisterData) => Promise<any>;
+    checkAvailability: (fields: { email?: string; phone?: string }) => Promise<{ email_taken: boolean; phone_taken: boolean }>;
+}
+
+export type GoogleAuthResult =
+    | { status: 'logged_in'; user: User; message?: string }
+    | { status: 'new'; profile: { email: string; first_name: string; last_name: string } };
+
+export interface GoogleRegisterData {
+    credential: string;
+    first_name: string;
+    last_name: string;
+    phone: string;
+    user_type?: 'traveler' | 'hote';
+    host_type?: 'logement' | 'experience' | 'service';
 }
 
 // Keep a single context instance across HMR/module duplication in dev.
@@ -786,6 +803,57 @@ const login = async (email: string, password: string, userType: string = 'travel
         return hostType ? types[hostType] : 'Non défini';
     };
 
+    // ============================================
+    // ✅ GOOGLE
+    // ============================================
+    // Enregistre localement l'utilisateur renvoyé par le backend (même format
+    // que login/register). La redirection reste à la charge de la page.
+    const storeSignedInUser = (userData: any, fallbackType: string): User => {
+        const resolvedUserType = resolveUserType(userData.user_type, fallbackType);
+        const finalUser: User = { ...userData, user_type: resolvedUserType, host_type: userData.host_type || null };
+        localStorage.setItem('user', JSON.stringify(finalUser));
+        localStorage.setItem('userType', resolvedUserType);
+        setUser(finalUser);
+        setIsAuthenticated(true);
+        window.dispatchEvent(new CustomEvent('authChange', { detail: { user: finalUser } }));
+        return finalUser;
+    };
+
+    const googleAuthenticate = async (credential: string): Promise<GoogleAuthResult> => {
+        await refreshCsrfToken();
+        const response = await publicApi.post('/api/auth/google', { credential });
+        if (response.data.status === 'logged_in') {
+            const finalUser = storeSignedInUser(response.data.user, 'traveler');
+            toast.success(response.data.message || 'Connexion réussie !');
+            return { status: 'logged_in', user: finalUser, message: response.data.message };
+        }
+        return { status: 'new', profile: response.data.profile };
+    };
+
+    const googleRegister = async (data: GoogleRegisterData) => {
+        await refreshCsrfToken();
+        try {
+            const response = await publicApi.post('/api/auth/google/register', data);
+            const finalUser = storeSignedInUser(response.data.user, data.user_type || 'traveler');
+            toast.success(response.data.message || 'Inscription réussie !');
+            return { ...response.data, user: finalUser };
+        } catch (error: any) {
+            // Même format d'erreur que register() : message lisible + response.
+            if (error.response?.data?.errors) {
+                const readable: any = new Error(Object.values(error.response.data.errors).flat().join(' '));
+                readable.response = error.response;
+                throw readable;
+            }
+            throw error;
+        }
+    };
+
+    const checkAvailability = async (fields: { email?: string; phone?: string }) => {
+        await refreshCsrfToken();
+        const response = await publicApi.post('/api/auth/availability', fields);
+        return { email_taken: !!response.data.email_taken, phone_taken: !!response.data.phone_taken };
+    };
+
     const value = {
         user,
         isAuthenticated,
@@ -802,6 +870,9 @@ const login = async (email: string, password: string, userType: string = 'travel
         isAdmin,
         getHostType,
         getHostTypeLabel,
+        googleAuthenticate,
+        googleRegister,
+        checkAvailability,
     };
 
     return (

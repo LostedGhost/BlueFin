@@ -2445,7 +2445,7 @@ export const mapProperty = (p: any) => {
     // Site 100% FCFA / Mobile Money : pas d'équivalent euro affiché (voir audit copywriting).
     priceEuroDisplay: '',
     priceNumber: priceFCFA,
-    rating: p.average_rating || p.rating || 4.5,
+    rating: Number(p.average_rating || p.rating) || 0, // note réelle, jamais inventée
     reviews: p.reviews_count || 0,
     images: allImages,
     image: firstImage,
@@ -20024,7 +20024,7 @@ const getExperienceImages = (experience: any): string[] => {
 const ExperienceCard = ({ exp, onClick }: { exp: Experience; onClick: () => void }) => {
   const images = getExperienceImages(exp);
     const firstImage = images.length > 0 ? images[0] : '/placeholder-photo.svg';
-  const rating = exp.average_rating || 4.5;
+  const rating = Number(exp.average_rating) || 0; // note réelle ; 0 = « Nouveau » (plus de 4,5 inventé)
   const reviews = exp.reviews_count || 0;
 
   
@@ -20074,7 +20074,7 @@ const ExperienceCard = ({ exp, onClick }: { exp: Experience; onClick: () => void
           </h3>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Star className="w-3 h-3 fill-current text-yellow-400" />
-            <span className="text-xs font-medium">{rating.toFixed(1)}</span>
+            <span className="text-xs font-medium">{rating > 0 ? rating.toFixed(1) : 'Nouveau'}</span>
             {reviews > 0 && <span className="text-xs text-gray-400">({reviews})</span>}
           </div>
         </div>
@@ -20337,7 +20337,7 @@ const ExperienceDetailModal = ({
   const steps = getProgramSteps(exp);
   const availableDates = getAvailableDates(exp);
   
-  const rating = exp.average_rating || 4.5;
+  const rating = Number(exp.average_rating) || 0; // note réelle ; 0 = « Nouveau » (plus de 4,5 inventé)
   const reviews = exp.reviews_count || 0;
   const price = exp.price || 0;
   const maxParticipants = exp.total_places || 10;
@@ -20628,7 +20628,7 @@ const ExperienceDetailModal = ({
                   </h1>
                   <div className="flex items-center gap-2 mt-2">
                     <Star className="w-4 h-4 fill-current text-yellow-400" />
-                    <span className="font-medium text-sm">{rating.toFixed(1)}</span>
+                    <span className="font-medium text-sm">{rating > 0 ? rating.toFixed(1) : 'Nouveau'}</span>
                     {reviews > 0 && (
                       <>
                         <span className="text-gray-300">·</span>
@@ -22616,7 +22616,7 @@ const ServiceCalendar = ({
 // ============================================
 const ServiceCard = ({ service, onClick }: { service: Service; onClick: () => void }) => {
   const images = getServiceImages(service);
-  const rating = service.average_rating || 4.5;
+  const rating = Number(service.average_rating) || 0; // note réelle ; 0 = « Nouveau » (plus de 4,5 inventé)
   const reviews = service.reviews_count || 0;
   
   
@@ -22646,7 +22646,7 @@ const ServiceCard = ({ service, onClick }: { service: Service; onClick: () => vo
           <h3 className="font-semibold text-[#0F2940] text-base line-clamp-2">{service.title}</h3>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Star className="w-3 h-3 fill-current text-yellow-400" />
-            <span className="text-xs font-medium">{rating.toFixed(1)}</span>
+            <span className="text-xs font-medium">{rating > 0 ? rating.toFixed(1) : 'Nouveau'}</span>
             {reviews > 0 && <span className="text-xs text-gray-400">({reviews})</span>}
           </div>
         </div>
@@ -22723,7 +22723,7 @@ const ServiceDetailModal = ({
   const steps = getServiceSteps(service);
   const availableDates = getAvailableDates(service);
     
-  const rating = service.average_rating || 4.5;
+  const rating = Number(service.average_rating) || 0; // note réelle ; 0 = « Nouveau » (plus de 4,5 inventé)
   const reviews = service.reviews_count || 0;
   const price = service.price || 0;
   const hostName = service.host?.first_name 
@@ -22947,7 +22947,7 @@ const ServiceDetailModal = ({
                   </h1>
                   <div className="flex items-center gap-2 mt-2">
                     <Star className="w-4 h-4 fill-current text-yellow-400" />
-                    <span className="font-medium text-sm">{rating.toFixed(1)}</span>
+                    <span className="font-medium text-sm">{rating > 0 ? rating.toFixed(1) : 'Nouveau'}</span>
                     {reviews > 0 && (
                       <>
                         <span className="text-gray-300">·</span>
@@ -24088,7 +24088,30 @@ export function BecomeHost({ onNavigate }: PageProps) {
     host_type: 'logement' // Par défaut logement
   });
   
-  const { login, register, switchUserType } = useAuth();
+  const { login, register, switchUserType, user, isAuthenticated, becomeHost } = useAuth();
+  // Utilisateur déjà connecté : pas de formulaire de connexion ici.
+  //  - hôte   → son tableau de bord ;
+  //  - voyageur → confirmation, puis passage de son compte en compte hôte.
+  const signedIn = Boolean(isAuthenticated && user);
+  const [pendingConversion, setPendingConversion] = useState<'property' | 'experience' | 'service' | null>(null);
+  const hostDashboardFor = (hostType?: string | null) =>
+    hostType === 'experience' ? 'host-experience-dashboard' : hostType === 'service' ? 'host-service-dashboard' : 'host-dashboard';
+
+  const confirmConversion = async () => {
+    if (!pendingConversion) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      await becomeHost(hostTypeMap[pendingConversion] as 'logement' | 'experience' | 'service');
+      setSelectedOption(pendingConversion);
+      setPendingConversion(null);
+      setShowCommitment(true);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Impossible de passer votre compte en compte hôte. Réessayez.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Mapping des types d'hôtes
   const hostTypeMap = {
@@ -24098,6 +24121,10 @@ export function BecomeHost({ onNavigate }: PageProps) {
   };
 
   const handleStart = () => {
+    if (signedIn && user) {
+      onNavigate?.({ name: user.user_type === 'admin' ? 'admin-dashboard' : hostDashboardFor(user.host_type) });
+      return;
+    }
     setShowAuthPage(true);
     setAuthMode('login');
     setError(null);
@@ -24177,6 +24204,16 @@ export function BecomeHost({ onNavigate }: PageProps) {
   };
 
   const handleOptionSelect = (option: 'property' | 'experience' | 'service') => {
+    if (signedIn && user) {
+      if (user.user_type === 'hote') {
+        onNavigate?.({ name: hostDashboardFor(user.host_type) });
+      } else if (user.user_type === 'admin') {
+        setError('Un compte administrateur ne peut pas devenir hôte.');
+      } else {
+        setPendingConversion(option);
+      }
+      return;
+    }
     setSelectedOption(option);
     // Stocker le type dans formData pour l'inscription
     const hostType = hostTypeMap[option];
@@ -24210,6 +24247,33 @@ export function BecomeHost({ onNavigate }: PageProps) {
         setShowAuthPage(true); 
       }} 
     />;
+  }
+
+  if (pendingConversion && user) {
+    const what = { property: 'votre logement', experience: 'votre expérience', service: 'votre service' }[pendingConversion];
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#eefbfd] to-white flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-6 sm:p-8">
+          <h2 className="text-2xl font-bold text-[#0F2940] mb-2">Passer en compte hôte</h2>
+          <p className="text-sm text-slate-600">
+            Vous êtes connecté avec <strong className="text-[#0F2940]">{user.email}</strong>. Ce compte deviendra un compte hôte
+            pour proposer {what}. Vos informations personnelles sont conservées.
+          </p>
+          <p className="text-sm text-slate-600 mt-3">
+            Votre identité sera ensuite vérifiée par notre équipe avant la publication.
+          </p>
+          {error && <p className="mt-4 p-3 rounded-xl bg-red-50 text-sm text-red-700">{error}</p>}
+          <div className="mt-6 flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+            <button type="button" onClick={() => { setPendingConversion(null); setError(null); }}
+              className="px-4 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-slate-100">Annuler</button>
+            <button type="button" onClick={confirmConversion} disabled={isLoading}
+              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#12b8c9] to-[#0f2940] disabled:opacity-50">
+              {isLoading ? 'Un instant…' : 'Devenir hôte'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Page principale Devenir Hôte
@@ -24333,18 +24397,20 @@ export function BecomeHost({ onNavigate }: PageProps) {
           </div>
         </div>
 
-        {/* Bouton d'action */}
+        {/* Bouton d'action — sans objet pour un voyageur connecté : il choisit une offre ci-dessus. */}
+        {!(signedIn && user?.user_type !== 'hote' && user?.user_type !== 'admin') && (
         <div className="flex justify-center pt-6 sm:pt-8 border-t border-slate-200">
           <button
             onClick={handleStart}
             className="group relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#12b8c9] to-[#0f2940] px-6 sm:px-8 md:px-12 py-2.5 sm:py-3 md:py-4 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
           >
             <span className="relative z-10 flex items-center gap-2 text-sm sm:text-base">
-              Accéder à mon espace
+              {signedIn ? 'Accéder à mon espace hôte' : 'Accéder à mon espace'}
               <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 group-hover:translate-x-1 transition-transform" />
             </span>
           </button>
         </div>
+        )}
       </div>
     </div>
   );
@@ -24910,7 +24976,19 @@ export function AuthPage({
     search?: string;
 }) {
     // ✅ Utiliser le hook useAuth mis à jour pour les cookies
-    const { login, register, googleAuthenticate } = useAuth();
+    const { login, register, googleAuthenticate, isAuthenticated, user } = useAuth();
+    // Déjà connecté en arrivant sur /auth (ancien lien, bouton retour…) : pas
+    // de formulaire de connexion, on renvoie vers son espace. Évalué une seule
+    // fois au montage — une connexion faite ici suit handleSuccessfulAuth.
+    const [alreadySignedIn] = useState(() => Boolean(isAuthenticated && user));
+    useEffect(() => {
+        if (!alreadySignedIn || !user) return;
+        const target = user.user_type === 'admin' ? 'admin-dashboard'
+            : user.user_type === 'hote'
+                ? (user.host_type === 'experience' ? 'host-experience-dashboard' : user.host_type === 'service' ? 'host-service-dashboard' : 'host-dashboard')
+                : 'profile';
+        onNavigate?.({ name: target } as Route);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
     // Connexion Google sans compte existant : on bascule vers l'inscription
     // en étapes, pré-remplie avec le profil Google.
     const [pendingGoogle, setPendingGoogle] = useState<PendingGoogleSignup | null>(null);
@@ -25286,6 +25364,8 @@ export function AuthPage({
     // ============================================
     // ✅ RENDU
     // ============================================
+   if (alreadySignedIn) return null;
+
    return (
     <div className="min-h-screen bg-gradient-to-br from-[#eefbfd] to-[#e8fffb]">
       {!hideBackButton && (

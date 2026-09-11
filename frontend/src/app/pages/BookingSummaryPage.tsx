@@ -222,7 +222,7 @@ export function BookingSummaryPage({ onNavigate, id, search }: BookingSummaryPag
                                     <p className="text-sm text-gray-500 mt-0.5">{property.district}, {property.city}</p>
                                     <div className="flex items-center gap-2 mt-1">
                                         <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                                        <span className="text-sm">{property.average_rating || 4.5}</span>
+                                        <span className="text-sm">{Number(property.average_rating) > 0 ? Number(property.average_rating).toFixed(1) : 'Nouveau'}</span>
                                         <span className="text-gray-400 text-sm">({property.reviews_count || 0} avis)</span>
                                     </div>
                                 </div>

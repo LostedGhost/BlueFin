@@ -334,10 +334,20 @@ class HostAuthController extends Controller
             ], 400);
         }
         
-        $user->update([
-            'user_type' => 'hote',
-            'verification_status' => 'pending',
-        ]);
+        if ($user->user_type === 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Un compte administrateur ne peut pas devenir hôte.',
+            ], 403);
+        }
+
+        $request->validate(['host_type' => 'sometimes|in:logement,experience,service'], $this->frenchValidationMessages());
+
+        $attributes = ['user_type' => 'hote', 'verification_status' => 'pending'];
+        if ($request->filled('host_type') && \Illuminate\Support\Facades\Schema::hasColumn('users', 'host_type')) {
+            $attributes['host_type'] = $request->host_type;
+        }
+        $user->forceFill($attributes)->save();
         
         // Send notification to admin
         $this->notifyAdminNewHost($user);

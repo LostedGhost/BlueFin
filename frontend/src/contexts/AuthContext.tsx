@@ -64,6 +64,8 @@ interface AuthContextType {
     googleAuthenticate: (credential: string) => Promise<GoogleAuthResult>;
     googleRegister: (data: GoogleRegisterData) => Promise<any>;
     checkAvailability: (fields: { email?: string; phone?: string }) => Promise<{ email_taken: boolean; phone_taken: boolean }>;
+    // Passage d'un compte voyageur connecté en compte hôte.
+    becomeHost: (hostType: 'logement' | 'experience' | 'service') => Promise<User>;
 }
 
 export type GoogleAuthResult =
@@ -854,6 +856,13 @@ const login = async (email: string, password: string, userType: string = 'travel
         return { email_taken: !!response.data.email_taken, phone_taken: !!response.data.phone_taken };
     };
 
+    const becomeHost = async (hostType: 'logement' | 'experience' | 'service'): Promise<User> => {
+        await refreshCsrfToken();
+        const response = await publicApi.post('/api/v1/host/become-host', { host_type: hostType });
+        // host_type n'existe pas dans toutes les bases : on garde le choix fait.
+        return storeSignedInUser({ ...response.data.user, host_type: response.data.user?.host_type || hostType }, 'hote');
+    };
+
     const value = {
         user,
         isAuthenticated,
@@ -873,6 +882,7 @@ const login = async (email: string, password: string, userType: string = 'travel
         googleAuthenticate,
         googleRegister,
         checkAvailability,
+        becomeHost,
     };
 
     return (

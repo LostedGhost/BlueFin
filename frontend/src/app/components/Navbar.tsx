@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Menu, X, MapPin, Home, Star, Server, LogIn, Calendar, Globe, Sparkles, UserPlus, ChevronLeft, ChevronRight, Users, Plus, Minus, Baby, Dog, Info } from 'lucide-react';
+import { Search, Menu, X, MapPin, Home, Star, Server, LogIn, Calendar, Globe, Sparkles, UserPlus, ChevronLeft, ChevronRight, Users, Plus, Minus, Baby, Dog, Info, LogOut } from 'lucide-react';
 import type { Route } from '../router';
 import Logo from '../assets/Bluefin Immo_01.jpg.jpeg';
 import propertyService from '../../services/property.service';
+import { useAuth } from '../../contexts/AuthContext';
+import { ProfileMenu, UserAvatar, accountLinks } from './account/ProfileMenu';
 
 const destinationsList = [
   "Abomey", "Abomey-Calavi", "Cotonou", "Porto-Novo", "Parakou", "Ouidah", "Grand-Popo",
@@ -35,6 +37,16 @@ export function Navbar({
   onRealTimeSearch,
   allLogements = [] 
 }: NavbarProps) {
+  // Session : un utilisateur connecté voit son avatar et son menu de compte
+  // à la place de « S'inscrire » ; « Devenir hôte » reste proposé aux seuls
+  // voyageurs (c'est une offre, pas un bouton de connexion).
+  const { user, isAuthenticated, logout } = useAuth();
+  const signedIn = Boolean(isAuthenticated && user);
+  const showBecomeHost = !signedIn || (user?.user_type !== 'hote' && user?.user_type !== 'admin');
+  const handleLogout = async () => {
+    await logout();
+    onNavigate?.({ name: 'home' });
+  };
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   
@@ -377,13 +389,19 @@ export function Navbar({
 
           {/* Actions droite */}
           <div className="hidden lg:flex items-center gap-3">
-            <button onClick={() => onNavigate?.({ name: 'become-host' })} className="px-5 py-2 rounded-full bg-[#0f2940] text-white text-sm hover:bg-[#1a3a52] transition">
-              Devenir hôte
-            </button>
-            <button onClick={() => onNavigate?.({ name: 'auth', search: 'mode=signup' })} className="px-5 py-2 rounded-full border border-[#12b8c9] text-[#0f2940] text-sm flex items-center gap-2 hover:bg-[#12b8c9]/5 transition">
-              <LogIn className="w-4 h-4" />
-              S'inscrire
-            </button>
+            {showBecomeHost && (
+              <button onClick={() => onNavigate?.({ name: 'become-host' })} className="px-5 py-2 rounded-full bg-[#0f2940] text-white text-sm hover:bg-[#1a3a52] transition">
+                Devenir hôte
+              </button>
+            )}
+            {signedIn && user ? (
+              <ProfileMenu user={user} onNavigate={onNavigate} onLogout={handleLogout} />
+            ) : (
+              <button onClick={() => onNavigate?.({ name: 'auth', search: 'mode=signup' })} className="px-5 py-2 rounded-full border border-[#12b8c9] text-[#0f2940] text-sm flex items-center gap-2 hover:bg-[#12b8c9]/5 transition">
+                <LogIn className="w-4 h-4" />
+                S'inscrire
+              </button>
+            )}
           </div>
 
           {/* Mobile - Barre de recherche + Menu */}
@@ -904,7 +922,27 @@ export function Navbar({
               ))}
               
               <div className="h-px bg-gray-100 my-3"></div>
-              
+
+              {signedIn && user && (
+                <div className="mb-2">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#eefbfd]">
+                    <UserAvatar user={user} size={40} />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[#0f2940] truncate">{user.first_name} {user.last_name}</p>
+                      <p className="text-xs text-emerald-600">Connecté</p>
+                    </div>
+                  </div>
+                  {accountLinks(user).map(({ label, icon: Icon, route }) => (
+                    <button key={label} onClick={() => { onNavigate?.(route); setMenuOpen(false); }}
+                      className="w-full text-left py-3 px-4 rounded-xl flex items-center gap-3 hover:bg-gray-50 text-[#0f2940]">
+                      <Icon className="w-5 h-5 text-gray-500" />
+                      <span className="font-medium text-sm">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {showBecomeHost && (
               <button 
                 onClick={() => { onNavigate?.({ name: 'become-host' }); setMenuOpen(false); }} 
                 className="w-full bg-[#0f2940] text-white py-3 rounded-xl text-center font-medium text-sm hover:bg-[#1a3a52] transition-all duration-200 flex items-center justify-center gap-2"
@@ -912,7 +950,17 @@ export function Navbar({
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 Devenir hôte
               </button>
-              
+              )}
+
+              {signedIn ? (
+                <button
+                  onClick={() => { setMenuOpen(false); handleLogout(); }}
+                  className="w-full mt-2 py-3 rounded-xl text-center font-medium text-sm flex items-center justify-center gap-2 text-red-600 hover:bg-red-50 transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Se déconnecter
+                </button>
+              ) : (
               <button 
                 onClick={() => { onNavigate?.({ name: 'auth', search: 'mode=signup' }); setMenuOpen(false); }} 
                 className="w-full border border-emerald-400 py-3 rounded-xl text-center font-medium text-sm flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all duration-200 text-[#0f2940]"
@@ -920,6 +968,7 @@ export function Navbar({
                 <UserPlus className="w-4 h-4 text-emerald-500" />
                 S'inscrire
               </button>
+              )}
             </div>
           </div>
 

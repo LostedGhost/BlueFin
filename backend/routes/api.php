@@ -257,8 +257,12 @@ Route::prefix('v1')->group(function () {
         });
         
         // ==================== ROUTES HÔTE PROTÉGÉES ====================
+        // Passage d'un compte voyageur en compte hôte. Était placé derrière le
+        // middleware « host » : seul un hôte pouvait l'appeler, donc personne
+        // ne pouvait réellement devenir hôte depuis un compte existant.
+        Route::post('/host/become-host', [HostAuthController::class, 'becomeHost']);
+
         Route::prefix('host')->middleware(['host'])->group(function () {
-            Route::post('/become-host', [HostAuthController::class, 'becomeHost']);
             Route::post('/logout', [HostAuthController::class, 'logout']);
             Route::post('/upload-identity', [HostAuthController::class, 'uploadIdentity']);
             Route::get('/verification-status', [HostAuthController::class, 'verificationStatus']);

@@ -3,6 +3,7 @@ import { Compass, Heart, MessageCircle, User, LogIn, Calendar, LayoutDashboard, 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { UserAvatar } from './account/ProfileMenu';
 
 export type Tab = 'explore' | 'favorites' | 'trips' | 'messages' | 'profile' | 'auth' | 'admin-dashboard' | 'admin-users' | 'admin-properties' | 'admin-settings';
 
@@ -14,7 +15,6 @@ interface MobileBottomNavProps {
 export function MobileBottomNav({ active: propActive, onNavigate }: MobileBottomNavProps) {
   const location = useLocation();
   const { isAuthenticated, user } = useAuth();
-  const userName = user?.first_name ? `${user.first_name}` : '';
   const userType = user?.user_type;
   const hostType = user?.host_type; // ✅ Récupérer le type d'hôte (logement, experience, service)
   
@@ -85,7 +85,7 @@ export function MobileBottomNav({ active: propActive, onNavigate }: MobileBottom
         { id: 'admin-users', icon: Users, label: 'Utilisateurs' },
         { id: 'admin-properties', icon: Building2, label: 'Annonces' },
         { id: 'admin-settings', icon: Settings, label: 'Réglages' },
-        { id: 'profile', icon: User, label: userName || 'Admin' },
+        { id: 'profile', icon: User, label: 'Profil' },
       ];
     }
     
@@ -97,7 +97,7 @@ export function MobileBottomNav({ active: propActive, onNavigate }: MobileBottom
     
     const privateTabs = [
       { id: 'messages' as Tab, icon: MessageCircle, label: 'Messages' },
-      { id: 'profile' as Tab, icon: User, label: userName || 'Profil' },
+      { id: 'profile' as Tab, icon: User, label: 'Profil' },
     ];
     
     const travelerSpecificTab = [
@@ -205,6 +205,13 @@ const handleNavigate = (tabId: Tab) => {
               : 'text-[#9ca3af] hover:text-[#0f2940] hover:scale-105'
           }`}
         >
+          {id === 'profile' && isAuthenticated && user ? (
+            // Connecté : avatar (photo ou initiales) avec point vert, cerclé
+            // de la couleur active quand l'onglet est sélectionné.
+            <span className={`rounded-full ${activeTab === id ? 'ring-2 ring-[#12b8c9] ring-offset-1' : ''}`}>
+              <UserAvatar user={user} size={24} />
+            </span>
+          ) : (
           <Icon 
             className={`w-5 h-5 sm:w-6 sm:h-6 transition-all ${
               activeTab === id && id !== 'auth' && id !== 'admin-dashboard' && id !== 'admin-users' && id !== 'admin-properties' && id !== 'admin-settings'
@@ -212,6 +219,7 @@ const handleNavigate = (tabId: Tab) => {
                 : ''
             }`} 
           />
+          )}
           <span className={`text-[10px] sm:text-xs transition-all ${activeTab === id ? 'font-bold' : ''}`}>
             {label}
           </span>

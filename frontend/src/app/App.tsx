@@ -650,7 +650,10 @@ export default function App() {
               <AppContent />
             </ThemeProvider>
           </AuthProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* Outil de développement React Query : masqué par défaut (son bouton
+              flottant recouvrait l’onglet Profil et gênait les captures).
+              Pour l’afficher : VITE_QUERY_DEVTOOLS=true dans .env.development. */}
+          {import.meta.env.VITE_QUERY_DEVTOOLS === 'true' && <ReactQueryDevtools initialIsOpen={false} />}
         </QueryClientProvider>
       </BrowserRouter>
     </HelmetProvider>

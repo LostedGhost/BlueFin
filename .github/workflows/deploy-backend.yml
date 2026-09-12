@@ -52,6 +52,41 @@ jobs:
     # seulement si le CI est vert.
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     steps:
+      # Un secret absent arrive comme une chaîne vide, et l'erreur qui suit est
+      # obscure (« can't connect without a private SSH key or password »). On
+      # dit donc tout de suite lequel manque. Aucune valeur n'est affichée.
+      - name: Vérifier que les secrets sont renseignés
+        env:
+          HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          USERNAME: ${{ secrets.HOSTINGER_SSH_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.HOSTINGER_DEPLOY_PATH }}
+          PASSWORD: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+        run: |
+          manquants=0
+          verifier() { # $1 = nom du secret, $2 = sa valeur
+            if [ -z "$2" ]; then
+              echo "MANQUANT : $1"; manquants=1
+            else
+              echo "OK : $1 (${#2} caractères)"
+            fi
+          }
+          verifier HOSTINGER_SSH_HOST "$HOST"
+          verifier HOSTINGER_SSH_PORT "$PORT"
+          verifier HOSTINGER_SSH_USERNAME "$USERNAME"
+          verifier HOSTINGER_DEPLOY_PATH "$DEPLOY_PATH"
+          if [ -z "$PASSWORD" ]; then
+            echo "MANQUANT : HOSTINGER_SSH_PASSWORD"; manquants=1
+          else
+            echo "OK : HOSTINGER_SSH_PASSWORD (renseigné)"
+          fi
+          if [ "$manquants" -ne 0 ]; then
+            echo ""
+            echo "Créer les secrets manquants dans Settings > Secrets and variables > Actions"
+            echo "(onglet Actions, pas Dependabot ni Codespaces), avec le nom exact ci-dessus."
+            exit 1
+          fi
+
       - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOSTINGER_SSH_HOST }}

@@ -17,8 +17,14 @@ name: Deploy backend (Hostinger)
 #   HOSTINGER_SSH_HOST       — hôte SSH (ex: 123.45.67.89)
 #   HOSTINGER_SSH_PORT       — port SSH (65002 chez Hostinger, pas 22)
 #   HOSTINGER_SSH_USERNAME   — utilisateur SSH hPanel (ex: u381086576)
-#   HOSTINGER_SSH_KEY        — clé privée SSH (format PEM) ; la clé publique
-#                              correspondante doit être ajoutée dans hPanel
+#   HOSTINGER_SSH_PASSWORD   — mot de passe SSH du compte hPanel
+#
+# NOTE SÉCURITÉ — le mot de passe SSH donne un accès complet au compte
+# d'hébergement (fichiers, .env de production, et donc la base). Toute personne
+# ayant le droit d'écriture sur ce dépôt peut le récupérer via un workflow.
+# Utiliser donc un mot de passe SSH dédié, différent du compte hPanel, et
+# revenir à une clé SSH dès que possible (HOSTINGER_SSH_KEY + authorized_keys) :
+# une clé se révoque en supprimant une ligne sur le serveur.
 #   HOSTINGER_DEPLOY_PATH    — chemin du projet Laravel sur le serveur, ex:
 #                              /home/u381086576/domains/bluefin-immo.com/bluefin-monorepo/backend
 #
@@ -51,7 +57,7 @@ jobs:
           host: ${{ secrets.HOSTINGER_SSH_HOST }}
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
-          key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
           script_stop: true
           script: |
             set -e

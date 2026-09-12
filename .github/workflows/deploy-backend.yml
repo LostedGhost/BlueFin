@@ -1,34 +1,50 @@
 name: Deploy backend (Hostinger)
 
-# Se déclenche uniquement quand le backend change sur main, après que le job CI
-# ait validé que le code compile/passe les tests.
+# Déploie le code du backend sur Hostinger, une fois le workflow « CI » passé
+# au vert sur main. Déclenchable aussi à la main (onglet Actions > Run workflow).
 #
-# Secrets requis à configurer dans Settings > Secrets and variables > Actions :
-#   HOSTINGER_SSH_HOST       — hôte SSH (ex: 123.45.67.89 ou ssh.votredomaine.com)
-#   HOSTINGER_SSH_PORT       — port SSH (souvent 65002 chez Hostinger, pas 22)
-#   HOSTINGER_SSH_USERNAME   — utilisateur SSH hPanel
-#   HOSTINGER_SSH_KEY        — clé privée SSH (format PEM), la clé publique
+# CE WORKFLOW NE LANCE JAMAIS DE MIGRATION.
+# La base de production a été construite en dehors des migrations : plusieurs
+# migrations anciennes y sont « en attente » et échoueraient, en laissant
+# éventuellement la base à moitié modifiée. Les migrations se lancent donc à la
+# main, une par une, avec --path :
+#   php artisan migrate --pretend --path=database/migrations/<fichier>.php
+#   php artisan migrate --force   --path=database/migrations/<fichier>.php
+# En fin de déploiement, le workflow se contente de LISTER les migrations en
+# attente pour qu'elles ne soient pas oubliées.
+#
+# Secrets requis (Settings > Secrets and variables > Actions) :
+#   HOSTINGER_SSH_HOST       — hôte SSH (ex: 123.45.67.89)
+#   HOSTINGER_SSH_PORT       — port SSH (65002 chez Hostinger, pas 22)
+#   HOSTINGER_SSH_USERNAME   — utilisateur SSH hPanel (ex: u381086576)
+#   HOSTINGER_SSH_KEY        — clé privée SSH (format PEM) ; la clé publique
 #                              correspondante doit être ajoutée dans hPanel
-#   HOSTINGER_DEPLOY_PATH    — chemin absolu du projet Laravel sur le serveur
-#                              (ex: /home/utilisateur/api.bluefin-immo.com)
+#   HOSTINGER_DEPLOY_PATH    — chemin du projet Laravel sur le serveur, ex:
+#                              /home/u381086576/domains/bluefin-immo.com/bluefin-monorepo/backend
 #
-# Ce workflow suppose que le dossier de déploiement sur Hostinger est LUI-MÊME
-# un clone git de ce repo (branche main, sous-dossier backend/ via un lien
-# symbolique ou un checkout sparse) — à adapter selon la configuration réelle
-# de l'hébergement si elle diffère (ex: déploiement par rsync plutôt que git pull).
+# Le dossier de déploiement est un clone git du dépôt. Après le changement de
+# propriétaire, son remote doit pointer sur la nouvelle adresse :
+#   git remote set-url origin https://github.com/SOLDIGIT-BENIN/BlueFin.git
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
-    paths:
-      - "backend/**"
   workflow_dispatch: {}
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
 
 jobs:
   deploy:
     name: Déployer sur Hostinger
     runs-on: ubuntu-latest
     environment: production
+    # Un déclenchement manuel passe toujours ; un déclenchement automatique
+    # seulement si le CI est vert.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: appleboy/ssh-action@v1.0.3
         with:
@@ -36,13 +52,21 @@ jobs:
           port: ${{ secrets.HOSTINGER_SSH_PORT }}
           username: ${{ secrets.HOSTINGER_SSH_USERNAME }}
           key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          script_stop: true
           script: |
             set -e
             cd "${{ secrets.HOSTINGER_DEPLOY_PATH }}"
-            git pull origin main
+
+            # --ff-only : on refuse de déployer si le serveur a des commits
+            # locaux, plutôt que de créer une fusion silencieuse.
+            git pull --ff-only origin main
             composer install --no-dev --optimize-autoloader --no-interaction
-            php artisan migrate --force
+
+            php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan event:cache
             php artisan queue:restart
+
+            echo "----- Migrations en attente (À LANCER À LA MAIN, avec --path) -----"
+            php artisan migrate:status | grep -i "pending" || echo "Aucune : la base est à jour."

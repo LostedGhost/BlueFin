@@ -45,11 +45,19 @@ jobs:
       - name: Vérifier la syntaxe PHP de tous les fichiers
         run: find app database routes -name "*.php" -print0 | xargs -0 -n1 php -l
 
-      - name: Copier la config de test et lancer les migrations (SQLite en mémoire)
+      - name: Copier la config de test et lancer les migrations (SQLite)
         run: |
           cp .env.example .env
           php artisan key:generate --force
-          sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env
+          # .env.example vise la production : DB_DATABASE y est vide (MySQL) et
+          # la session/le cache passent par la base. En test il faut un chemin
+          # SQLite explicite, et ni session ni cache en base — sinon toute page
+          # web répond 500, la base de test étant vide.
+          sed -i "s|^DB_CONNECTION=.*|DB_CONNECTION=sqlite|" .env
+          sed -i "s|^DB_DATABASE=.*|DB_DATABASE=$GITHUB_WORKSPACE/backend/database/database.sqlite|" .env
+          sed -i "s|^SESSION_DRIVER=.*|SESSION_DRIVER=array|" .env
+          sed -i "s|^CACHE_STORE=.*|CACHE_STORE=array|" .env
+          sed -i "s|^QUEUE_CONNECTION=.*|QUEUE_CONNECTION=sync|" .env
           touch database/database.sqlite
           php artisan migrate --force
 
